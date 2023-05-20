@@ -5,6 +5,8 @@ import React, { useRef, useState, createRef, forwardRef } from 'react';
 import { config, useSpring, animated } from "@react-spring/three"
 import { Html } from '@react-three/drei'
 
+import {relations} from'./relations.js';
+
 // マウスでの視点操作
 //最初のタイプ判定
 //センターを変えるとちょっと回る
@@ -50,7 +52,6 @@ const Node = (props) => {
     </animated.mesh>
   );
 };
-
 
 
 function Link(props) {
@@ -155,7 +156,6 @@ function Relation(props) {
   }
 
 
-
   const cylinderMaterial = new THREE.MeshBasicMaterial({ color: color(props.mode) });
 
   return (
@@ -166,7 +166,6 @@ function Relation(props) {
     </animated.mesh>
   );
 }
-
 
 function Tetra(props) {
 
@@ -237,142 +236,7 @@ function Tetra(props) {
   ]
 
 
-  let relations = [
-    { 'mode': 'DUALITY', 'type1': 'ISTJ', 'type2': 'ENFP' },
-    { 'mode': 'DUALITY', 'type1': 'ISFJ', 'type2': 'ENTP' },
-    { 'mode': 'DUALITY', 'type1': 'INFJ', 'type2': 'ESTP' },
-    { 'mode': 'DUALITY', 'type1': 'INTJ', 'type2': 'ESFP' },
-    { 'mode': 'DUALITY', 'type1': 'ISTP', 'type2': 'ENFJ' },
-    { 'mode': 'DUALITY', 'type1': 'ISFP', 'type2': 'ENTJ' },
-    { 'mode': 'DUALITY', 'type1': 'INFP', 'type2': 'ESTJ' },
-    { 'mode': 'DUALITY', 'type1': 'INTP', 'type2': 'ESFJ' },
-
-    { 'mode': 'ACTIVATION', 'type1': 'INTJ', 'type2': 'ISFP' },
-    { 'mode': 'ACTIVATION', 'type1': 'INFJ', 'type2': 'ISTP' },
-    { 'mode': 'ACTIVATION', 'type1': 'INTP', 'type2': 'ISFJ' },
-    { 'mode': 'ACTIVATION', 'type1': 'INFP', 'type2': 'ISTJ' },
-    { 'mode': 'ACTIVATION', 'type1': 'ENTJ', 'type2': 'ESFP' },
-    { 'mode': 'ACTIVATION', 'type1': 'ENFJ', 'type2': 'ESTP' },
-    { 'mode': 'ACTIVATION', 'type1': 'ENTP', 'type2': 'ESFJ' },
-    { 'mode': 'ACTIVATION', 'type1': 'ENFP', 'type2': 'ESTJ' },
-
-    { 'mode': 'SEMI_DUALITY', 'type1': 'INTJ', 'type2': 'ESTP' },
-    { 'mode': 'SEMI_DUALITY', 'type1': 'ENTJ', 'type2': 'ISTP' },
-    { 'mode': 'SEMI_DUALITY', 'type1': 'ISTJ', 'type2': 'ENTP' },
-    { 'mode': 'SEMI_DUALITY', 'type1': 'ESTJ', 'type2': 'INTP' },
-    { 'mode': 'SEMI_DUALITY', 'type1': 'INFP', 'type2': 'ESFJ' },
-    { 'mode': 'SEMI_DUALITY', 'type1': 'ENFP', 'type2': 'ISFJ' },
-    { 'mode': 'SEMI_DUALITY', 'type1': 'ISFP', 'type2': 'ENFJ' },
-    { 'mode': 'SEMI_DUALITY', 'type1': 'ESFP', 'type2': 'INFJ' },
-
-    { 'mode': 'MIRAGE', 'type1': 'ISTJ', 'type2': 'ESFP' },
-    { 'mode': 'MIRAGE', 'type1': 'ISFJ', 'type2': 'ESTP' },
-    { 'mode': 'MIRAGE', 'type1': 'INFJ', 'type2': 'ENTP' },
-    { 'mode': 'MIRAGE', 'type1': 'INTJ', 'type2': 'ENFP' },
-    { 'mode': 'MIRAGE', 'type1': 'ISTP', 'type2': 'ESFJ' },
-    { 'mode': 'MIRAGE', 'type1': 'ISFP', 'type2': 'ESTJ' },
-    { 'mode': 'MIRAGE', 'type1': 'INFP', 'type2': 'ENTJ' },
-    { 'mode': 'MIRAGE', 'type1': 'INTP', 'type2': 'ENFJ' },
-
-    { 'mode': 'MIRROR', 'type1': 'INTJ', 'type2': 'ENTJ' },
-    { 'mode': 'MIRROR', 'type1': 'ISTJ', 'type2': 'ESTJ' },
-    { 'mode': 'MIRROR', 'type1': 'INFP', 'type2': 'ENFP' },
-    { 'mode': 'MIRROR', 'type1': 'ISFP', 'type2': 'ESFP' },
-    { 'mode': 'MIRROR', 'type1': 'INTP', 'type2': 'ENTP' },
-    { 'mode': 'MIRROR', 'type1': 'ISTP', 'type2': 'ESTP' },
-    { 'mode': 'MIRROR', 'type1': 'INFJ', 'type2': 'ENFJ' },
-    { 'mode': 'MIRROR', 'type1': 'ISFJ', 'type2': 'ESFJ' },
-
-    { 'mode': 'COOPERATION', 'type1': 'INTJ', 'type2': 'ISTJ' },
-    { 'mode': 'COOPERATION', 'type1': 'INFP', 'type2': 'ISFP' },
-    { 'mode': 'COOPERATION', 'type1': 'INTP', 'type2': 'ISTP' },
-    { 'mode': 'COOPERATION', 'type1': 'INFJ', 'type2': 'ISFJ' },
-    { 'mode': 'COOPERATION', 'type1': 'ENTJ', 'type2': 'ESTJ' },
-    { 'mode': 'COOPERATION', 'type1': 'ENFP', 'type2': 'ESFP' },
-    { 'mode': 'COOPERATION', 'type1': 'ENTP', 'type2': 'ESTP' },
-    { 'mode': 'COOPERATION', 'type1': 'ENFJ', 'type2': 'ESFJ' },
-
-    { 'mode': 'CONGENERITY', 'type1': 'INTJ', 'type2': 'INFJ' },
-    { 'mode': 'CONGENERITY', 'type1': 'ISTJ', 'type2': 'ISFJ' },
-    { 'mode': 'CONGENERITY', 'type1': 'INTP', 'type2': 'INFP' },
-    { 'mode': 'CONGENERITY', 'type1': 'ISTP', 'type2': 'ISFP' },
-    { 'mode': 'CONGENERITY', 'type1': 'ENTJ', 'type2': 'ENFJ' },
-    { 'mode': 'CONGENERITY', 'type1': 'ESTJ', 'type2': 'ESFJ' },
-    { 'mode': 'CONGENERITY', 'type1': 'ENTP', 'type2': 'ENFP' },
-    { 'mode': 'CONGENERITY', 'type1': 'ESTP', 'type2': 'ESFP' },
-
-    { 'mode': 'QUASI_IDENTITY', 'type1': 'INTJ', 'type2': 'INTP' },
-    { 'mode': 'QUASI_IDENTITY', 'type1': 'ISTJ', 'type2': 'ISTP' },
-    { 'mode': 'QUASI_IDENTITY', 'type1': 'INFP', 'type2': 'INFJ' },
-    { 'mode': 'QUASI_IDENTITY', 'type1': 'ISFP', 'type2': 'ISFJ' },
-    { 'mode': 'QUASI_IDENTITY', 'type1': 'ENTJ', 'type2': 'ENTP' },
-    { 'mode': 'QUASI_IDENTITY', 'type1': 'ESTJ', 'type2': 'ESTP' },
-    { 'mode': 'QUASI_IDENTITY', 'type1': 'ENFP', 'type2': 'ENFJ' },
-    { 'mode': 'QUASI_IDENTITY', 'type1': 'ESFP', 'type2': 'ESFJ' },
-
-    { 'mode': 'EXTINGUISHMENT', 'type1': 'INTJ', 'type2': 'ENTP' },
-    { 'mode': 'EXTINGUISHMENT', 'type1': 'ISTJ', 'type2': 'ESTP' },
-    { 'mode': 'EXTINGUISHMENT', 'type1': 'INFP', 'type2': 'ENFJ' },
-    { 'mode': 'EXTINGUISHMENT', 'type1': 'ISFP', 'type2': 'ESFJ' },
-    { 'mode': 'EXTINGUISHMENT', 'type1': 'ENTJ', 'type2': 'INTP' },
-    { 'mode': 'EXTINGUISHMENT', 'type1': 'ESTJ', 'type2': 'ISTP' },
-    { 'mode': 'EXTINGUISHMENT', 'type1': 'ENFP', 'type2': 'INFJ' },
-    { 'mode': 'EXTINGUISHMENT', 'type1': 'ESFP', 'type2': 'ISFJ' },
-
-    { 'mode': 'SUPER_EGO', 'type1': 'INTJ', 'type2': 'ISFJ' },
-    { 'mode': 'SUPER_EGO', 'type1': 'ISTJ', 'type2': 'INFJ' },
-    { 'mode': 'SUPER_EGO', 'type1': 'INFP', 'type2': 'ISTP' },
-    { 'mode': 'SUPER_EGO', 'type1': 'ISFP', 'type2': 'INTP' },
-    { 'mode': 'SUPER_EGO', 'type1': 'ENTJ', 'type2': 'ESFJ' },
-    { 'mode': 'SUPER_EGO', 'type1': 'ESTJ', 'type2': 'ENFJ' },
-    { 'mode': 'SUPER_EGO', 'type1': 'ENFP', 'type2': 'ESTP' },
-    { 'mode': 'SUPER_EGO', 'type1': 'ESFP', 'type2': 'ENTP' },
-
-    { 'mode': 'CONFLICT', 'type1': 'ISTJ', 'type2': 'ENFJ' },
-    { 'mode': 'CONFLICT', 'type1': 'ISFJ', 'type2': 'ENTJ' },
-    { 'mode': 'CONFLICT', 'type1': 'INFJ', 'type2': 'ESTJ' },
-    { 'mode': 'CONFLICT', 'type1': 'INTJ', 'type2': 'ESFJ' },
-    { 'mode': 'CONFLICT', 'type1': 'ISTP', 'type2': 'ENFP' },
-    { 'mode': 'CONFLICT', 'type1': 'ISFP', 'type2': 'ENTP' },
-    { 'mode': 'CONFLICT', 'type1': 'INFP', 'type2': 'ESTP' },
-    { 'mode': 'CONFLICT', 'type1': 'INTP', 'type2': 'ESFP' },
-
-    { 'mode': 'REQUEST_PLUS', 'type1': 'INTJ', 'type2': 'INFP' }, //要求者 → 受容者
-    { 'mode': 'REQUEST_PLUS', 'type1': 'ISTJ', 'type2': 'ISFP' },
-    { 'mode': 'REQUEST_PLUS', 'type1': 'INFJ', 'type2': 'INTP' },
-    { 'mode': 'REQUEST_PLUS', 'type1': 'ISFJ', 'type2': 'ISTP' },
-    { 'mode': 'REQUEST_PLUS', 'type1': 'ENTJ', 'type2': 'ENFP' },
-    { 'mode': 'REQUEST_PLUS', 'type1': 'ESTJ', 'type2': 'ESFP' },
-    { 'mode': 'REQUEST_PLUS', 'type1': 'ENFJ', 'type2': 'ENTP' },
-    { 'mode': 'REQUEST_PLUS', 'type1': 'ESFJ', 'type2': 'ESTP' },
-    { 'mode': 'REQUEST_MINUS', 'type1': 'INTJ', 'type2': 'ISTP' }, //受容者 → 要求者
-    { 'mode': 'REQUEST_MINUS', 'type1': 'ISTJ', 'type2': 'INTP' },
-    { 'mode': 'REQUEST_MINUS', 'type1': 'INFP', 'type2': 'ISFJ' },
-    { 'mode': 'REQUEST_MINUS', 'type1': 'ISFP', 'type2': 'INFJ' },
-    { 'mode': 'REQUEST_MINUS', 'type1': 'ENTJ', 'type2': 'ESTP' },
-    { 'mode': 'REQUEST_MINUS', 'type1': 'ESTJ', 'type2': 'ENTP' },
-    { 'mode': 'REQUEST_MINUS', 'type1': 'ENFP', 'type2': 'ESFJ' },
-    { 'mode': 'REQUEST_MINUS', 'type1': 'ESFP', 'type2': 'ENFJ' },
-
-    { 'mode': 'SUPERVISION_PLUS', 'type1': 'INTJ', 'type2': 'ESTJ' }, //管理者 → 被管理者
-    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ISTJ', 'type2': 'ENTJ' },
-    { 'mode': 'SUPERVISION_PLUS', 'type1': 'INFJ', 'type2': 'ESFJ' },
-    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ISFJ', 'type2': 'ENFJ' },
-    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ENTP', 'type2': 'ISTP' },
-    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ESTP', 'type2': 'INTP' },
-    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ENFP', 'type2': 'ISFP' },
-    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ESFP', 'type2': 'INFP' },
-    { 'mode': 'SUPERVISION_MINUS', 'type1': 'INTJ', 'type2': 'ENFJ' }, //被管理者 → 管理者
-    { 'mode': 'SUPERVISION_MINUS', 'type1': 'ISTJ', 'type2': 'ESFJ' },
-    { 'mode': 'SUPERVISION_MINUS', 'type1': 'INFP', 'type2': 'ENTP' },
-    { 'mode': 'SUPERVISION_MINUS', 'type1': 'ISFP', 'type2': 'ESTP' },
-    { 'mode': 'SUPERVISION_MINUS', 'type1': 'ENTJ', 'type2': 'INFJ' },
-    { 'mode': 'SUPERVISION_MINUS', 'type1': 'ESTJ', 'type2': 'ISFJ' },
-    { 'mode': 'SUPERVISION_MINUS', 'type1': 'ENFP', 'type2': 'INTP' },
-    { 'mode': 'SUPERVISION_MINUS', 'type1': 'ESFP', 'type2': 'ISTP' },
-
-
-  ];
+ 
 
 
 
