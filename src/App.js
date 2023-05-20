@@ -75,7 +75,7 @@ function Relation(props) {
   const radius = (mode) => {
     switch (mode) {
       case 'DUALITY':
-        return 0.05
+        return 0.04
       case 'ACTIVATION':
         return 0.05
       case 'SEMI_DUALITY':
@@ -358,10 +358,10 @@ function Tetra(props) {
     { 'mode': 'SUPERVISION_PLUS', 'type1': 'ISTJ', 'type2': 'ENTJ' },
     { 'mode': 'SUPERVISION_PLUS', 'type1': 'INFJ', 'type2': 'ESFJ' },
     { 'mode': 'SUPERVISION_PLUS', 'type1': 'ISFJ', 'type2': 'ENFJ' },
-    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ENTJ', 'type2': 'ISTJ' },
-    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ESTJ', 'type2': 'INTJ' },
-    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ENFJ', 'type2': 'ISFJ' },
-    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ESFJ', 'type2': 'INFJ' },
+    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ENTP', 'type2': 'ISTP' },
+    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ESTP', 'type2': 'INTP' },
+    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ENFP', 'type2': 'ISFP' },
+    { 'mode': 'SUPERVISION_PLUS', 'type1': 'ESFP', 'type2': 'INFP' },
     { 'mode': 'SUPERVISION_MINUS', 'type1': 'INTJ', 'type2': 'ENFJ' }, //被管理者 → 管理者
     { 'mode': 'SUPERVISION_MINUS', 'type1': 'ISTJ', 'type2': 'ESFJ' },
     { 'mode': 'SUPERVISION_MINUS', 'type1': 'INFP', 'type2': 'ENTP' },
@@ -435,9 +435,9 @@ function Tetra(props) {
       })}
 
 {/* Link components */}
-{linkPositions.map(({ pos1, pos2 }, i) => (
+{/* {linkPositions.map(({ pos1, pos2 }, i) => (
   <Link key={i} pos1={pos1} pos2={pos2} />
-))}
+))} */}
 
 {/* Relation components */}
 {relations.map(({ type1, type2, mode }, i) => {
