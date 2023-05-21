@@ -1,7 +1,7 @@
 import './App.css';
 import * as THREE from 'three';
 import { Canvas, useFrame } from "@react-three/fiber"
-import React, { useRef, useState, createRef, forwardRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { config, useSpring, animated } from "@react-spring/three"
 import { Html } from '@react-three/drei'
 
