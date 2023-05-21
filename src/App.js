@@ -3,11 +3,10 @@ import * as THREE from 'three';
 import { Canvas, useFrame } from "@react-three/fiber"
 import React, { useRef, useState } from 'react';
 import { config, useSpring, animated } from "@react-spring/three"
-import { Html } from '@react-three/drei'
+import { Html , OrbitControls} from '@react-three/drei'
 
 import {relations} from'./relations.js';
 
-// マウスでの視点操作
 //最初のタイプ判定
 //現在のセンターに関連する関係を選ぶ選択肢
 //センターを変えるとちょっと回る
@@ -115,7 +114,7 @@ function Relation(props) {
   const [radius, setRadius] = useState(base_radius(props.mode));
 
   const handleHover = (hovered) => {
-    setRadius(hovered ? base_radius(props.mode) + 0.02: base_radius(props.mode));
+    setRadius(hovered ? base_radius(props.mode) + 0.04: base_radius(props.mode));
     setIsHovered(hovered);
   };
 
@@ -290,8 +289,8 @@ function Tetra(props) {
   }
 
   useFrame(() => {
-    ref.current.rotation.x += 0.003;
-    ref.current.rotation.y += 0.006;
+    ref.current.rotation.x += 0.0005;
+    ref.current.rotation.y += 0.001;
   });
 
   const types = [
@@ -445,9 +444,10 @@ function App() {
           <ambientLight intensity={0.5} />
           {/* <spotLight position={[100, 100, 100]} angle={0.15} penumbra={1} /> */}
           <pointLight position={[100, 100, 100]} />
+          <OrbitControls />
         </Canvas>
       </div>
-      <h1>Threejs Fiber</h1>
+      <h1>React Threejs Fiber</h1>
       <CenterSelect onChange={handleCenterChange} />
       <ModeSelect onChange={handleModeChange} />
     </>
