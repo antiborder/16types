@@ -9,6 +9,7 @@ import {relations} from'./relations.js';
 
 // マウスでの視点操作
 //最初のタイプ判定
+//現在のセンターに関連する関係を選ぶ選択肢
 //センターを変えるとちょっと回る
 // マウスオーバーで吹き出しが出る。
 // クリックすると詳細に飛ぶ
@@ -26,7 +27,7 @@ const Node = (props) => {
   let visible = props.slot === 'XXXX' ? false : true;
 
   const { scale } = useSpring({
-    scale: hovered ? 2 : 1,
+    scale: hovered ? 1.8 : 1,
     config: config.wobbly,
   });
 
@@ -71,9 +72,7 @@ function Link(props) {
 function Relation(props) {
   const ref = useRef();
   const height = props.pos1.distanceTo(props.pos2);
-
-
-  const radius = (mode) => {
+  const base_radius = (mode) => {
     switch (mode) {
       case 'DUALITY':
         return 0.04
@@ -82,19 +81,19 @@ function Relation(props) {
       case 'SEMI_DUALITY':
         return 0.05
       case 'MIRAGE':
-        return 0.002
+        return 0.004
       case 'MIRROR':
-        return 0.002
+        return 0.004
       case 'COOPERATION':
-        return 0.002
+        return 0.004
       case 'CONGENERITY':
         return 0.05
       case 'QUASI_IDENTITY':
-        return 0.002
+        return 0.004
       case 'EXTINGUISHMENT':
-        return 0.002
+        return 0.004
       case 'SUPER_EGO':
-        return 0.002
+        return 0.004
       case 'CONFLICT':
         return 0.03
       case 'REQUEST_PLUS':
@@ -105,11 +104,23 @@ function Relation(props) {
         return 0.03
       case 'SUPERVISION_MINUS':
         return 0.03
+      default :
+        return 0.03
 
     }
 
   }
-  const cylinderGeometry = new THREE.CylinderGeometry(radius(props.mode), radius(props.mode), height, 8);
+
+  const [isHovered, setIsHovered] = useState(false);
+  const [radius, setRadius] = useState(base_radius(props.mode));
+
+  const handleHover = (hovered) => {
+    setRadius(hovered ? base_radius(props.mode) + 0.02: base_radius(props.mode));
+    setIsHovered(hovered);
+  };
+
+
+  const cylinderGeometry = new THREE.CylinderGeometry(radius, radius, height, 8);
 
 
   const direction = props.pos2.clone().sub(props.pos1).normalize();
@@ -149,6 +160,8 @@ function Relation(props) {
         return "#99A"
       case 'SUPERVISION_MINUS':
         return "#99A"
+      default:
+         return '#000'
 
 
     }
@@ -159,10 +172,46 @@ function Relation(props) {
   const cylinderMaterial = new THREE.MeshBasicMaterial({ color: color(props.mode) });
 
   return (
-    <animated.mesh {...props}>
-      <mesh ref={ref} geometry={cylinderGeometry} material={cylinderMaterial} position={midpoint} quaternion={quaternion}>
+    <animated.mesh {...props}
+    onPointerOver={() => handleHover(true)} 
+    onPointerOut={() => handleHover(false)}>
+      <mesh ref={ref} 
+      geometry={cylinderGeometry} 
+      material={cylinderMaterial} 
+      position={midpoint} 
+      quaternion={quaternion}>
         <meshBasicMaterial attach="material" color={color(props.mode)} />
       </mesh>
+    </animated.mesh>
+  );
+}
+
+
+function TestCylinder(props) {
+  const ref = useRef();
+  const [isHovered, setIsHovered] = useState(false);
+  const [radius, setRadius] = useState(0.1);
+  const height = props.pos1.distanceTo(props.pos2);
+  const cylinderGeometry = new THREE.CylinderGeometry(radius, radius, height, 8);
+  const direction = props.pos2.clone().sub(props.pos1).normalize();
+  const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
+  const midpoint = props.pos1.clone().add(props.pos2).divideScalar(2);
+  const cylinderMaterial = new THREE.MeshBasicMaterial({ color: '#000' });
+
+  const handleHover = (hovered) => {
+    setRadius(hovered ? 0.13 : 0.1);
+    setIsHovered(hovered);
+  };
+
+ return (
+    <animated.mesh {...props}>
+      <mesh ref={ref} 
+      geometry={cylinderGeometry} 
+      material={cylinderMaterial} 
+      position={midpoint} 
+      quaternion={quaternion} 
+      onPointerOver={() => handleHover(true)} 
+      onPointerOut={() => handleHover(false)} />
     </animated.mesh>
   );
 }
@@ -235,16 +284,10 @@ function Tetra(props) {
     { 'pos1': nodePositions['OOXX'], 'pos2': nodePositions['OXXX'] },
   ]
 
-
- 
-
-
-
   const position = (type) => {
     let diff = compare(type, props.center)
     return nodePositions[diff]
   }
-
 
   useFrame(() => {
     ref.current.rotation.x += 0.003;
@@ -299,9 +342,9 @@ function Tetra(props) {
       })}
 
 {/* Link components */}
-{/* {linkPositions.map(({ pos1, pos2 }, i) => (
+{linkPositions.map(({ pos1, pos2 }, i) => (
   <Link key={i} pos1={pos1} pos2={pos2} />
-))} */}
+))}
 
 {/* Relation components */}
 {relations.map(({ type1, type2, mode }, i) => {
@@ -317,6 +360,8 @@ function Tetra(props) {
   }
   return null
 })}
+
+{/* <TestCylinder pos1={position('INTJ')} pos2={position('INTP')} /> */}
 
     </animated.mesh>
   );
