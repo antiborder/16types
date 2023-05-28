@@ -7,11 +7,11 @@ import { OrbitControls} from '@react-three/drei'
 import {InitialModal} from './InitialModal.js';
 import {Tetra} from './Tetra.js';
 
-// NodeとRelationのマウスオーバーで吹き出しが出る。
-// Nodeの色とサイズ 色はNT NF SP SJで分ける。　サイズは相性で分ける
 // タイプの詳細
 // 相性の詳細
+// InitialModalの透過
 // modalを閉じたらボールが再アニメーション
+// 吹き出しが複数出ないように
 //　type名を黒とグレイで色分け
 // タイプの表記（4文字と3文字）
 //　性格分析について（ユング心理学、MBTI、ソシオニクス）
@@ -20,7 +20,6 @@ import {Tetra} from './Tetra.js';
 //　外国語対応
 //　NodeのダブルクリックでCenterとModeが変わる
 // Relationの移動を連続アニメーション
-
 
 function CenterSelect(props) {
 
@@ -156,6 +155,7 @@ function App() {
             center={center}
             mode={mode}
             relationCenter = {relationCenter}
+            isModalOpen = {isModalOpen}
           />
           <ambientLight intensity={0.5} />
           {/* <spotLight position={[100, 100, 100]} angle={0.15} penumbra={1} /> */}
