@@ -1,19 +1,15 @@
 import './App.css';
 
 import { Canvas } from "@react-three/fiber"
-import {  useState, useEffect } from 'react';
+import {  useState, useEffect, useCallback } from 'react';
 import { OrbitControls} from '@react-three/drei'
 
 import {InitialModal} from './InitialModal.js';
 import {Tetra} from './Tetra.js';
 
-//　最初のタイプ判定。モーダル開いたらcenterに代入されるように？
-// modal外をクリックで閉じる
-//CenterSelectの初期値
-// Modeのプルダウンに現在のセンターに関連する関係を選ぶ選択肢
 // NodeとRelationのマウスオーバーで吹き出しが出る。
+// Nodeの色とサイズ 色はNT NF SP SJで分ける。　サイズは相性で分ける
 // タイプの詳細
-// Nodeの色とサイズ
 // 相性の詳細
 // modalを閉じたらボールが再アニメーション
 //　type名を黒とグレイで色分け
@@ -26,11 +22,10 @@ import {Tetra} from './Tetra.js';
 // Relationの移動を連続アニメーション
 
 
-
-
 function CenterSelect(props) {
+
   return (
-    <select id="center" value ={props.center || ""} onChange={props.onChange} >
+    <select id="center" value ={props.center} onChange={props.onChange} >
       <option value="INTJ">INTJ</option>
       <option value="INTP">INTP</option>
       <option value="ENTJ">ENTJ</option>
@@ -52,12 +47,18 @@ function CenterSelect(props) {
   )
 }
 
-
 function ModeSelect(props) {
-
+  const [mode, setMode] = useState(props.mode)
+  
+  const handleModeChange = (event) => {
+    const value = event.target.value === 'CENTER' ? 'RELATION' : event.target.value;
+    setMode(value)
+    props.onChange(event, value);
+  };
   return (
-    <select id="mode" onChange={props.onChange} >
-      <option value='RELATION'>RELATION</option>
+    <select id="mode" onChange={handleModeChange} value={mode}>
+      <option value='RELATION'>--</option>
+      <option value='CENTER'>{props.center}との関係</option>
       <option value='DUALITY'>DUALITY</option>
       <option value="ACTIVATION">ACTIVATION</option>
       <option value="SEMI_DUALITY">SEMI_DUALITY</option>
@@ -73,50 +74,82 @@ function ModeSelect(props) {
       <option value="REQUEST_MINUS">REQUEST_MINUS</option>
       <option value="SUPERVISION_PLUS">SUPERVISION_PLUS</option>
       <option value="SUPERVISION_MINUS">SUPERVISION_MINUS</option>
-
     </select>
   )
 }
 
 function App() {
 
-  const [center, setCenter] = useState("");
+  const InitialValue = () => {
+    const options = [
+      ['E', 'I'],
+      ['S', 'N'],
+      ['F', 'T'],
+      ['P', 'J']
+    ];
+
+    let initialValue = "";
+    for (let i = 0; i < options.length; i++) {
+      const choice = options[i][Math.floor(Math.random() * 2    )];
+      initialValue += choice;
+    }
+
+    return initialValue;
+  };
+  const [center, setCenter] = useState(InitialValue);
+
   const [mode, setMode] = useState("RELATION");
-  const [relationCenter, setRelationCenter] = useState("")
-  const [showModal, setShowModal] = useState(true);
+  const [relationCenter, setRelationCenter] = useState(center)
+  const [isModalOpen, setIsModalOpen] = useState(true);
+
+
+
 
   const handleCenterSelectChange = (event) => {
     setCenter(event.target.value);
 
   };
 
-    const handleCenterChange = (newValue) => {
+  const handleModalCenterChange = (newValue) => {
     setCenter(newValue);
-
+    setRelationCenter(newValue)
   };
+
   const handleModeChange = (event) => {
     setMode(event.target.value);
-    if(event.target.value === 'RELATION'){
+    if(event.target.value === 'RELATION' ){
       setRelationCenter(center)
     }
+    if(event.target.value === 'CENTER' ){
+      setRelationCenter(center)
+      setMode('RELATION')
+    }
   };
-
+  const closeModal= useCallback(() =>{
+    setIsModalOpen(false)
+    document.removeEventListener('click',closeModal)
+  },[])
 
   const handleModalSelect = () => {
-    // setCenter(selectedCenter);
-    setShowModal(false);
+    setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    setShowModal(true);
-  }, []);
+  useEffect(()=>{
+    return ()=>{
+      document.addEventListener('click',closeModal)
+    }
+  },[closeModal])
 
   return (
     <>
-          {showModal && 
-            <InitialModal onSelect = {handleModalSelect}  
+          {isModalOpen && 
+            <InitialModal 
+            onClick={(event)=>{closeModal(event)}}
+            onSelect = {handleModalSelect}  
             center={center} 
-            handleCenterChange={handleCenterChange} />}
+            relationCenter = {relationCenter}
+            handleCenterChange={handleModalCenterChange}/>
+                }
       <div id="canvas-container">
         <Canvas camera={{ position: [0, 0, 7] }}>
           <Tetra
@@ -130,10 +163,14 @@ function App() {
           <OrbitControls />
         </Canvas>
       </div>
-      <h1>React Threejs Fiber</h1>
-      <CenterSelect center = {center}
+      <h6>React Threejs Fiber</h6>
+      <CenterSelect 
+      center = {center}
+      defaultValue=""
         onChange={handleCenterSelectChange} />
-      <ModeSelect onChange={handleModeChange} />
+      < ModeSelect 
+      center = {center}
+      onChange={handleModeChange} />
     </>
   );
 }

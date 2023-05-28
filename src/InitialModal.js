@@ -12,10 +12,10 @@ function SliderContainer(props) {
 }
 
 function InitialModal(props) {
-  const [EIValue, setEIValue] = useState(Math.floor(Math.random() * 101));
-  const [SNValue, setSNValue] = useState(Math.floor(Math.random() * 101));
-  const [FTValue, setFTValue] = useState(Math.floor(Math.random() * 101));
-  const [PJValue, setPJValue] = useState(Math.floor(Math.random() * 101));
+  const [EIValue, setEIValue] = useState(props.center[0] === 'E' ? 0 : 100);
+  const [SNValue, setSNValue] = useState(props.center[1] === 'S' ? 0 : 100);
+  const [FTValue, setFTValue] = useState(props.center[2] === 'F' ? 0 : 100);
+  const [PJValue, setPJValue] = useState(props.center[3] === 'P' ? 0 : 100);
 
   const getCenter = () =>{
     return (EIValue < 50 ? 'E' : 'I') + (SNValue < 50 ? 'S' : 'N') + (FTValue < 50 ? 'F' : 'T') + (PJValue < 50 ? 'P' : 'J')
@@ -35,8 +35,6 @@ function InitialModal(props) {
     let newCenter = getCenter().slice(0,1) + (event.target.value < 50 ? 'S' : 'N') + getCenter().slice(2)
     setCenter(newCenter)
     props.handleCenterChange(newCenter)
-
-
   };
 
   const handleFTChange = (event) => {
@@ -44,8 +42,6 @@ function InitialModal(props) {
     let newCenter = getCenter().slice(0,2) + (event.target.value < 50 ? 'F' : 'T') + getCenter().slice(3)
     setCenter(newCenter)
     props.handleCenterChange(newCenter)
-
-
   };
 
   const handlePJChange = (event) => {
@@ -53,25 +49,21 @@ function InitialModal(props) {
     let newCenter = getCenter().slice(0,3) + (event.target.value < 50 ? 'P' : 'J') + getCenter().slice(4)
     setCenter(newCenter)
     props.handleCenterChange(newCenter)
-
-
   };
 
   const handleSubmit = () => {
-    // const personality =
-    //   `I${EIValue > 50 ? EIValue : '0' + EIValue}
-    //     S${SNValue > 50 ? SNValue : '0' + SNValue}
-    //     F${FTValue > 50 ? FTValue : '0' + FTValue}
-    //     J${JPValue > 50 ? JPValue : '0' + JPValue}`;
     props.onSelect();
   };
 
-  const handleInputChange = (event) => {
+  const handleCenterChange = (event) => {
     props.handleCenterChange(center)
   }
 
   return (
-    <div className="modal">
+
+    <div className="modal"
+      onClick={(event)=>{event.stopPropagation()}}
+      >
       <label htmlFor="center-select">Select a center:</label>
 
       <SliderContainer label1="E" label2="I" value={EIValue} onChange={handleEIChange} />
@@ -80,7 +72,7 @@ function InitialModal(props) {
       <SliderContainer label1="P" label2="J" value={PJValue} onChange={handlePJChange} />
 
       <div className="selected-values"
-        onChange={handleInputChange}
+        onChange={handleCenterChange}
       >
         <p>{EIValue < 50 ? 'E' : 'I'}</p>
         <p>{SNValue < 50 ? 'S' : 'N'}</p>
@@ -92,6 +84,7 @@ function InitialModal(props) {
       <button onClick={handleSubmit}>Submit</button>
 
     </div>
+
   );
 }
 

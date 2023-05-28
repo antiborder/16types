@@ -37,7 +37,7 @@ const Node = (props) => {
         <sphereGeometry args={[0.2, 32, 16]} />
         <meshStandardMaterial color={props.slot === 'OOOO' ? "#CCC" : "gray"} />
         <Html
-        zIndexRange={[100, 0]} // Z-order range (default=[16777271, 0])
+        zIndexRange={[100, 5]} // Z-order range (default=[16777271, 0])
         ><p>{props.slot=== 'XXXX' ? null : props.type}</p></Html>
       </animated.mesh>
     );
