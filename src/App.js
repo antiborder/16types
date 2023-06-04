@@ -6,12 +6,10 @@ import { OrbitControls } from '@react-three/drei'
 
 import { InitialModal } from './InitialModal.js';
 import { Tetra } from './Tetra.js';
+import styled from "styled-components";
 
-// スタイルをコンポーネントと同じファイルに記述
 // タイプの詳細
 // 相性の詳細
-// InitialModalの透過
-// modalを閉じたらボールが再アニメーション
 // 吹き出しが複数出ないように
 //　type名を黒とグレイで色分け
 // タイプの表記（4文字と3文字）
@@ -22,17 +20,22 @@ import { Tetra } from './Tetra.js';
 //　NodeのダブルクリックでCenterとModeが変わる
 // Relationの移動を連続アニメーション
 
-function CenterSelect(props) {
+const StyledCenterSelect = styled.select`
+  position: absolute;
+  top: 0px;
+  left: 0px;
+`;
 
+function CenterSelect(props) {
   return (
-    <select id="center" value={props.center} onChange={props.onChange} >
+    <StyledCenterSelect value={props.center} onChange={props.onChange}>
       <option value="INTJ">INTJ</option>
       <option value="INTP">INTP</option>
       <option value="ENTJ">ENTJ</option>
       <option value="ENTP">ENTP</option>
       <option value="INFJ">INFJ</option>
       <option value="INFP">INFP</option>
-      <option value="ENFJ">ENFJ</option>Ï
+      <option value="ENFJ">ENFJ</option>
       <option value="ENFP">ENFP</option>
       <option value="ISTJ">ISTJ</option>
       <option value="ISFJ">ISFJ</option>
@@ -42,10 +45,15 @@ function CenterSelect(props) {
       <option value="ISFP">ISFP</option>
       <option value="ESTP">ESTP</option>
       <option value="ESFP">ESFP</option>
-    </select>
-
-  )
+    </StyledCenterSelect>
+  );
 }
+
+const StyledModeSelect = styled.select`
+  position: absolute;
+  top: 0px;
+  left: 100px;
+`;
 
 function ModeSelect(props) {
   const [mode, setMode] = useState(props.mode)
@@ -56,7 +64,7 @@ function ModeSelect(props) {
     props.onChange(event, value);
   };
   return (
-    <select id="mode" onChange={handleModeChange} value={mode}>
+    <StyledModeSelect  onChange={handleModeChange} value={mode}>
       <option value='RELATION'>--</option>
       <option value='CENTER'>{props.center}との関係</option>
       <option value='DUALITY'>DUALITY</option>
@@ -74,9 +82,14 @@ function ModeSelect(props) {
       <option value="REQUEST_MINUS">REQUEST_MINUS</option>
       <option value="SUPERVISION_PLUS">SUPERVISION_PLUS</option>
       <option value="SUPERVISION_MINUS">SUPERVISION_MINUS</option>
-    </select>
+    </StyledModeSelect>
   )
 }
+
+const StyledCanvasContainer = styled.div`
+  height: 100%;
+  width: 100%;
+`;
 
 function App() {
 
@@ -101,9 +114,6 @@ function App() {
   const [mode, setMode] = useState("RELATION");
   const [relationCenter, setRelationCenter] = useState(center)
   const [isModalOpen, setIsModalOpen] = useState(true);
-
-
-
 
   const handleCenterSelectChange = (event) => {
     setCenter(event.target.value);
@@ -164,7 +174,7 @@ function App() {
           relationCenter={relationCenter}
           handleCenterChange={handleModalCenterChange} />
       }
-      <div id="canvas-container">
+      <StyledCanvasContainer>
         <Canvas camera={{ position: [0, 0, 7] }}>
           <Tetra
             center={center}
@@ -177,7 +187,7 @@ function App() {
           <pointLight position={[100, 100, 100]} />
           <OrbitControls />
         </Canvas>
-      </div>
+      </StyledCanvasContainer>
       <h6>React Threejs Fiber</h6>
       <CenterSelect
         center={center}

@@ -1,15 +1,54 @@
 import './App.css';
 import { useState } from 'react';
+import styled from 'styled-components';
+
+const StyledSliderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  padding: 5px;
+`;
 
 function SliderContainer(props) {
   return (
-    <div className="slider-container">
-      <div className="slider-label">{props.label1}</div>
+    <StyledSliderContainer>
+      <div >{props.label1}</div>
       <input type="range" min="0" max="100" step="100" value={props.value} onChange={props.onChange} />
-      <div className="slider-label">{props.label2}</div>
-    </div>
+      <div >{props.label2}</div>
+    </StyledSliderContainer>
   );
 }
+
+const StyledInitialModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.7); 
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  max-width: 300px;
+  width: 100%;
+  text-align: center;
+    p{
+      margin-bottom: 10px;
+    }
+    select {
+      margin-bottom: 20px;
+    }
+    button:hover {
+      background-color: #0069d9;
+    }
+`;
+
+const StyledSelectedValues = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+`;
 
 function InitialModal(props) {
   const [EIValue, setEIValue] = useState(props.center[0] === 'E' ? 0 : 100);
@@ -61,7 +100,7 @@ function InitialModal(props) {
 
   return (
 
-    <div className="modal"
+    <StyledInitialModal 
       onClick={(event)=>{event.stopPropagation()}}
       >
       <label htmlFor="center-select">Select a center:</label>
@@ -71,7 +110,7 @@ function InitialModal(props) {
       <SliderContainer label1="F" label2="T" value={FTValue} onChange={handleFTChange} />
       <SliderContainer label1="P" label2="J" value={PJValue} onChange={handlePJChange} />
 
-      <div className="selected-values"
+      <StyledSelectedValues 
         onChange={handleCenterChange}
       >
         <p>{EIValue < 50 ? 'E' : 'I'}</p>
@@ -79,11 +118,11 @@ function InitialModal(props) {
         <p>{FTValue < 50 ? 'F' : 'T'}</p>
         <p>{PJValue < 50 ? 'P' : 'J'}</p>
 
-      </div>
+      </StyledSelectedValues>
 
       <button onClick={handleSubmit}>Submit</button>
 
-    </div>
+    </StyledInitialModal>
 
   );
 }
