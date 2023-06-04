@@ -57,7 +57,7 @@ const Node = (props) => {
       case 'XXXO':
         return 0.1 //1
       default:
-        return 0.5
+        return 0.2
 
     }
 

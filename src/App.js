@@ -1,12 +1,13 @@
 import './App.css';
 
 import { Canvas } from "@react-three/fiber"
-import {  useState, useEffect, useCallback } from 'react';
-import { OrbitControls} from '@react-three/drei'
+import { useState, useEffect, useCallback } from 'react';
+import { OrbitControls } from '@react-three/drei'
 
-import {InitialModal} from './InitialModal.js';
-import {Tetra} from './Tetra.js';
+import { InitialModal } from './InitialModal.js';
+import { Tetra } from './Tetra.js';
 
+// スタイルをコンポーネントと同じファイルに記述
 // タイプの詳細
 // 相性の詳細
 // InitialModalの透過
@@ -24,7 +25,7 @@ import {Tetra} from './Tetra.js';
 function CenterSelect(props) {
 
   return (
-    <select id="center" value ={props.center} onChange={props.onChange} >
+    <select id="center" value={props.center} onChange={props.onChange} >
       <option value="INTJ">INTJ</option>
       <option value="INTP">INTP</option>
       <option value="ENTJ">ENTJ</option>
@@ -48,7 +49,7 @@ function CenterSelect(props) {
 
 function ModeSelect(props) {
   const [mode, setMode] = useState(props.mode)
-  
+
   const handleModeChange = (event) => {
     const value = event.target.value === 'CENTER' ? 'RELATION' : event.target.value;
     setMode(value)
@@ -89,7 +90,7 @@ function App() {
 
     let initialValue = "";
     for (let i = 0; i < options.length; i++) {
-      const choice = options[i][Math.floor(Math.random() * 2    )];
+      const choice = options[i][Math.floor(Math.random() * 2)];
       initialValue += choice;
     }
 
@@ -116,46 +117,60 @@ function App() {
 
   const handleModeChange = (event) => {
     setMode(event.target.value);
-    if(event.target.value === 'RELATION' ){
+    if (event.target.value === 'RELATION') {
       setRelationCenter(center)
     }
-    if(event.target.value === 'CENTER' ){
+    if (event.target.value === 'CENTER') {
       setRelationCenter(center)
       setMode('RELATION')
     }
   };
-  const closeModal= useCallback(() =>{
+
+
+  const centralize = () => {
+    const oldCenter = center
+    setCenter(reverse(center));
+    setTimeout(() => {
+      setCenter(oldCenter);
+    }, 250);
+  }
+
+
+  const closeModal = useCallback(() => {
     setIsModalOpen(false)
-    document.removeEventListener('click',closeModal)
-  },[])
+    document.removeEventListener('click', closeModal)
+
+  }, [])
+
 
   const handleModalSelect = () => {
     setIsModalOpen(false);
+    centralize()
   };
 
-  useEffect(()=>{
-    return ()=>{
-      document.addEventListener('click',closeModal)
+  useEffect(() => {
+    return () => {
+      document.addEventListener('click', closeModal)
     }
-  },[closeModal])
+  }, [closeModal])
 
   return (
     <>
-          {isModalOpen && 
-            <InitialModal 
-            onClick={(event)=>{closeModal(event)}}
-            onSelect = {handleModalSelect}  
-            center={center} 
-            relationCenter = {relationCenter}
-            handleCenterChange={handleModalCenterChange}/>
-                }
+      {isModalOpen &&
+        <InitialModal
+          onClick={(event) => { closeModal(event) }}
+          onSelect={handleModalSelect}
+          center={center}
+          relationCenter={relationCenter}
+          handleCenterChange={handleModalCenterChange} />
+      }
       <div id="canvas-container">
         <Canvas camera={{ position: [0, 0, 7] }}>
           <Tetra
             center={center}
             mode={mode}
-            relationCenter = {relationCenter}
-            isModalOpen = {isModalOpen}
+            relationCenter={relationCenter}
+            isModalOpen={isModalOpen}
           />
           <ambientLight intensity={0.5} />
           {/* <spotLight position={[100, 100, 100]} angle={0.15} penumbra={1} /> */}
@@ -164,16 +179,32 @@ function App() {
         </Canvas>
       </div>
       <h6>React Threejs Fiber</h6>
-      <CenterSelect 
-      center = {center}
-      defaultValue=""
+      <CenterSelect
+        center={center}
+        defaultValue=""
         onChange={handleCenterSelectChange} />
-      < ModeSelect 
-      center = {center}
-      onChange={handleModeChange} />
+      < ModeSelect
+        center={center}
+        onChange={handleModeChange} />
     </>
   );
 }
 
 export default App;
+
+const reverse = (type) => {
+  let reversedType = "";
+  for (let i = 0; i < type.length; i++) {
+    reversedType += type[i] === "I" ? "E" :
+      type[i] === "E" ? "I" :
+        type[i] === "N" ? "S" :
+          type[i] === "S" ? "N" :
+            type[i] === "T" ? "F" :
+              type[i] === "F" ? "T" :
+                type[i] === "J" ? "P" :
+                  type[i] === "P" ? "J" :
+                    type[i];
+  }
+  return reversedType;
+};
 
