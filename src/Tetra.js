@@ -6,7 +6,14 @@ import { config, useSpring, animated } from "@react-spring/three"
 import { Html } from '@react-three/drei'
 
 import { relations } from './relations.js';
+import styled from "styled-components";
 
+
+const StyledNodeBubble = styled.div`
+  background: #fff;
+  padding: 10px ;
+  border-radius: 0px 20px 20px 20px
+`;
 
 const Node = (props) => {
   const [hovered, setHovered] = useState(false);
@@ -37,7 +44,7 @@ const Node = (props) => {
           return "lightskyblue"
         case "ISTP": case "ISFP": case "ESTP": case "ESFP":
           return "yellow"
-      
+
         default:
           return "gray"
       }
@@ -47,7 +54,7 @@ const Node = (props) => {
   const getBaseRadius = () => {
     switch (props.slot) {
       case 'XXXX':
-         return 0.4 //5
+        return 0.4 //5
       case 'OOXO': case 'OXXX': case 'XXOX': case 'OOOO':
         return 0.3 //4
       case 'OXOO': case 'OXXO': case 'XOOX': case 'XOXX': case 'XOOO': case 'OOOX':
@@ -83,9 +90,9 @@ const Node = (props) => {
           position={[0, 0, 0]} // position relative to the node
           zIndexRange={[100, 5]}
         >
-          <div className='node_bubble'>
+          <StyledNodeBubble>
             <p>{props.type}</p>
-          </div>
+          </StyledNodeBubble>
         </Html>
       )}
     </animated.mesh>
@@ -105,6 +112,12 @@ function Link(props) {
     </animated.mesh>
   );
 }
+
+const StyledRelationBubble = styled.div`
+background: #fff;
+padding: 10px ;
+border-radius: 0px 20px 20px 20px
+`;
 
 function Relation(props) {
   const ref = useRef();
@@ -224,9 +237,9 @@ function Relation(props) {
           position={midpoint} // position relative to the node
           zIndexRange={[100, 5]}
         >
-          <div className='relation_bubble'>
+          <StyledRelationBubble >
             <p>{props.type1}と{props.type2}の関係：{props.mode}</p>
-          </div>
+          </StyledRelationBubble>
         </Html>
       )}
     </animated.mesh>
@@ -354,7 +367,7 @@ function Tetra(props) {
               position={nodePositions[slot]}
               onClick={() => handleClick(i)}
               clicked={clickedState[i]}
-              isModalOpen = {props.isModalOpen}
+              isModalOpen={props.isModalOpen}
             />
             : ""
         );
