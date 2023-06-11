@@ -1,18 +1,22 @@
-import './App.css';
+import '../App.css';
 import * as THREE from 'three';
 import { useFrame } from "@react-three/fiber"
 import { useRef, useState } from 'react';
 import { config, useSpring, animated } from "@react-spring/three"
 import { Html } from '@react-three/drei'
 
-import { relations } from './relations.js';
+import { relations } from '../relations.js';
 import styled from "styled-components";
 
 
 const StyledNodeBubble = styled.div`
-  background: #fff;
-  padding: 10px ;
-  border-radius: 0px 20px 20px 20px
+width: 80px;
+background: #fff;
+border-radius: 0px 20px 20px 20px;
+font-size: 16px;
+div{
+  padding: 10px;
+}
 `;
 
 const Node = (props) => {
@@ -84,14 +88,14 @@ const Node = (props) => {
       <meshStandardMaterial color={getNodeColor()} />
       {!props.isModalOpen && (<Html
         zIndexRange={[100, 5]} // Z-order range (default=[16777271, 0])
-      ><p>{props.slot === 'XXXX' ? null : props.type}</p></Html>)}
+      >{props.slot === 'XXXX' ? null : props.type}</Html>)}
       {hovered && (
         <Html
           position={[0, 0, 0]} // position relative to the node
           zIndexRange={[100, 5]}
         >
           <StyledNodeBubble>
-            <p>{props.type}</p>
+            <div>{props.type}</div>
           </StyledNodeBubble>
         </Html>
       )}
@@ -114,9 +118,13 @@ function Link(props) {
 }
 
 const StyledRelationBubble = styled.div`
+width: 120px;
 background: #fff;
-padding: 10px ;
-border-radius: 0px 20px 20px 20px
+border-radius: 0px 20px 20px 20px;
+font-size: 14px;
+div{
+  padding: 10px;
+}
 `;
 
 function Relation(props) {
@@ -131,19 +139,19 @@ function Relation(props) {
       case 'SEMI_DUALITY':
         return 0.05
       case 'MIRAGE':
-        return 0.004
+        return 0.01
       case 'MIRROR':
-        return 0.004
+        return 0.01
       case 'COOPERATION':
-        return 0.004
+        return 0.01
       case 'CONGENERITY':
         return 0.05
       case 'QUASI_IDENTITY':
-        return 0.004
+        return 0.01
       case 'EXTINGUISHMENT':
-        return 0.004
+        return 0.01
       case 'SUPER_EGO':
-        return 0.004
+        return 0.01
       case 'CONFLICT':
         return 0.03
       case 'REQUEST_PLUS':
@@ -183,9 +191,9 @@ function Relation(props) {
       case 'DUALITY':
         return "#DB6"
       case 'ACTIVATION':
-        return "#0F0"
+        return "#8D8"
       case 'SEMI_DUALITY':
-        return "#F84"
+        return "#FA7"
       case 'MIRAGE':
         return "#969"
       case 'MIRROR':
@@ -193,7 +201,7 @@ function Relation(props) {
       case 'COOPERATION':
         return "#0AA"
       case 'CONGENERITY':
-        return "#0DD"
+        return "#6DD"
       case 'QUASI_IDENTITY':
         return "#826"
       case 'EXTINGUISHMENT':
@@ -212,12 +220,46 @@ function Relation(props) {
         return "#99A"
       default:
         return '#000'
-
-
     }
 
   }
 
+  const label = (mode) => {
+    switch (mode) {
+      case 'DUALITY':
+        return "双対"
+      case 'ACTIVATION':
+        return "活性化"
+      case 'SEMI_DUALITY':
+        return "準双対"
+      case 'MIRAGE':
+        return "幻影"
+      case 'MIRROR':
+        return "鏡像"
+      case 'COOPERATION':
+        return "協力"
+      case 'CONGENERITY':
+        return "共鳴"
+      case 'QUASI_IDENTITY':
+        return "準同一"
+      case 'EXTINGUISHMENT':
+        return "消滅"
+      case 'SUPER_EGO':
+        return "超自我"
+      case 'CONFLICT':
+        return "衝突"
+      case 'REQUEST_PLUS':
+        return "要求"
+      case 'REQUEST_MINUS':
+        return "要求"
+      case 'SUPERVISION_PLUS':
+        return "管理"
+      case 'SUPERVISION_MINUS':
+        return "管理"
+      default:
+        return ''
+    }
+  }
 
   const cylinderMaterial = new THREE.MeshBasicMaterial({ color: color(props.mode) });
 
@@ -238,7 +280,10 @@ function Relation(props) {
           zIndexRange={[100, 5]}
         >
           <StyledRelationBubble >
-            <p>{props.type1}と{props.type2}の関係：{props.mode}</p>
+            <div>
+              {props.type1}と{props.type2}：<br></br>
+              {label(props.mode)}の関係
+            </div>
           </StyledRelationBubble>
         </Html>
       )}
