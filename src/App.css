@@ -2,18 +2,6 @@
   box-sizing: border-box;
 }
 
-#center{
-  position: absolute;
-  top:0px;
-  left:0px;
-}
-
-#mode{
-  position: absolute;
-  top:0px;
-  left:100px;
-}
-
 html,
 body #root {
   width: 100%;
@@ -28,36 +16,14 @@ body #root {
   );
 }
 
-#canvas-container {
-  height: 100%;
-  width: 100%;
-}
-
-h1 {
+h6 {
   position: absolute;
-  top: 20%;
+  top: 10%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: black;
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-  font-size: 55px;
+  font-size: 5px;
+  z-index: 0;
   letter-spacing: 1px;
-}
-
-a {
-  position: absolute;
-  top: 77%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 10px;
-  border: none;
-  background: #fff;
-  cursor: pointer;
-  transition: all 0.2s;
-  padding: 10px 20px;
-}
-
-a:hover {
-  color: #fff;
-  background: #000;
 }
