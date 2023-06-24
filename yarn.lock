@@ -5298,7 +5298,7 @@
     "call-bind" "^1.0.2"
     "get-intrinsic" "^1.1.1"
 
-"gh-pages@^3.0.0":
+"gh-pages@^3.2.3":
   "integrity" "sha512-jA1PbapQ1jqzacECfjUaO9gV8uBgU6XNMV0oXLtfCX3haGLe5Atq8BxlrADhbD6/UdG9j6tZLWAkAybndOXTJg=="
   "resolved" "https://registry.npmjs.org/gh-pages/-/gh-pages-3.2.3.tgz"
   "version" "3.2.3"
