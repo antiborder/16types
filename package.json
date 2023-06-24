@@ -33,7 +33,7 @@
     "predeploy": "npm run build",
     "deploy": "npm run build && gh-pages -d build"
   },
-  "homepage": "https://antiborder.github.io/16types",
+  "homepage": "https://antiborder.github.io/16types/",
   "eslintConfig": {
     "extends": [
       "react-app",
