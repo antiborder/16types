@@ -10,6 +10,38 @@ const StyledSliderContainer = styled.div`
   padding: 5px;
 `;
 
+const StyledCloseButton = styled.button`
+position: absolute;
+width: 35px;
+height: 35px;
+top: -15px;
+right: -15px;
+background-color: #ccc;
+border-radius: 20px;
+border-width: 0px;
+border-color: #f2f2f2;
+font-size: 40px;
+text-align: center;
+display: flex;
+justify-content: center;
+align-items: center;
+`;
+
+const StyledStartButton = styled.button`
+// position: absolute;
+width: 50px;
+height: 30px;
+bottom: 10px;
+margin: 0 auto;
+background-color: #0575FF;
+border-radius: 10px;
+border: none;
+outline: none;
+font-size: 16px;
+color: white;
+text-align: center;
+`;
+
 function SliderContainer(props) {
   return (
     <StyledSliderContainer>
@@ -120,7 +152,8 @@ function InitialModal(props) {
 
       </StyledSelectedValues>
 
-      <button onClick={handleSubmit}>Submit</button>
+      <StyledCloseButton onClick={handleSubmit}>&times;</StyledCloseButton>
+      <StyledStartButton onClick={handleSubmit}>Start</StyledStartButton>
 
     </StyledInitialModal>
 

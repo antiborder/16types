@@ -24,6 +24,7 @@ const Node = (props) => {
 
   let visible = props.slot === 'XXXX' ? false : true;
 
+
   const { scale } = useSpring({
     scale: hovered ? 1.8 : 1,
     config: config.wobbly,
@@ -34,6 +35,10 @@ const Node = (props) => {
     to: { position: [props.position.x, props.position.y, props.position.z] },
     config: { duration: "500" }
   });
+  const handleHover = (hovered) => {
+    setHovered(hovered)
+    props.onHover(hovered)
+  };
 
   const getNodeColor = () => {
     if (props.slot === 'XXXX') {
@@ -69,17 +74,20 @@ const Node = (props) => {
         return 0.1 //1
       default:
         return 0.2
-
     }
-
   }
 
   return (
     <animated.mesh
       {...props}
       onClick={() => { props.onClick() }}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
+      // onPointerOver={() => setHovered(true)}
+      // onPointerOut={() => setHovered(false)}
+      onPointerOver={() => {
+        handleHover(true);
+       }
+     }
+     onPointerOut={() => handleHover(false)}
       position={position}
       scale={scale}
       visible={visible}
@@ -89,16 +97,20 @@ const Node = (props) => {
       {!props.isModalOpen && (<Html
         zIndexRange={[100, 5]} // Z-order range (default=[16777271, 0])
       >{props.slot === 'XXXX' ? null : props.type}</Html>)}
-      {hovered && (
-        <Html
-          position={[0, 0, 0]} // position relative to the node
-          zIndexRange={[100, 5]}
-        >
-          <StyledNodeBubble>
-            <div>{props.type}</div>
-          </StyledNodeBubble>
-        </Html>
-      )}
+      {
+        hovered && 
+        props.hoveredNodeState.filter((value) => value === true).length <=1 &&      
+        (
+          <Html
+            position={[0, 0, 0]} // position relative to the node
+            zIndexRange={[100, 5]}
+          >
+            <StyledNodeBubble>
+              <div>{props.type}</div>
+            </StyledNodeBubble>
+          </Html>
+        )
+      }
     </animated.mesh>
   );
 };
@@ -128,8 +140,9 @@ div{
 `;
 
 function Relation(props) {
+  // const [hovered, setHovered] = useState(false);
   const ref = useRef();
-  const height = props.pos1.distanceTo(props.pos2);
+  const height = props.pos1.distanceTo(props.pos2)-0.2;
   const base_radius = (mode) => {
     switch (mode) {
       case 'DUALITY':
@@ -175,12 +188,11 @@ function Relation(props) {
   const handleHover = (hovered) => {
     setRadius(hovered ? base_radius(props.mode) + 0.04 : base_radius(props.mode));
     setIsHovered(hovered);
+    props.onHover(hovered)
   };
 
 
   const cylinderGeometry = new THREE.CylinderGeometry(radius, radius, height, 8);
-
-
   const direction = props.pos2.clone().sub(props.pos1).normalize();
   const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
 
@@ -265,7 +277,10 @@ function Relation(props) {
 
   return (
     <animated.mesh {...props}
-      onPointerOver={() => handleHover(true)}
+      onPointerOver={() => {
+         handleHover(true);
+        }
+      }
       onPointerOut={() => handleHover(false)}>
       <mesh ref={ref}
         geometry={cylinderGeometry}
@@ -274,19 +289,22 @@ function Relation(props) {
         quaternion={quaternion}>
         <meshBasicMaterial attach="material" color={color(props.mode)} />
       </mesh>
-      {isHovered && (
-        <Html
-          position={midpoint} // position relative to the node
-          zIndexRange={[100, 5]}
-        >
-          <StyledRelationBubble >
-            <div>
-              {props.type1}と{props.type2}：<br></br>
-              {label(props.mode)}の関係
-            </div>
-          </StyledRelationBubble>
-        </Html>
-      )}
+      {isHovered && 
+        props.hoveredRelationState.filter((value) => value === true).length <=1 &&      
+        (
+          <Html
+            position={midpoint} // position relative to the node
+            zIndexRange={[100, 5]}
+          >
+            <StyledRelationBubble >
+              <div>
+                {props.type1}と{props.type2}：<br></br>
+                {label(props.mode)}の関係
+              </div>
+            </StyledRelationBubble>
+          </Html>
+        )
+      }
     </animated.mesh>
   );
 }
@@ -294,13 +312,15 @@ function Relation(props) {
 function Tetra(props) {
 
   const [clickedState, setClickedState] = useState(Array(16).fill(false));
+  const [hoveredNodeState, setHoveredNodeState] = useState(Array(16).fill(false));
+  const [hoveredRelationState, setHoveredRelationState] = useState(Array(256).fill(false));
+
   const ref = useRef();
 
   const power = 1
   const l1Ratio = 3 / Math.pow(Math.sqrt(3), power)
   const l2Ratio = 3 / Math.pow(3 / 1.15, power)
   const l3Ratio = 3 / Math.pow(3 * Math.sqrt(3), power)
-
 
   let nodePositions = {
 
@@ -396,6 +416,23 @@ function Tetra(props) {
     });
   };
 
+  const handleNodeHover = (index) => {
+    setHoveredNodeState((prevState) => {
+      const newState = [...prevState];
+      newState[index] = !prevState[index];
+      return newState;
+    });
+  };
+
+  const handleRelationHover = (index) => {
+    setHoveredRelationState((prevState) => {
+      const newState = [...prevState];
+      newState[index] = !prevState[index];
+      return newState;
+    });
+  };
+
+
   return (
     <animated.mesh {...props} ref={ref}>
 
@@ -411,6 +448,8 @@ function Tetra(props) {
               slot={slot}
               position={nodePositions[slot]}
               onClick={() => handleClick(i)}
+              onHover={(hovered) => handleNodeHover(i,hovered)}
+              hoveredNodeState={hoveredNodeState}
               clicked={clickedState[i]}
               isModalOpen={props.isModalOpen}
             />
@@ -441,6 +480,8 @@ function Tetra(props) {
             pos2={position(type2)}
             type1={type1}
             type2={type2}
+            onHover={(hovered) => handleRelationHover(i,hovered)}
+            hoveredRelationState={hoveredRelationState}
           />
         }
         return null

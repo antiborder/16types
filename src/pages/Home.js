@@ -7,13 +7,15 @@ import { OrbitControls } from '@react-three/drei'
 import { InitialModal } from '../components/InitialModal.js';
 import { Tetra } from '../components/Tetra.js';
 import styled from "styled-components";
-import Type from './types/type';
-import { Routes, Route } from 'react-router-dom';
+// import Type from './types/type';
+// import { Routes, Route } from 'react-router-dom';
 
+//　吹き出しの文言
 // タイプの詳細
 // 相性の詳細
-// 吹き出しが複数出ないように
+// イニじゃるモーダルのアルファベットに説明を記述
 //　type名を黒とグレイで色分け
+// ズーム機能の制限。並行移動の無効化。
 // タイプの表記（4文字と3文字）
 //　性格分析について（ユング心理学、MBTI、ソシオニクス）
 // 心理機能について
@@ -21,11 +23,18 @@ import { Routes, Route } from 'react-router-dom';
 //　外国語対応
 //　NodeのダブルクリックでCenterとModeが変わる
 // Relationの移動を連続アニメーション
+// Restartボタンで Mode SelectがRELATIONになるべき。
+// modal外をクリックしたら閉じる処理はgithub pagesではうまくいかないので諦め。
+// sourcemap対応
 
 const StyledCenterSelect = styled.select`
   position: absolute;
+  width:80px;
+  height:20px;
   top: 0px;
   left: 0px;
+  text-align: center;
+  background-color: #fff;
 `;
 
 function CenterSelect(props) {
@@ -53,8 +62,11 @@ function CenterSelect(props) {
 
 const StyledModeSelect = styled.select`
   position: absolute;
+  width:200px;
+  height:20px;
   top: 0px;
-  left: 100px;
+  left: 80px;
+  text-align: center;
 `;
 
 function ModeSelect(props) {
@@ -86,6 +98,23 @@ function ModeSelect(props) {
       <option value="SUPERVISION_MINUS">SUPERVISION_MINUS</option>
     </StyledModeSelect>
   )
+}
+
+const StyledInitialModalButton = styled.button`
+  position: absolute;
+  width:100px;
+  height:20px;
+  top: 0px;
+  left: 280px;
+  text-align: center;
+`;
+
+function InitialModalButton (props) {
+  return (
+    <StyledInitialModalButton onClick={props.onClick}>
+      Reset
+    </StyledInitialModalButton>
+  );
 }
 
 const StyledCanvasContainer = styled.div`
@@ -151,20 +180,25 @@ function Home() {
   const closeModal = useCallback(() => {
     setIsModalOpen(false)
     document.removeEventListener('click', closeModal)
-
   }, [])
-
 
   const handleModalSelect = () => {
     setIsModalOpen(false);
     centralize()
   };
 
-  useEffect(() => {
-    return () => {
-      document.addEventListener('click', closeModal)
-    }
-  }, [closeModal])
+  
+  const openModal = useCallback(() => {
+    setIsModalOpen(true);
+    setMode("RELATION");
+  }, [setIsModalOpen, setMode]);
+
+  //モーダル外をクリックしてもcloseする処理
+  // useEffect(() => {
+  //   return () => {
+  //     document.addEventListener('click', closeModal)
+  //   }
+  // }, [closeModal])
 
   return (
     <>
@@ -190,19 +224,21 @@ function Home() {
           <OrbitControls />
         </Canvas>
       </StyledCanvasContainer>
-      <h6>React Threejs Fiber
-
-      </h6>
+      <h6>16 types</h6>
 
       <CenterSelect
         center={center}
         defaultValue=""
         onChange={handleCenterSelectChange} />
+      
       < ModeSelect
         center={center}
         onChange={handleModeChange} />
-
+      <InitialModalButton onClick={openModal}>
+        Restart
+      </InitialModalButton>
     </>
+    
   );
 }
 
