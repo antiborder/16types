@@ -5,15 +5,22 @@ import { useRef, useState } from 'react';
 import { config, useSpring, animated } from "@react-spring/three"
 import { Html } from '@react-three/drei'
 
-import { relations } from '../relations.js';
+import { relations} from '../relations.js';
 import styled from "styled-components";
+import {typeLabels} from "../typeLabels.js";
+import {relationLabels} from "../relationLabels.js"
 
 
 const StyledNodeBubble = styled.div`
-width: 80px;
+width: 140px;
 background: #fff;
 border-radius: 0px 20px 20px 20px;
-font-size: 16px;
+font-size: 12px;
+.label{
+  display:block;
+  font-size: 12px;
+  text-align: center;
+}
 div{
   padding: 10px;
 }
@@ -106,7 +113,10 @@ const Node = (props) => {
             zIndexRange={[100, 5]}
           >
             <StyledNodeBubble>
-              <div>{props.type}</div>
+              <div>
+                {props.type}：
+                <br></br><span class='label'>{typeLabels[props.type]}</span>
+              </div>
             </StyledNodeBubble>
           </Html>
         )
@@ -133,9 +143,16 @@ const StyledRelationBubble = styled.div`
 width: 120px;
 background: #fff;
 border-radius: 0px 20px 20px 20px;
-font-size: 14px;
+font-size: 12px;
 div{
   padding: 10px;
+}
+.relation{
+  display: block;
+  text-align: center;
+}
+.label{
+  font-size: 16px;
 }
 `;
 
@@ -146,7 +163,7 @@ function Relation(props) {
   const base_radius = (mode) => {
     switch (mode) {
       case 'DUALITY':
-        return 0.04
+        return 0.02
       case 'ACTIVATION':
         return 0.05
       case 'SEMI_DUALITY':
@@ -207,7 +224,7 @@ function Relation(props) {
       case 'SEMI_DUALITY':
         return "#FA7"
       case 'MIRAGE':
-        return "#969"
+        return "#D8A"
       case 'MIRROR':
         return "#68B"
       case 'COOPERATION':
@@ -215,11 +232,11 @@ function Relation(props) {
       case 'CONGENERITY':
         return "#6DD"
       case 'QUASI_IDENTITY':
-        return "#826"
+        return "#A6D"
       case 'EXTINGUISHMENT':
-        return "#A41"
+        return "#DB6"
       case 'SUPER_EGO':
-        return "#995"
+        return "#996"
       case 'CONFLICT':
         return "#A99"
       case 'REQUEST_PLUS':
@@ -234,43 +251,6 @@ function Relation(props) {
         return '#000'
     }
 
-  }
-
-  const label = (mode) => {
-    switch (mode) {
-      case 'DUALITY':
-        return "双対"
-      case 'ACTIVATION':
-        return "活性化"
-      case 'SEMI_DUALITY':
-        return "準双対"
-      case 'MIRAGE':
-        return "幻影"
-      case 'MIRROR':
-        return "鏡像"
-      case 'COOPERATION':
-        return "協力"
-      case 'CONGENERITY':
-        return "共鳴"
-      case 'QUASI_IDENTITY':
-        return "準同一"
-      case 'EXTINGUISHMENT':
-        return "消滅"
-      case 'SUPER_EGO':
-        return "超自我"
-      case 'CONFLICT':
-        return "衝突"
-      case 'REQUEST_PLUS':
-        return "要求"
-      case 'REQUEST_MINUS':
-        return "要求"
-      case 'SUPERVISION_PLUS':
-        return "管理"
-      case 'SUPERVISION_MINUS':
-        return "管理"
-      default:
-        return ''
-    }
   }
 
   const cylinderMaterial = new THREE.MeshBasicMaterial({ color: color(props.mode) });
@@ -299,7 +279,9 @@ function Relation(props) {
             <StyledRelationBubble >
               <div>
                 {props.type1}と{props.type2}：<br></br>
-                {label(props.mode)}の関係
+                <span class='relation'>
+                <span class='label'>{relationLabels[props.mode]}</span>の関係
+                </span>
               </div>
             </StyledRelationBubble>
           </Html>
@@ -385,8 +367,8 @@ function Tetra(props) {
   }
 
   useFrame(() => {
-    ref.current.rotation.x += 0.0005;
-    ref.current.rotation.y += 0.001;
+    ref.current.rotation.x += 0.0004;
+    ref.current.rotation.z += 0.0008;
   });
 
   const types = [
