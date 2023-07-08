@@ -2,29 +2,21 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-const StyledSliderContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-  padding: 5px;
-`;
-
 const StyledCloseButton = styled.button`
-position: absolute;
-width: 35px;
-height: 35px;
-top: -15px;
-right: -15px;
-background-color: #ccc;
-border-radius: 20px;
-border-width: 0px;
-border-color: #f2f2f2;
-font-size: 40px;
-text-align: center;
-display: flex;
-justify-content: center;
-align-items: center;
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  top: -15px;
+  right: -15px;
+  background-color: #ccc;
+  border-radius: 20px;
+  border-width: 0px;
+  border-color: #f2f2f2;
+  font-size: 40px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const StyledStartButton = styled.button`
@@ -42,12 +34,46 @@ color: white;
 text-align: center;
 `;
 
+const StyledSliderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  padding: 5px;
+
+  .label-on{
+    font-size:20px;
+    color: black;
+  }
+  .label-off{
+    font-size:20px;
+    color: gray;
+  }
+`;
+
 function SliderContainer(props) {
+  const [value,setValue]=useState(props.value)
+
+  const handleChange=(event)=>{
+    if(value===100){
+      setValue(0);
+    }else{
+      setValue(100);
+    }
+    props.onChange(event)
+  }
+
   return (
     <StyledSliderContainer>
-      <div >{props.label1}</div>
-      <input type="range" min="0" max="100" step="100" value={props.value} onChange={props.onChange} />
-      <div >{props.label2}</div>
+      <div >{props.symbol1}</div>:&nbsp;&nbsp;
+       <div
+        style={{color: value===0 ? 'black':'rgb(160,160,160)'}} class='label-on' >{props.label1}
+      </div>
+      <input type="range" min="0" max="100" step="100" value={props.value} onChange={handleChange} />
+      <div
+        class='label-off' style={{color: value===100 ? 'black':'rgb(160,160,160)'}}>{props.label2}
+       </div>&nbsp;&nbsp;:
+      <div >{props.symbol2}</div>
     </StyledSliderContainer>
   );
 }
@@ -59,10 +85,12 @@ const StyledInitialModal = styled.div`
   transform: translate(-50%, -50%);
   background-color: rgba(255, 255, 255, 0.7); 
   border: 1px solid #ccc;
-  padding: 20px;
+  border-radius: 10px;
+  font-size:12px;
+  padding: 20px 4px 20px 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 9999;
-  max-width: 300px;
+  max-width: 320px;
   width: 100%;
   text-align: center;
     p{
@@ -135,12 +163,12 @@ function InitialModal(props) {
     <StyledInitialModal 
       onClick={(event)=>{event.stopPropagation()}}
       >
-      <label htmlFor="center-select">Select a center:</label>
+      <label htmlFor="center-select">４つの観点から<br></br>あなたの性格を選んでください。</label><br></br><br></br>
 
-      <SliderContainer label1="E" label2="I" value={EIValue} onChange={handleEIChange} />
-      <SliderContainer label1="S" label2="N" value={SNValue} onChange={handleSNChange} />
-      <SliderContainer label1="F" label2="T" value={FTValue} onChange={handleFTChange} />
-      <SliderContainer label1="P" label2="J" value={PJValue} onChange={handlePJChange} />
+      <SliderContainer symbol1="E" symbol2="I" label1="外交的" label2="内向的" value={EIValue} onChange={handleEIChange} />
+      <SliderContainer symbol1="S" symbol2="N" label1="感覚的" label2="直感的" value={SNValue} onChange={handleSNChange} />
+      <SliderContainer symbol1="F" symbol2="T" label1="感情的" label2="論理的" value={FTValue} onChange={handleFTChange} />
+      <SliderContainer symbol1="P" symbol2="J" label1="知覚型" label2="判断型" value={PJValue} onChange={handlePJChange} />
 
       <StyledSelectedValues 
         onChange={handleCenterChange}

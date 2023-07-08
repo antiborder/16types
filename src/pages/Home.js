@@ -10,10 +10,13 @@ import styled from "styled-components";
 // import Type from './types/type';
 // import { Routes, Route } from 'react-router-dom';
 
-//　吹き出しの文言
+//　Nodeのlabel 関数はグローバルに。
 // タイプの詳細
 // 相性の詳細
-// イニじゃるモーダルのアルファベットに説明を記述
+// 要求と管理の矢印を描画
+// イニじゃるモーダルにタイプと別称を追加。
+// modalが出てる時は、プルダウンやバブルを非活性化
+// Nodeをダブルクリックで中央に。
 //　type名を黒とグレイで色分け
 // ズーム機能の制限。並行移動の無効化。
 // タイプの表記（4文字と3文字）
@@ -21,7 +24,6 @@ import styled from "styled-components";
 // 心理機能について
 // 相性の考え方
 //　外国語対応
-//　NodeのダブルクリックでCenterとModeが変わる
 // Relationの移動を連続アニメーション
 // Restartボタンで Mode SelectがRELATIONになるべき。
 // modal外をクリックしたら閉じる処理はgithub pagesではうまくいかないので諦め。
