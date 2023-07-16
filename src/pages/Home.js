@@ -1,26 +1,26 @@
 // import '../App.css';
 
 import { Canvas } from "@react-three/fiber"
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { OrbitControls } from '@react-three/drei'
 
 import { InitialModal } from '../components/InitialModal.js';
+import { TypeModal } from '../components/TypeModal.js';
+import { RelationModal } from '../components/RelationModal.js';
 import { Tetra } from '../components/Tetra.js';
 import styled from "styled-components";
-// import Type from './types/type';
-// import { Routes, Route } from 'react-router-dom';
 
-//　Nodeのlabel 関数はグローバルに。
-// タイプの詳細
-// 相性の詳細
+// typeの詳細。心理機能にホバーした時説明が出る。▼ではなくアイコンを使う
+// 相性の説明と心理機能から相性を導く解説を入れる。
 // 要求と管理の矢印を描画
 // イニじゃるモーダルにタイプと別称を追加。
-// modalが出てる時は、プルダウンやバブルを非活性化
+// ランキングや分類のデザインも決めておく。⇨表示、関係、中心タイプ、リセット
 // Nodeをダブルクリックで中央に。
-//　type名を黒とグレイで色分け
+// type名を黒とグレイで色分け
 // ズーム機能の制限。並行移動の無効化。
 // タイプの表記（4文字と3文字）
-//　性格分析について（ユング心理学、MBTI、ソシオニクス）
+// 表示を切り替え。分類、ランキングなど、主機能、大分類など。
+// 性格分析について（ユング心理学、MBTI、ソシオニクス）
 // 心理機能について
 // 相性の考え方
 //　外国語対応
@@ -146,7 +146,9 @@ function Home() {
 
   const [mode, setMode] = useState("RELATION");
   const [relationCenter, setRelationCenter] = useState(center)
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isInitialModalOpen, setisInitialModalOpen] = useState(true);
+  const [typeModalState, setTypeModalState] = useState("NONE")
+  const [relationModalState, setRelationModalState] = useState("NONE")
 
   const handleCenterSelectChange = (event) => {
     setCenter(event.target.value);
@@ -180,20 +182,29 @@ function Home() {
 
 
   const closeModal = useCallback(() => {
-    setIsModalOpen(false)
+    setisInitialModalOpen(false)
     document.removeEventListener('click', closeModal)
   }, [])
 
-  const handleModalSelect = () => {
-    setIsModalOpen(false);
+  const handleInitialModalSelect = () => {
+    setisInitialModalOpen(false);
     centralize()
+  };
+
+  const handleTypeModalSelect = () => {
+      setTypeModalState('NONE');
+  };
+  const handleRelationModalSelect = () => {
+    setRelationModalState('NONE');
   };
 
   
   const openModal = useCallback(() => {
-    setIsModalOpen(true);
+    setisInitialModalOpen(true);
+    setTypeModalState('NONE');
+    setRelationModalState('NONE');
     setMode("RELATION");
-  }, [setIsModalOpen, setMode]);
+  }, [setisInitialModalOpen, setMode]);
 
   //モーダル外をクリックしてもcloseする処理
   // useEffect(() => {
@@ -204,24 +215,42 @@ function Home() {
 
   return (
     <>
-      {isModalOpen &&
+      {isInitialModalOpen &&
         <InitialModal
           onClick={(event) => { closeModal(event) }}
-          onSelect={handleModalSelect}
+          onSelect={handleInitialModalSelect}
           center={center}
           relationCenter={relationCenter}
           handleCenterChange={handleModalCenterChange} />
       }
+      {typeModalState!=='NONE' &&      
+        <TypeModal
+          type={typeModalState}
+          onSelect={handleTypeModalSelect}
+          />
+      }
+      {relationModalState!=='NONE' &&      
+        <RelationModal
+          relation={relationModalState}
+          onSelect={handleRelationModalSelect}
+          type1={relationModalState.substring(0,4)}
+          type2={relationModalState.substring(5,9)}
+          />
+      }
       <StyledCanvasContainer>
-        <Canvas camera={{ position: [0, 0, 7] }}>
+        <Canvas camera={{ position: [0, 0, 20] }}>
           <Tetra
             center={center}
             mode={mode}
             relationCenter={relationCenter}
-            isModalOpen={isModalOpen}
+            isInitialModalOpen={isInitialModalOpen}
+            typeModalState={typeModalState}
+            setTypeModalState={setTypeModalState}
+            relationModalState={relationModalState}
+            setRelationModalState={setRelationModalState}
+            scale={[2.7,2.7,2.7]}
           />
-          <ambientLight intensity={0.5} />
-          {/* <spotLight position={[100, 100, 100]} angle={0.15} penumbra={1} /> */}
+          <ambientLight intensity={0.6} />
           <pointLight position={[100, 100, 100]} />
           <OrbitControls />
         </Canvas>
