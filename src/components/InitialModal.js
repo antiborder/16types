@@ -1,6 +1,7 @@
 // import '../App.css';
 import { useState } from 'react';
 import styled from 'styled-components';
+import {symbols} from "../symbols.js"
 
 const StyledCloseButton = styled.button`
   position: absolute;
@@ -67,11 +68,11 @@ function SliderContainer(props) {
     <StyledSliderContainer>
       <div >{props.symbol1}</div>:&nbsp;&nbsp;
        <div
-        style={{color: value===0 ? 'black':'rgb(160,160,160)'}} class='label-on' >{props.label1}
+        style={{color: value===0 ? 'black':'rgb(190,190,190)'}} className='label-on' >{symbols[props.symbol1]['label']}
       </div>
       <input type="range" min="0" max="100" step="100" value={props.value} onChange={handleChange} />
       <div
-        class='label-off' style={{color: value===100 ? 'black':'rgb(160,160,160)'}}>{props.label2}
+        className='label-off' style={{color: value===100 ? 'black':'rgb(190,190,190)'}}>{symbols[props.symbol2]['label']}
        </div>&nbsp;&nbsp;:
       <div >{props.symbol2}</div>
     </StyledSliderContainer>
@@ -165,10 +166,10 @@ function InitialModal(props) {
       >
       <label htmlFor="center-select">４つの観点から<br></br>あなたの性格を選んでください。</label><br></br><br></br>
 
-      <SliderContainer symbol1="E" symbol2="I" label1="外交的" label2="内向的" value={EIValue} onChange={handleEIChange} />
-      <SliderContainer symbol1="S" symbol2="N" label1="感覚的" label2="直感的" value={SNValue} onChange={handleSNChange} />
-      <SliderContainer symbol1="F" symbol2="T" label1="感情的" label2="論理的" value={FTValue} onChange={handleFTChange} />
-      <SliderContainer symbol1="P" symbol2="J" label1="知覚型" label2="判断型" value={PJValue} onChange={handlePJChange} />
+      <SliderContainer symbol1="E" symbol2="I" value={EIValue} onChange={handleEIChange} />
+      <SliderContainer symbol1="S" symbol2="N" value={SNValue} onChange={handleSNChange} />
+      <SliderContainer symbol1="F" symbol2="T" value={FTValue} onChange={handleFTChange} />
+      <SliderContainer symbol1="P" symbol2="J" value={PJValue} onChange={handlePJChange} />
 
       <StyledSelectedValues 
         onChange={handleCenterChange}
