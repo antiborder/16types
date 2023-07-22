@@ -1,15 +1,17 @@
 import styled from 'styled-components';
-import {typeLabels} from "../typeLabels.js";
-import {relations} from "../relations.js"
-import {relationLabels} from "../relationLabels.js"
+import { typeLabels } from "../typeLabels.js";
+import { relations } from "../relations.js"
+import { relationLabels } from "../relationLabels.js"
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls } from '@react-three/drei';
 import { Text } from '@react-three/drei';
 import { useRef, useEffect } from 'react';
-import { getTextColor } from '../colorFunctions.js';
+import { getBackgroundColor, getTextColor } from '../colorFunctions.js';
 import { getFuncTextColor } from '../colorFunctions.js';
 import { getFuncPlaneColor } from '../colorFunctions.js';
+import { getFuncBackgroundColor } from '../colorFunctions.js';
 import * as THREE from 'three';
+import { symbols } from '../symbols.js';
 
 
 const StyledCloseButton = styled.button`
@@ -30,94 +32,260 @@ const StyledCloseButton = styled.button`
 `;
 
 const StyledRelationModal = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255); 
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  font-size:12px;
-  padding: 20px 4px 20px 4px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
-  max-width: 320px;
-  width: 100%;
-  height: 500px; 
-  
-  // overflow-y: auto;
-  // max-height: 80vh;
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+background-color: rgba(255, 255, 255); 
+border: 1px solid #ccc;
+border-radius: 10px;
+font-size:12px;
+// padding: 20px 4px 20px 4px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+z-index: 9999;
+max-width: 320px;
+width: 100%;
+padding:0px 8px 0px 8px;
+
+  .modal-content{
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    height:500px;
+    width:100%;
+    margin:0px;
+    padding: 0px;
+  }
+  .modal-content::-webkit-scrollbar{
+    display: none;
+  }
+
+  .title{
+    margin-top:30px;
+    margin-bottom: 5px;
+  }
 
   text-align: center;
-    .type{
-      margin:0px;   
-      padding:0px; 
-      font-size:24px;
-      line-height:0;
-    }
-    .three-chars{
-        margin: 0px 40px 24px 0px;
-        padding:0;
-        text-align: right;
-        line-height:0;
-    }
-    .label1{
-      font-size: 16px;
-    }
-    .label2, .label3 {
-      font-size: 12px;
-      margin:0;
+  .type{
+    margin:0px;   
+    padding:0px; 
+    font-size:24px;
+    line-height:0;
+  }
+
+  .relation-label{
+    font-size:20px;
+  }
+  .three-chars{
+      margin: 0px 40px 24px 0px;
       padding:0;
-      line-height:12px;
-    }
+      text-align: right;
+      line-height:0;
+  }
+  .label1{
+    font-size: 16px;
+  }
+  .label2, .label3 {
+    font-size: 12px;
+    margin:0;
+    padding:0;
+    line-height:12px;
+  }
 
-    .light-star{
-      color: #DB9;
-      font-size:16px
-    }
-    .dark-star{
-      color: #DDD;
-      font-size:16px
-    }
-    hr{
-      width:80%;
-    }
-    .symbols{
-      margin:0 auto;
-      width:160px;
-      background-color: #EDE7F6;
-      color:#6A1B9A;
+  .light-star{
+    color: #DB9;
+    font-size:20px
+  }
+  .dark-star{
+    color: #DDD;
+    font-size:20px
+  }
+  hr{
+    width:80%;
+  }
 
-      .symbol{
-        font-size:24px
-      }
-      .symbol-label{
-        front-size:24px
-      }
-      
-    }
+  .label-box{
+    margin: 8px 8px 24px 8px;
+    border-radius: 8px;
 
-    button:hover {
-      background-color: #0069d9;
+    .row-type{
+      border-radius: 4px;
+      margin: 4px;
+      font-size:16px;
     }
-    table {
-      margin:  0 auto;
+    .row-label1{
+      font-size:12px;
+    }
+  }
 
-      border-collapse: collapse;
-      border-spacing: 0;
-      border: none;
-    }
+  button:hover {
+    background-color: #0069d9;
+  }
+
+
+  .description{
+    width:280px;
+    margin: 0 auto 20px auto;
+  }
 
 `;
 
+const StyledRelationDescription = styled.div`
+    margin:0 auto;
+    width: 280px;
+    text-align:left;
+    span{
+      display: inline-block;
+      font-size: 16px;
+      padding: 2px 4px;
+      border-radius:8px;
+      
+    }
+`;
+
+function ColoredFuncLabel(props) {
+  console.log(props.type)
+  console.log(props.funcNum)
+  return (
+    <span
+      style={{
+        color: getFuncTextColor(typeLabels[props.type]['func' + props.funcNum]),
+        backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func' + props.funcNum])
+      }}>
+      {typeLabels[props.type]['func' + props.funcNum]}
+    </span>
+  )
+
+}
+
+function RelationDescription(props) {
+
+  switch (props.mode) {
+    case 'DUALITY':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type1}が無意識的に苦手である<ColoredFuncLabel type={props.type1} funcNum={5} />を{props.type2}は第一機能で補うことができます。また、{props.type2}が無意識的に苦手である<ColoredFuncLabel type={props.type2} funcNum={5} />を{props.type1}は第一機能で補うことができます。</p>
+          <p>さらに、互いの第二機能と第六機能も補い合う関係にあります。</p>
+          <p>このように、{props.type1}と{props.type2}は互いを補完するベストな組み合わせと言われています。</p>
+
+        </StyledRelationDescription>
+      )
+    case 'ACTIVATION':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type1}が無意識的に苦手である第六機能<ColoredFuncLabel type={props.type1} funcNum={6} />と第五機能<ColoredFuncLabel type={props.type1} funcNum={5} />を{props.type2}は第一機能と第二機能で補うことができます。</p>
+          <p>また、{props.type2}が無意識的に苦手である第六機能<ColoredFuncLabel type={props.type2} funcNum={6} />と第五機能<ColoredFuncLabel type={props.type2} funcNum={5} />を{props.type1}は第一機能と第二機能で補うことができます。</p>
+          <p>このため{props.type1}と{props.type2}の相性は良いと言われています。</p>
+
+        </StyledRelationDescription>
+      )
+    case 'SEMI_DUALITY':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type1}が無意識的に苦手である<ColoredFuncLabel type={props.type1} funcNum={5} />を{props.type2}は第一機能で補うことができます。</p>
+          <p>{props.type2}が無意識的に苦手である<ColoredFuncLabel type={props.type2} funcNum={5} />を{props.type1}は第一機能で補うことができます。</p>
+          <p>このように、{props.type1}と{props.type2}の相性は良いと言われています。</p>
+
+        </StyledRelationDescription>
+      )
+    case 'MIRAGE':
+      return (
+        <StyledRelationDescription>
+
+          <p>{props.type1}の第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />で、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。内と外の違いはありますが、{symbols[typeLabels[props.type1]['func1'].charAt(0)]['label']}という点が共通しています。</p>
+          <p>また、{props.type1}が無意識的に苦手な<ColoredFuncLabel type={props.type1} funcNum={5} />を{props.type2}の第二機能で補い、{props.type2}が無意識的に苦手な<ColoredFuncLabel type={props.type2} funcNum={5} />を{props.type1}の第二機能で補うことができます。</p>
+          <p>このように、{props.type1}と{props.type2}は良好な関係を築きやすいと言えるでしょう。</p>
+
+        </StyledRelationDescription>
+      );
+    case 'MIRROR':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type1}の第一機能である<ColoredFuncLabel type={props.type1} funcNum={1} />は{props.type2}の第二機能です。</p>
+          <p>同様に、{props.type2}の第一機能である<ColoredFuncLabel type={props.type2} funcNum={1} />は{props.type1}の第二機能です。</p>
+          <p>{props.type1}と{props.type2}は似ているように見えますが、このように第一機能と第二機能が入れ替わっているため、意見が異なることもあるでしょう。</p>
+        </StyledRelationDescription>
+      )
+
+
+    case 'COOPERATION':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type1}と{props.type2}はどちらも第二機能が<ColoredFuncLabel type={props.type1} funcNum={2} />である点が共通しています。</p>
+          <p>しかし、{props.type1}は第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />であるのに対し、{props.type1}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。</p>
+          <p>第一機能が異なるため、意見が合わないことも多いでしょう。</p>
+        </StyledRelationDescription>
+      )
+    case 'CONGENERITY':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type1}と{props.type2}はどちらも第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />である点が共通しています。</p>
+          <p>このため互いを容易に理解することができ、良好な関係を築きやすいと言われています。</p>
+        </StyledRelationDescription>
+      )
+    case 'QUASI_IDENTITY':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type1}が意識的に得意な第一機能<ColoredFuncLabel type={props.type1} funcNum={1} />は、{props.type2}にとっては無意識的に得意な第八機能です。</p>
+          <p>反対に、{props.type2}第一機能<ColoredFuncLabel type={props.type2} funcNum={1} />は、{props.type1}の第八機能です。</p>
+          <p>さらに、一方の第二機能はもう一方の第七機能であるなど、{props.type1}と{props.type2}の心理機能は意識と無意識を逆転した関係にあります。</p>
+        </StyledRelationDescription>
+      )
+      case 'EXTINGUISHMENT':
+        return (
+          <StyledRelationDescription>
+            <p>{props.type1}の第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。</p>
+            <p>同様に、{props.type1}の第二機能が<ColoredFuncLabel type={props.type1} funcNum={2} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={2} />です。</p>
+            <p>このように、{props.type1}と{props.type2}は同じ領域を得意としていますが、内と外の方向性が反対になっています。</p>
+          </StyledRelationDescription>
+        )      
+        case 'EXTINGUISHMENT':
+          return (
+            <StyledRelationDescription>
+              <p>{props.type1}の第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。</p>
+              <p>同様に、{props.type1}の第二機能が<ColoredFuncLabel type={props.type1} funcNum={2} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={2} />です。</p>
+              <p>このように、{props.type1}と{props.type2}は同じ領域を得意としていますが、内と外の方向性が反対になっています。</p>
+            </StyledRelationDescription>
+          )
+          case 'SUPER_EGO':
+            return (
+              <StyledRelationDescription>
+                <p>{props.type1}の第一機能<ColoredFuncLabel type={props.type1} funcNum={1}/>と第二機能<ColoredFuncLabel type={props.type1} funcNum={2}/>は、{props.type2}側では苦手意識を感じる第三機能と第四機能にあたります。</p>
+                <p>{props.type2}の第一機能<ColoredFuncLabel type={props.type2} funcNum={1}/>と第二機能<ColoredFuncLabel type={props.type2} funcNum={2}/>は、{props.type1}側では苦手意識を感じる第三機能と第四機能にあたります。</p>
+                <p>このような場合に両者はストレスを感じると言われています。</p>
+              </StyledRelationDescription>
+            )
+    case 'CONFLICT':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type1}が強い苦手意識を持つ{typeLabels[props.type1]['func5']}が{props.type2}の第一機能となっており、このような場合には{props.type1}にストレスがかかると言われています。</p>
+          <p>同様に、{props.type2}が強い苦手意識を持つ{typeLabels[props.type2]['func5']}は{props.type1}の第一機能なので、{props.type2}にもストレスがかかると言われています。</p>
+          <p>このように、互いにストレスを感じる関係とされています。</p>
+        </StyledRelationDescription>
+      )
+
+    case 'REQUEST':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type2}は<ColoredFuncLabel type={props.type2} funcNum={5} />を無意識的に苦手としているため、<ColoredFuncLabel type={props.type1} funcNum={2} />を得意分野の第二機能に持つ{props.type1}には魅力を感じます。</p>
+          <p>ところが、{props.type1}は{props.type1}をそれほど魅力的には感じません。{props.type1}が無意識的に苦手としている<ColoredFuncLabel type={props.type1} funcNum={5} />は{props.type2}にとっても苦手な第四機能だからです。</p>
+          <p>このため、{props.type2}側が{props.type1}側を一方的に求める非対称な関係となっています。</p>
+        </StyledRelationDescription>
+      )
+    default:
+
+
+  }
+
+}
 function RelationModal(props) {
 
-  const getMode = (type1,type2) => {
+  const getMode = (type1, type2) => {
     const relation = relations.find(rel => rel.type1 === type1 && rel.type2 === type2);
     return relation ? relation.mode : null;
   }
-  
-  let mode = getMode(props.type1,props.type2);
+
+  let mode = getMode(props.type1, props.type2);
 
   const handleSubmit = () => {
     props.onSelect();
@@ -125,53 +293,49 @@ function RelationModal(props) {
 
   return (
 
-    <StyledRelationModal 
-      onClick={(event)=>{event.stopPropagation()}}
-      >
-      <div className='title'><span className='type' style={{color: getTextColor(props.type1)}}>{props.type1}</span> と<span className='type' style={{color: getTextColor(props.type2)}}>{props.type2}</span>:</div><br></br>
-      <div className='relation'><span className='relation-label'>{relationLabels[mode]['label']}</span> の関係</div><br></br>
-      <div className='compatibility'>相性：
-        {Array.from({length: relationLabels[mode]['compatibility']}).map((_, index) => (
-          <span className='light-star' key={index}>★</span>
-        ))}
-                {Array.from({length: 5-relationLabels[mode]['compatibility']}).map((_, index) => (
-          <span key={index} className='dark-star'>★</span>
-        ))}
+    <StyledRelationModal
+      onClick={(event) => { event.stopPropagation() }}
+    >
+      <div className='modal-content'>
+        <div className='title'><span className='type' style={{ color: getTextColor(props.type1) }}>{props.type1}</span> と<span className='type' style={{ color: getTextColor(props.type2) }}>{props.type2}</span>:</div><br></br>
+        <div className='relation'><span className='relation-label'>{relationLabels[mode]['label']}</span> の関係</div><br></br>
+        <div className='compatibility'>相性：
+          {Array.from({ length: relationLabels[mode]['compatibility'] }).map((_, index) => (
+            <span className='light-star' key={index}>★</span>
+          ))}
+          {Array.from({ length: 5 - relationLabels[mode]['compatibility'] }).map((_, index) => (
+            <span key={index} className='dark-star'>★</span>
+          ))}
+        </div>
+        <hr></hr>
+
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+          <div className='label-box' style={{ width: "50%", color: getTextColor(props.type1), border: `0.5px solid ${getTextColor(props.type1)}` }}>
+            <div className='row-type' style={{ background: getBackgroundColor(props.type1) }}>{props.type1}</div>
+            <div className='row-label1'>{typeLabels[props.type1]['label1']}</div>
+            {/* <div className='row-label2'>{typeLabels[props.type1]['label2']}</div> */}
+          </div>
+          <div className='label-box' style={{ width: "50%", color: getTextColor(props.type2), border: `0.5px solid ${getTextColor(props.type2)}` }}>
+            <div className='row-type' style={{ background: getBackgroundColor(props.type2) }}>{props.type2}</div>
+            <div className='row-label1'>{typeLabels[props.type2]['label1']}</div>
+            {/* <div className='row-label2'>{typeLabels[props.type2]['label2']}</div> */}
+          </div>
+        </div>
+
+        <TwoFunctions
+          type1={props.type1}
+          type2={props.type2}
+        />
+        <StyledCloseButton onClick={handleSubmit}>&times;</StyledCloseButton>
+        <hr></hr>
+        ＜解説＞
+        <RelationDescription
+          type1={props.type1}
+          type2={props.type2}
+          mode={mode}
+        />
+
       </div>
-      <hr></hr>
-      <table>
-        <thead>
-          <tr>
-            <td style={{width:"42%"}}>{props.type1}</td>
-            <td style={{width:"16%"}}>&nbsp;</td>
-            <td style={{width:"42%"}}>{props.type2}</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{typeLabels[props.type1]['label1']}</td>
-            <td>&nbsp;</td>
-            <td>{typeLabels[props.type2]['label1']}</td>
-          </tr>
-          <tr>
-            <td>{typeLabels[props.type1]['label2']}</td>
-            <td>&nbsp;</td>
-            <td>{typeLabels[props.type2]['label2']}</td>
-          </tr>
-          <tr>
-            <td>{typeLabels[props.type1]['label3']}</td>
-            <td>&nbsp;</td>
-            <td>{typeLabels[props.type2]['label3']}</td>
-          </tr>
-        </tbody>
-      </table>
-
-
-<TwoFunctions
-  type1 ={props.type1}
-  type2 ={props.type2}
-  />
-    <StyledCloseButton onClick={handleSubmit}>&times;</StyledCloseButton>
     </StyledRelationModal>
   );
 }
@@ -202,7 +366,7 @@ const RoundedSquare2 = ({ size = 2.6, radius = 0.4, color = '#0088ff', opacity =
   );
 };
 
-const FunctionGrid = ({ position, type}) => {
+const FunctionGrid = ({ position, type }) => {
   return (
     <group position={position} rotation={[0, -Math.PI / 6, 0]}>
       <Text position={[-1, 3, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func1'])} anchorX="center" anchorY="middle">
@@ -212,20 +376,20 @@ const FunctionGrid = ({ position, type}) => {
         position={[-1, 3, 0]} color={getFuncPlaneColor(typeLabels[type]['func1'])}
       ></RoundedSquare2>
       <Text position={[1, 3, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func8'])} anchorX="center" anchorY="middle">
-      {typeLabels[type]['func8']}
+        {typeLabels[type]['func8']}
       </Text>
       <RoundedSquare2
         position={[1, 3, 0]} color={getFuncPlaneColor(typeLabels[type]['func8'])}
       ></RoundedSquare2>
 
       <Text position={[-1, 1, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func2'])} anchorX="center" anchorY="middle">
-      {typeLabels[type]['func2']}
+        {typeLabels[type]['func2']}
       </Text>
       <RoundedSquare2
         position={[-1, 1, 0]} color={getFuncPlaneColor(typeLabels[type]['func2'])}
       ></RoundedSquare2>
       <Text position={[1, 1, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func7'])} anchorX="center" anchorY="middle">
-      {typeLabels[type]['func7']}
+        {typeLabels[type]['func7']}
       </Text>
       <RoundedSquare2
         position={[1, 1, 0]} color={getFuncPlaneColor(typeLabels[type]['func7'])}
@@ -237,19 +401,19 @@ const FunctionGrid = ({ position, type}) => {
         position={[-1, -1, 0]} color={getFuncPlaneColor(typeLabels[type]['func3'])}
       ></RoundedSquare2>
       <Text position={[1, -1, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func6'])} anchorX="center" anchorY="middle">
-      {typeLabels[type]['func6']}
+        {typeLabels[type]['func6']}
       </Text>
       <RoundedSquare2
         position={[1, -1, 0]} color={getFuncPlaneColor(typeLabels[type]['func6'])}
       ></RoundedSquare2>
       <Text position={[-1, -3, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func4'])} anchorX="center" anchorY="middle">
-      {typeLabels[type]['func4']}
+        {typeLabels[type]['func4']}
       </Text>
       <RoundedSquare2
         position={[-1, -3, 0]} color={getFuncPlaneColor(typeLabels[type]['func6'])}
       ></RoundedSquare2>
       <Text position={[1, -3, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func5'])} anchorX="center" anchorY="middle">
-      {typeLabels[type]['func5']}
+        {typeLabels[type]['func5']}
       </Text>
       <RoundedSquare2
         position={[1, -3, 0]} color={getFuncPlaneColor(typeLabels[type]['func5'])}
@@ -259,39 +423,39 @@ const FunctionGrid = ({ position, type}) => {
   );
 };
 
-  const TwoFunctions = (props) => {
-    const cameraRef = useRef();
+const TwoFunctions = (props) => {
+  const cameraRef = useRef();
 
-    useEffect(() => {
-      const camera = cameraRef.current;
-      if (camera) {
-        // カメラの初期位置を設定
-        camera.position.set(-2, 0, 7);
-      }
-    }, []);
-    
-    const cameraPosition = [-2, 0, 7]; // カメラの位置
+  useEffect(() => {
+    const camera = cameraRef.current;
+    if (camera) {
+      // カメラの初期位置を設定
+      camera.position.set(-2, 0, 7);
+    }
+  }, []);
 
-    return (
-      <Canvas 
+  const cameraPosition = [-2, 0, 7]; // カメラの位置
+
+  return (
+    <Canvas
       camera={{ position: [-2, 0, 7] }}
-      style={{height:'300px'}}
-      >
-        <color attach="background" args={['#ffffff']} />
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} />
-        
-        <OrbitControls args={[cameraPosition]} />
-        <FunctionGrid 
-          position={[-2.5, 0, 0]} 
-          type={props.type1}
-        />
-        <FunctionGrid 
-          position={[2.5, 0, 0]} 
-          type={props.type2}
-        />
+      style={{ height: '300px' }}
+    >
+      <color attach="background" args={['#ffffff']} />
+      <ambientLight intensity={0.5} />
+      <pointLight position={[10, 10, 10]} />
 
-      </Canvas>
-    );
-  };
+      <OrbitControls args={[cameraPosition]} />
+      <FunctionGrid
+        position={[-2.5, 0, 0]}
+        type={props.type1}
+      />
+      <FunctionGrid
+        position={[2.5, 0, 0]}
+        type={props.type2}
+      />
+
+    </Canvas>
+  );
+};
 export { RelationModal };

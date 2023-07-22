@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import {symbols} from "../symbols.js"
+import { typeLabels } from '../typeLabels.js';
+import { getBackgroundColor, getTextColor } from '../colorFunctions.js';
 
 const StyledCloseButton = styled.button`
   position: absolute;
@@ -25,7 +27,7 @@ const StyledStartButton = styled.button`
 width: 50px;
 height: 30px;
 bottom: 10px;
-margin: 0 auto;
+margin: 16px auto;
 background-color: #0575FF;
 border-radius: 10px;
 border: none;
@@ -88,27 +90,38 @@ const StyledInitialModal = styled.div`
   border: 1px solid #ccc;
   border-radius: 10px;
   font-size:12px;
-  padding: 20px 4px 20px 4px;
+  padding: 20px 4px 8px 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 9999;
   max-width: 320px;
   width: 100%;
   text-align: center;
-    p{
-      margin-bottom: 10px;
+  .type{
+    text-align:center;
+    margin : 0 auto;
+    // height: 60px;
+    width: 200px;
+    justify-content: center;
+    border-radius:16px;
+    .label{
+      font-size:16px;
+      padding: 0px 4px 8px 4px;
     }
-    select {
-      margin-bottom: 20px;
-    }
-    button:hover {
-      background-color: #0069d9;
-    }
+  }
+
+  button:hover {
+    background-color: #0069d9;
+  }
 `;
 
 const StyledSelectedValues = styled.div`
+  text-align:center;
+  margin: 0 auto;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   width: 100%;
+  font-size: 20px;
+  padding: 4px;
 `;
 
 function InitialModal(props) {
@@ -164,22 +177,30 @@ function InitialModal(props) {
     <StyledInitialModal 
       onClick={(event)=>{event.stopPropagation()}}
       >
-      <label htmlFor="center-select">４つの観点から<br></br>あなたの性格を選んでください。</label><br></br><br></br>
+      <label htmlFor="center-select">４つの観点から<br></br>性格のタイプを選んでください。</label><br></br><br></br>
 
       <SliderContainer symbol1="E" symbol2="I" value={EIValue} onChange={handleEIChange} />
       <SliderContainer symbol1="S" symbol2="N" value={SNValue} onChange={handleSNChange} />
       <SliderContainer symbol1="F" symbol2="T" value={FTValue} onChange={handleFTChange} />
       <SliderContainer symbol1="P" symbol2="J" value={PJValue} onChange={handlePJChange} />
 
-      <StyledSelectedValues 
-        onChange={handleCenterChange}
+      <div 
+        style={{
+          backgroundColor:getBackgroundColor(props.center),
+          color:getTextColor(props.center)
+        }} 
+        className='type'
       >
-        <p>{EIValue < 50 ? 'E' : 'I'}</p>
-        <p>{SNValue < 50 ? 'S' : 'N'}</p>
-        <p>{FTValue < 50 ? 'F' : 'T'}</p>
-        <p>{PJValue < 50 ? 'P' : 'J'}</p>
-
-      </StyledSelectedValues>
+        <StyledSelectedValues 
+          onChange={handleCenterChange}
+        >
+          <div>{EIValue < 50 ? 'E' : 'I'}</div>
+          <div>{SNValue < 50 ? 'S' : 'N'}</div>
+          <div>{FTValue < 50 ? 'F' : 'T'}</div>
+          <div>{PJValue < 50 ? 'P' : 'J'}</div>
+        </StyledSelectedValues>
+        <div className='label'>{typeLabels[props.center]['label1']}</div>
+      </div>
 
       <StyledCloseButton onClick={handleSubmit}>&times;</StyledCloseButton>
       <StyledStartButton onClick={handleSubmit}>Start</StyledStartButton>
