@@ -155,7 +155,9 @@ div{
 function Relation(props) {
   // const [hovered, setHovered] = useState(false);
   const ref = useRef();
-  const height = props.pos1.distanceTo(props.pos2)-0.2;
+  const cylinderHeight = (props.mode==='REQUEST' || props.mode==='SUPERVISION') 
+    ? props.pos1.distanceTo(props.pos2)-1 
+    : props.pos1.distanceTo(props.pos2)-0.3;
   const base_radius = (mode) => {
     switch (mode) {
       case 'DUALITY':
@@ -180,14 +182,10 @@ function Relation(props) {
         return 0.04
       case 'CONFLICT':
         return 0.04
-      case 'REQUEST_PLUS':
-        return 0.04
-      case 'REQUEST_MINUS':
-        return 0.04
-      case 'SUPERVISION_PLUS':
-        return 0.04
-      case 'SUPERVISION_MINUS':
-        return 0.04
+      case 'REQUEST':
+        return 0.02
+      case 'SUPERVISION':
+        return 0.02
       default:
         return 0.04
 
@@ -204,12 +202,17 @@ function Relation(props) {
     props.onHover(hovered)
   };
 
-
-  const cylinderGeometry = new THREE.CylinderGeometry(radius, radius, height, 8);
+  const cylinderGeometry = new THREE.CylinderGeometry(radius, radius, cylinderHeight, 8);
   const direction = props.pos2.clone().sub(props.pos1).normalize();
   const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
+  const midpoint =  (props.mode==='REQUEST' || props.mode==='SUPERVISION') 
+    ? props.pos1.clone().divideScalar(0.8).add(props.pos2).divideScalar(1.8/0.8)
+    : props.pos1.clone().add(props.pos2).divideScalar(2);
 
-  const midpoint = props.pos1.clone().add(props.pos2).divideScalar(2);
+  const coneGeometry = new THREE.CylinderGeometry(0, 3*radius, 0.4, 8);
+  // const arrowMidpoint = 
+  const tipPoint = props.pos1.clone().divideScalar(5).add(props.pos2).divideScalar(6/5);
+  // const tipPoint = props.pos1.clone().add(props.pos2).multiplyScalar(0.9);
 
   const color = (mode) => {
     switch (mode) {
@@ -235,13 +238,9 @@ function Relation(props) {
         return "#996"
       case 'CONFLICT':
         return "#A99"
-      case 'REQUEST_PLUS':
+      case 'REQUEST':
         return "#9A9"
-      case 'REQUEST_MINUS':
-        return "#9A9"
-      case 'SUPERVISION_PLUS':
-        return "#99A"
-      case 'SUPERVISION_MINUS':
+      case 'SUPERVISION':
         return "#99A"
       default:
         return '#000'
@@ -266,6 +265,14 @@ function Relation(props) {
         quaternion={quaternion}>
         <meshBasicMaterial attach="material" color={color(props.mode)} />
       </mesh>
+      {(props.mode ==='REQUEST' || props.mode ==='SUPERVISION') &&(
+      <mesh ref={ref}
+        geometry={coneGeometry}
+        material={cylinderMaterial}
+        position={tipPoint}
+        quaternion={quaternion}>
+        <meshBasicMaterial attach="material" color={color(props.mode)} />
+      </mesh>)}
       {isHovered &&
         props.hoveredRelationState.filter((value) => value === true).length <=1 &&      
         (

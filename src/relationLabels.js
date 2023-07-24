@@ -8,12 +8,10 @@ const relationLabels = {
     'CONGENERITY': {'label':"共鳴",'compatibility':4},
     'QUASI_IDENTITY': {'label':"擬似同一",'compatibility':3},
     'EXTINGUISHMENT': {'label':"消滅",'compatibility':3},
-    'SUPER_EGO': {'label':"超自我",'compatibility':3},
+    'SUPER_EGO': {'label':"超自我",'compatibility':2},
     'CONFLICT': {'label':"衝突",'compatibility':1},
-    'REQUEST_PLUS': {'label':"  要求",'compatibility':2},
-    'REQUEST_MINUS': {'label':"要求",'compatibility':2},
-    'SUPERVISION_PLUS':{'label': "管理",'compatibility':2},
-    'SUPERVISION_MINUS': {'label':"管理",'compatibility':2},
+    'REQUEST': {'label':"  要求",'compatibility':2},
+    'SUPERVISION':{'label': "管理",'compatibility':2},
     'IDENTITY': {'label':"同一",'compatibility':4},
 };
 

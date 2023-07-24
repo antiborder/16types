@@ -9,14 +9,15 @@ import { TypeModal } from '../components/TypeModal.js';
 import { RelationModal } from '../components/RelationModal.js';
 import { Tetra } from '../components/Tetra.js';
 import styled from "styled-components";
+import { relationLabels } from "../relationLabels.js";
+import { typeLabels } from "../typeLabels.js";
 
 // typeの詳細。心理機能にホバーした時説明が出る。▼ではなくアイコンを使う
-// 相性の説明と心理機能から相性を導く解説を入れる。
-// 要求と管理の矢印を描画
-// イニじゃるモーダルにタイプと別称を追加。
-// ランキングや分類のデザインも決めておく。⇨表示、関係、中心タイプ、リセット
+// 二つの心理機能表の間に矢印を。心理機能の表に数字を入れる。
+// initialModalをマウスオーバーした時に、選択肢の説明が出る。ラベルが出るのは、1クリックした後。
+// ランキングや分類のデザインも決めておく。⇨表示、関係、中央、リセット
 // Nodeをダブルクリックで中央に。
-// type名を黒とグレイで色分け
+// type名を黒とグレイで色分け。中央はフォントを大きめに。
 // ズーム機能の制限。並行移動の無効化。
 // タイプの表記（4文字と3文字）
 // 表示を切り替え。分類、ランキングなど、主機能、大分類など。
@@ -24,10 +25,11 @@ import styled from "styled-components";
 // 心理機能について
 // 相性の考え方
 //　外国語対応
-// Relationの移動を連続アニメーション
+// Relationの移動を連続アニメーション。球の直径の変更もアニメーション。
 // Restartボタンで Mode SelectがRELATIONになるべき。
 // modal外をクリックしたら閉じる処理はgithub pagesではうまくいかないので諦め。
 // sourcemap対応
+// 円環の配置も追加。
 
 const StyledCenterSelect = styled.select`
   position: absolute;
@@ -40,24 +42,13 @@ const StyledCenterSelect = styled.select`
 `;
 
 function CenterSelect(props) {
+  const types = Object.keys(typeLabels); //選択肢用のtypes配列
   return (
     <StyledCenterSelect value={props.center} onChange={props.onChange}>
-      <option value="INTJ">INTJ</option>
-      <option value="INTP">INTP</option>
-      <option value="ENTJ">ENTJ</option>
-      <option value="ENTP">ENTP</option>
-      <option value="INFJ">INFJ</option>
-      <option value="INFP">INFP</option>
-      <option value="ENFJ">ENFJ</option>
-      <option value="ENFP">ENFP</option>
-      <option value="ISTJ">ISTJ</option>
-      <option value="ISFJ">ISFJ</option>
-      <option value="ESTJ">ESTJ</option>
-      <option value="ESFJ">ESFJ</option>
-      <option value="ISTP">ISTP</option>
-      <option value="ISFP">ISFP</option>
-      <option value="ESTP">ESTP</option>
-      <option value="ESFP">ESFP</option>
+
+      {types.map((type) => (
+        <option key={type} value={type}> {type} </option>
+      ))}
     </StyledCenterSelect>
   );
 }
@@ -79,27 +70,18 @@ function ModeSelect(props) {
     setMode(value)
     props.onChange(event, value);
   };
+
+  const relationModes = Object.keys(relationLabels).filter(mode => mode !== 'IDENTITY'); //選択肢用のmodes配列
   return (
-    <StyledModeSelect  onChange={handleModeChange} value={mode}>
+    <StyledModeSelect onChange={handleModeChange} value={mode}>
       <option value='RELATION'>--</option>
       <option value='CENTER'>{props.center}との関係</option>
-      <option value='DUALITY'>DUALITY</option>
-      <option value="ACTIVATION">ACTIVATION</option>
-      <option value="SEMI_DUALITY">SEMI_DUALITY</option>
-      <option value="MIRAGE">MIRAGE</option>
-      <option value="MIRROR">MIRROR</option>
-      <option value="COOPERATION">COOPERATION</option>
-      <option value="CONGENERITY">CONGENERITY</option>
-      <option value="QUASI_IDENTITY">QUASI_IDENTITY</option>
-      <option value="EXTINGUISHMENT">EXTINGUISHMENT</option>
-      <option value="SUPER_EGO">SUPER_EGO</option>
-      <option value="CONFLICT">CONFLICT</option>
-      <option value="REQUEST_PLUS">REQUEST_PLUS</option>
-      <option value="REQUEST_MINUS">REQUEST_MINUS</option>
-      <option value="SUPERVISION_PLUS">SUPERVISION_PLUS</option>
-      <option value="SUPERVISION_MINUS">SUPERVISION_MINUS</option>
+      {relationModes.map((mode) => (
+        <option key={mode} value={mode}> {mode} </option>
+      ))}
+
     </StyledModeSelect>
-  )
+  );
 }
 
 const StyledInitialModalButton = styled.button`
@@ -177,7 +159,7 @@ function Home() {
     setCenter(reverse(center));
     setTimeout(() => {
       setCenter(oldCenter);
-    }, 250);
+    }, 180);
   }
 
 
