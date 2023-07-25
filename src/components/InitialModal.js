@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import {symbols} from "../symbols.js"
 import { typeLabels } from '../typeLabels.js';
 import { getBackgroundColor, getTextColor } from '../colorFunctions.js';
+import {Tooltip} from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css'
 
 const StyledCloseButton = styled.button`
   position: absolute;
@@ -74,9 +76,15 @@ function SliderContainer(props) {
       </div>
       <input type="range" min="0" max="100" step="100" value={props.value} onChange={handleChange} />
       <div
-        className='label-off' style={{color: value===100 ? 'black':'rgb(190,190,190)'}}>{symbols[props.symbol2]['label']}
+        className='label-off' 
+        style={{color: value===100 ? 'black':'rgb(190,190,190)'}}
+        data-tip={symbols[props.symbol2]['label']}
+        data-for='slider-tooltip'
+      >
+        {symbols[props.symbol2]['label']}
        </div>&nbsp;&nbsp;:
       <div >{props.symbol2}</div>
+      <Tooltip id='slider-tooltip' effect='solid' place='top' />
     </StyledSliderContainer>
   );
 }

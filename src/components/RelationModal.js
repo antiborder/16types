@@ -231,30 +231,22 @@ function RelationDescription(props) {
           <p>さらに、一方の第二機能はもう一方の第七機能であるなど、{props.type1}と{props.type2}の心理機能は意識と無意識を逆転した関係にあります。</p>
         </StyledRelationDescription>
       )
-      case 'EXTINGUISHMENT':
-        return (
-          <StyledRelationDescription>
-            <p>{props.type1}の第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。</p>
-            <p>同様に、{props.type1}の第二機能が<ColoredFuncLabel type={props.type1} funcNum={2} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={2} />です。</p>
-            <p>このように、{props.type1}と{props.type2}は同じ領域を得意としていますが、内と外の方向性が反対になっています。</p>
-          </StyledRelationDescription>
-        )      
-        case 'EXTINGUISHMENT':
-          return (
-            <StyledRelationDescription>
-              <p>{props.type1}の第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。</p>
-              <p>同様に、{props.type1}の第二機能が<ColoredFuncLabel type={props.type1} funcNum={2} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={2} />です。</p>
-              <p>このように、{props.type1}と{props.type2}は同じ領域を得意としていますが、内と外の方向性が反対になっています。</p>
-            </StyledRelationDescription>
-          )
-          case 'SUPER_EGO':
-            return (
-              <StyledRelationDescription>
-                <p>{props.type1}の第一機能<ColoredFuncLabel type={props.type1} funcNum={1}/>と第二機能<ColoredFuncLabel type={props.type1} funcNum={2}/>は、{props.type2}側では苦手意識を感じる第三機能と第四機能にあたります。</p>
-                <p>{props.type2}の第一機能<ColoredFuncLabel type={props.type2} funcNum={1}/>と第二機能<ColoredFuncLabel type={props.type2} funcNum={2}/>は、{props.type1}側では苦手意識を感じる第三機能と第四機能にあたります。</p>
-                <p>このような場合に両者はストレスを感じると言われています。</p>
-              </StyledRelationDescription>
-            )
+    case 'EXTINGUISHMENT':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type1}の第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。</p>
+          <p>同様に、{props.type1}の第二機能が<ColoredFuncLabel type={props.type1} funcNum={2} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={2} />です。</p>
+          <p>このように、{props.type1}と{props.type2}は同じ領域を得意としていますが、内と外の方向性が反対になっています。</p>
+        </StyledRelationDescription>
+      )
+    case 'SUPER_EGO':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type1}の第一機能<ColoredFuncLabel type={props.type1} funcNum={1} />と第二機能<ColoredFuncLabel type={props.type1} funcNum={2} />は、{props.type2}側では苦手意識を感じる第三機能と第四機能にあたります。</p>
+          <p>{props.type2}の第一機能<ColoredFuncLabel type={props.type2} funcNum={1} />と第二機能<ColoredFuncLabel type={props.type2} funcNum={2} />は、{props.type1}側では苦手意識を感じる第三機能と第四機能にあたります。</p>
+          <p>このような場合に両者はストレスを感じると言われています。</p>
+        </StyledRelationDescription>
+      )
     case 'CONFLICT':
       return (
         <StyledRelationDescription>

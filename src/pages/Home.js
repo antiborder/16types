@@ -12,6 +12,7 @@ import styled from "styled-components";
 import { relationLabels } from "../relationLabels.js";
 import { typeLabels } from "../typeLabels.js";
 
+
 // typeの詳細。心理機能にホバーした時説明が出る。▼ではなくアイコンを使う
 // 二つの心理機能表の間に矢印を。心理機能の表に数字を入れる。
 // initialModalをマウスオーバーした時に、選択肢の説明が出る。ラベルが出るのは、1クリックした後。
@@ -93,7 +94,7 @@ const StyledInitialModalButton = styled.button`
   text-align: center;
 `;
 
-function InitialModalButton (props) {
+function InitialModalButton(props) {
   return (
     <StyledInitialModalButton onClick={props.onClick}>
       Reset
@@ -105,7 +106,25 @@ const StyledCanvasContainer = styled.div`
   height: 100%;
   width: 100%;
 `;
+const StyledH6 = styled.h6`
+  cursor: pointer;
+  &:hover {
+    .tooltip {
+      visibility: visible;
+    }
+  }
+`;
 
+const StyledTooltip = styled.div`
+  visibility: hidden;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 5px;
+`;
 function Home() {
 
   const InitialValue = () => {
@@ -174,13 +193,13 @@ function Home() {
   };
 
   const handleTypeModalSelect = () => {
-      setTypeModalState('NONE');
+    setTypeModalState('NONE');
   };
   const handleRelationModalSelect = () => {
     setRelationModalState('NONE');
   };
 
-  
+
   const openModal = useCallback(() => {
     setisInitialModalOpen(true);
     setTypeModalState('NONE');
@@ -205,19 +224,19 @@ function Home() {
           relationCenter={relationCenter}
           handleCenterChange={handleModalCenterChange} />
       }
-      {typeModalState!=='NONE' &&      
+      {typeModalState !== 'NONE' &&
         <TypeModal
           type={typeModalState}
           onSelect={handleTypeModalSelect}
-          />
+        />
       }
-      {relationModalState!=='NONE' &&      
+      {relationModalState !== 'NONE' &&
         <RelationModal
           relation={relationModalState}
           onSelect={handleRelationModalSelect}
-          type1={relationModalState.substring(0,4)}
-          type2={relationModalState.substring(5,9)}
-          />
+          type1={relationModalState.substring(0, 4)}
+          type2={relationModalState.substring(5, 9)}
+        />
       }
       <StyledCanvasContainer>
         <Canvas camera={{ position: [0, 0, 20] }}>
@@ -230,20 +249,23 @@ function Home() {
             setTypeModalState={setTypeModalState}
             relationModalState={relationModalState}
             setRelationModalState={setRelationModalState}
-            scale={[2.7,2.7,2.7]}
+            scale={[2.7, 2.7, 2.7]}
           />
           <ambientLight intensity={0.6} />
           <pointLight position={[100, 100, 100]} />
           <OrbitControls />
         </Canvas>
       </StyledCanvasContainer>
-      <h6>16 types</h6>
+      <StyledH6>
+        16 types
+        <StyledTooltip className="tooltip">16 types</StyledTooltip>
+      </StyledH6>
 
       <CenterSelect
         center={center}
         defaultValue=""
         onChange={handleCenterSelectChange} />
-      
+
       < ModeSelect
         center={center}
         onChange={handleModeChange} />
@@ -251,7 +273,7 @@ function Home() {
         Restart
       </InitialModalButton>
     </>
-    
+
   );
 }
 
