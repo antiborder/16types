@@ -11,12 +11,12 @@ body #root {
   background: rgb(183, 179, 181);
   background: linear-gradient(
     117deg,
-    rgba(255, 255, 255, 1) 5%,
-    rgba(189, 188, 189, 0.9556197478991597) 100%
+    rgba(245, 245, 245, 1) 5%,
+    rgba(200, 200, 200, 0.9556197478991597) 100%
   );
 }
 
-h6 {
+.logo {
   position: absolute;
   top: 10%;
   left: 50%;

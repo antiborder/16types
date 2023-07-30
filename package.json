@@ -4,6 +4,9 @@
   "private": true,
   "dependencies": {
     "@babel/core": "^7.22.5",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.2",
     "@react-spring/core": "^9.7.2",
     "@react-spring/shared": "^9.7.2",
     "@react-spring/three": "^9.7.2",
@@ -17,10 +20,13 @@
     "framer-motion-3d": "^10.12.8",
     "meshline": "^3.1.6",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.8.0",
     "react-dom": "^18.2.0",
+    "react-popover": "^0.5.10",
     "react-router-dom": "^6.12.1",
     "react-scripts": "^5.0.1",
     "react-three-fiber": "^6.0.13",
+    "react-tooltip": "^5.18.1",
     "styled-components": "^5.3.11",
     "three": "^0.152.2",
     "web-vitals": "^2.1.4"
