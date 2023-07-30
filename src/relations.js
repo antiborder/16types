@@ -58,7 +58,7 @@ const relations = [
 
     { 'mode': 'CONGENERITY', 'type1': 'INTJ', 'type2': 'INFJ' },
     { 'mode': 'CONGENERITY', 'type1': 'ISTJ', 'type2': 'ISFJ' },
-    { 'mode': 'CONGENERITY', 'type1': 'INTP', 'type2': 'INFP' },
+    { 'mode': 'CONGENERITY', 'type1': 'ISFP', 'type2': 'INFP' },
     { 'mode': 'CONGENERITY', 'type1': 'ENTP', 'type2': 'ENFP' },
     { 'mode': 'CONGENERITY', 'type1': 'ESTP', 'type2': 'ESFP' },
     { 'mode': 'CONGENERITY', 'type1': 'ENFJ', 'type2': 'ESFJ' },

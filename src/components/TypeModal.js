@@ -48,7 +48,7 @@ const StyledTypeModal = styled.div`
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    height:500px;
+    height:600px;
     width:100%;
     margin:0px;
     padding: 0px;

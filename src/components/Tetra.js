@@ -172,11 +172,11 @@ function Relation(props) {
   const direction = props.pos2.clone().sub(props.pos1).normalize();
   const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
   const midpoint =  (props.mode==='REQUEST' || props.mode==='SUPERVISION') 
-    ? props.pos1.clone().divideScalar(0.8).add(props.pos2).divideScalar(1.8/0.8)
+    ? props.pos1.clone().divideScalar(0.8).add(props.pos2).multiplyScalar(0.8).divideScalar(1.8)
     : props.pos1.clone().add(props.pos2).divideScalar(2);
 
   const coneGeometry = new THREE.CylinderGeometry(0, 3*radius, 0.4, 8);
-  const tipPoint = props.pos1.clone().divideScalar(5).add(props.pos2).divideScalar(6/5);
+  const tipPoint = props.pos1.clone().divideScalar(5).add(props.pos2).multiplyScalar(5).divideScalar(6);
 
   const color = relationLabels[props.mode]['color']
     
