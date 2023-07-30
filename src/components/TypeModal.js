@@ -6,6 +6,9 @@ import { getTextColor, getBackgroundColor } from '../colorFunctions.js';
 import { } from '../colorFunctions.js';
 import { getFuncTextColor, getFuncBackgroundColor } from '../colorFunctions.js';
 import { cognitiveFunctionLabels } from '../cognitiveFunctionLabels.js';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+import { Fragment } from 'react';
+
 
 const StyledCloseButton = styled.button`
   position: absolute;
@@ -35,7 +38,7 @@ const StyledTypeModal = styled.div`
   font-size:12px;
   // padding: 20px 4px 20px 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
+  z-index: 200;
   max-width: 320px;
   width: 100%;
   padding:0px;
@@ -96,6 +99,20 @@ const StyledTypeModal = styled.div`
       
     }
 
+    .functionDetailWrapper{
+      display: flex;
+      margin-right:10px;
+      margin-left:10px;
+
+      .functionDetailSquare{
+        border-radius: 10px;
+        border-width: 1px;
+        text-align:center;
+        margin-left:10px;
+        margin-right:10px;
+      }
+    }
+
     button:hover {
       background-color: #0069d9;
     }
@@ -124,7 +141,7 @@ const StyledTypeModal = styled.div`
       td:nth-child(5) {
         color: #888888;
         position: relative;
-        left: -60px;
+        left: -65px;
         top: -22px;
       }      
 
@@ -157,6 +174,33 @@ const StyledTypeModal = styled.div`
 
 `;
 
+const HtmlTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    color: 'rgba(255, 255, 255, 0.87)',
+    top: '-10px',
+    textAlign: 'center', // テキストを中央に配置する
+    zIndex: '300'
+  },
+}));
+
+function FunctionSquare(props) {
+
+  return (
+    <HtmlTooltip
+      title={
+        <Fragment>
+          <big color="inherit">{props.func}&nbsp;:&nbsp;{cognitiveFunctionLabels[props.func]['label']}</big><br />
+          {cognitiveFunctionLabels[props.func]['phrase']}
+        </Fragment>
+      }
+      arrow>
+      <td style={{ color: getFuncTextColor(props.func), backgroundColor: getFuncBackgroundColor(props.func) }}>{props.func}</td>
+    </HtmlTooltip>
+  )
+}
+
 function TypeModal(props) {
 
   const handleSubmit = () => {
@@ -178,22 +222,42 @@ function TypeModal(props) {
         <div className="label2">{typeLabels[props.type]['label2']}</div><br></br>
         <div className="label3">{typeLabels[props.type]['label3']}</div><br></br>
 
-        <hr></hr>
         <div className="symbols" style={{ color: getTextColor(props.type), backgroundColor: getBackgroundColor(props.type) }}>
           <span className='symbol'>{props.type.charAt(0)}</span>&nbsp; : &nbsp;<span className='symbol-label'> {symbols[props.type.charAt(0)]['label']}</span><br></br>
           <span className='symbol'>{props.type.charAt(1)}</span>&nbsp; : &nbsp;<span className='symbol-label'> {symbols[props.type.charAt(1)]['label']}</span><br></br>
           <span className='symbol'>{props.type.charAt(2)}</span> &nbsp;: &nbsp;<span className='symbol-label'> {symbols[props.type.charAt(2)]['label']}</span><br></br>
           <span className='symbol'>{props.type.charAt(3)}</span> &nbsp;: &nbsp;<span className='symbol-label'> {symbols[props.type.charAt(3)]['label']}</span><br></br>
         </div>
-        <hr></hr>
+        <hr/>
         {/* <p className="description"></p>
         <hr></hr> */}
 
         <p>＜{props.type}の心理機能＞</p>
-
-        <div style={{ color: getFuncTextColor(typeLabels[props.type]['func1']) }}>第一機能　{typeLabels[props.type]['func1']}：{cognitiveFunctionLabels[typeLabels[props.type]['func1']]['label']}</div>
-        <div style={{ color: getFuncTextColor(typeLabels[props.type]['func2']) }}>第二機能　{typeLabels[props.type]['func2']}：{cognitiveFunctionLabels[typeLabels[props.type]['func2']]['label']}</div>
-
+        <div className="functionDetailWrapper">
+          <div style={{ width: '50%' }}>
+            <div className="functionDetailSquare" style={{ backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func1']), color: getFuncTextColor(typeLabels[props.type]['func1']) }}>
+              <big>
+                第一機能<br />
+                {typeLabels[props.type]['func1']}：{cognitiveFunctionLabels[typeLabels[props.type]['func1']]['label']}
+              </big>
+            </div>
+            <div style={{width:'80%', margin: 'auto'}}>
+            {cognitiveFunctionLabels[typeLabels[props.type]['func1']]['phrase']}
+            </div>
+          </div>
+          <div style={{ width: '50%' }}>
+            <div className="functionDetailSquare" style={{ backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func2']), color: getFuncTextColor(typeLabels[props.type]['func2']) }}>
+              <big>
+                第二機能<br />
+                {typeLabels[props.type]['func2']}：{cognitiveFunctionLabels[typeLabels[props.type]['func2']]['label']}
+              </big>
+            </div>
+            <div style={{width:'80%', margin: 'auto'}}>
+            {cognitiveFunctionLabels[typeLabels[props.type]['func2']]['phrase']}
+            </div>
+          </div>
+        </div>
+        <hr/>
         <div >
           <table>
             <tbody>
@@ -206,29 +270,30 @@ function TypeModal(props) {
               <tr>
                 <td>得意▲<br />　　▲</td>
                 <td >1</td>
-                <td style={{ color: getFuncTextColor(typeLabels[props.type]['func1']), backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func1']) }}>{typeLabels[props.type]['func1']}</td>
-                <td style={{ color: getFuncTextColor(typeLabels[props.type]['func8']), backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func8']) }}>{typeLabels[props.type]['func8']}</td>
+                <FunctionSquare func={typeLabels[props.type]['func1']} />
+                <FunctionSquare func={typeLabels[props.type]['func8']} />
                 <td>8</td>
+
               </tr>
               <tr>
                 <td></td>
                 <td >2</td>
-                <td style={{ color: getFuncTextColor(typeLabels[props.type]['func2']), backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func2']) }}>{typeLabels[props.type]['func2']}</td>
-                <td style={{ color: getFuncTextColor(typeLabels[props.type]['func7']), backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func7']) }}>{typeLabels[props.type]['func7']}</td>
+                <FunctionSquare func={typeLabels[props.type]['func2']} />
+                <FunctionSquare func={typeLabels[props.type]['func7']} />
                 <td>7</td>
               </tr>
               <tr>
                 <td></td>
                 <td>3</td>
-                <td style={{ color: getFuncTextColor(typeLabels[props.type]['func3']), backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func3']) }}>{typeLabels[props.type]['func3']}</td>
-                <td style={{ color: getFuncTextColor(typeLabels[props.type]['func6']), backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func6']) }}>{typeLabels[props.type]['func6']}</td>
+                <FunctionSquare func={typeLabels[props.type]['func3']} />
+                <FunctionSquare func={typeLabels[props.type]['func6']} />
                 <td>6</td>
               </tr>
               <tr>
                 <td>　　▼<br />苦手▼</td>
                 <td>4</td>
-                <td style={{ color: getFuncTextColor(typeLabels[props.type]['func4']), backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func4']) }}>{typeLabels[props.type]['func4']}</td>
-                <td style={{ color: getFuncTextColor(typeLabels[props.type]['func5']), backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func5']) }}>{typeLabels[props.type]['func5']}</td>
+                <FunctionSquare func={typeLabels[props.type]['func4']} />
+                <FunctionSquare func={typeLabels[props.type]['func5']} />
                 <td>5</td>
               </tr>
               <tr>

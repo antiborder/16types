@@ -36,7 +36,6 @@ const Node = (props) => {
 
   let visible = props.slot === 'XXXX' ? false : true;
 
-
   const { scale } = useSpring({
     scale: hovered ? 1.8 : 1,
     config: config.wobbly,
@@ -67,9 +66,9 @@ const Node = (props) => {
         return 0.8 //5
       case 'OOXO': case 'OXXX': case 'XXOX': case 'OOOO':
         return 0.5 //4
-      case 'OXOO': case 'OXXO': case 'XOOX': case 'XOXX': case 'XOOO': case 'OOOX':
+      case 'OXOO': case 'XOOX': case 'XOXX': case 'XOOO': case 'OOOX':
         return 0.3 //3
-      case 'OXOX': case 'OOXX': case 'XXOO': case 'XOXO':
+      case 'OXOX': case 'OOXX': case 'XXOO': case 'XOXO': case 'OXXO': 
         return 0.2 //2
       case 'XXXO':
         return 0.15 //1
@@ -124,12 +123,12 @@ const Node = (props) => {
 function Link(props) {
   const ref = useRef();
   const lineGeometry = new THREE.BufferGeometry().setFromPoints([props.pos1, props.pos2]);
-  const lineMaterial = new THREE.LineBasicMaterial({ color: "#BBB" });
+  const lineMaterial = new THREE.LineBasicMaterial({ color: "#999" });
 
   return (
     <animated.mesh {...props} geometry={lineGeometry} material={lineMaterial}>
       <line ref={ref} geometry={lineGeometry}>
-        <meshBasicMaterial attach="material" color="#BBB" />
+        <meshBasicMaterial attach="material" color="#999" />
       </line>
     </animated.mesh>
   );
@@ -158,46 +157,13 @@ function Relation(props) {
   const cylinderHeight = (props.mode==='REQUEST' || props.mode==='SUPERVISION') 
     ? props.pos1.distanceTo(props.pos2)-1 
     : props.pos1.distanceTo(props.pos2)-0.3;
-  const base_radius = (mode) => {
-    switch (mode) {
-      case 'DUALITY':
-        return 0.02
-      case 'ACTIVATION':
-        return 0.04
-      case 'SEMI_DUALITY':
-        return 0.04
-      case 'MIRAGE':
-        return 0.04
-      case 'MIRROR':
-        return 0.04
-      case 'COOPERATION':
-        return 0.04
-      case 'CONGENERITY':
-        return 0.04
-      case 'QUASI_IDENTITY':
-        return 0.04
-      case 'EXTINGUISHMENT':
-        return 0.04
-      case 'SUPER_EGO':
-        return 0.04
-      case 'CONFLICT':
-        return 0.04
-      case 'REQUEST':
-        return 0.02
-      case 'SUPERVISION':
-        return 0.02
-      default:
-        return 0.04
-
-    }
-
-  }
+  const base_radius = relationLabels[props.mode]['width']
 
   const [isHovered, setIsHovered] = useState(false);
-  const [radius, setRadius] = useState(base_radius(props.mode));
+  const [radius, setRadius] = useState(base_radius);
 
   const handleHover = (hovered) => {
-    setRadius(hovered ? base_radius(props.mode) + 0.04 : base_radius(props.mode));
+    setRadius(hovered ? base_radius + 0.04 : base_radius);
     setIsHovered(hovered);
     props.onHover(hovered)
   };
@@ -210,45 +176,11 @@ function Relation(props) {
     : props.pos1.clone().add(props.pos2).divideScalar(2);
 
   const coneGeometry = new THREE.CylinderGeometry(0, 3*radius, 0.4, 8);
-  // const arrowMidpoint = 
   const tipPoint = props.pos1.clone().divideScalar(5).add(props.pos2).divideScalar(6/5);
-  // const tipPoint = props.pos1.clone().add(props.pos2).multiplyScalar(0.9);
 
-  const color = (mode) => {
-    switch (mode) {
-      case 'DUALITY':
-        return "#DB6"
-      case 'ACTIVATION':
-        return "#8D8"
-      case 'SEMI_DUALITY':
-        return "#FA7"
-      case 'MIRAGE':
-        return "#D8A"
-      case 'MIRROR':
-        return "#68B"
-      case 'COOPERATION':
-        return "#0AA"
-      case 'CONGENERITY':
-        return "#6DD"
-      case 'QUASI_IDENTITY':
-        return "#A6D"
-      case 'EXTINGUISHMENT':
-        return "#DB6"
-      case 'SUPER_EGO':
-        return "#996"
-      case 'CONFLICT':
-        return "#A99"
-      case 'REQUEST':
-        return "#9A9"
-      case 'SUPERVISION':
-        return "#99A"
-      default:
-        return '#000'
-    }
-
-  }
-
-  const cylinderMaterial = new THREE.MeshBasicMaterial({ color: color(props.mode) });
+  const color = relationLabels[props.mode]['color']
+    
+  const cylinderMaterial = new THREE.MeshBasicMaterial({ color: color });
 
   return (
     <animated.mesh {...props}
@@ -263,7 +195,7 @@ function Relation(props) {
         material={cylinderMaterial}
         position={midpoint}
         quaternion={quaternion}>
-        <meshBasicMaterial attach="material" color={color(props.mode)} />
+        <meshBasicMaterial attach="material" color={color} />
       </mesh>
       {(props.mode ==='REQUEST' || props.mode ==='SUPERVISION') &&(
       <mesh ref={ref}
@@ -271,7 +203,7 @@ function Relation(props) {
         material={cylinderMaterial}
         position={tipPoint}
         quaternion={quaternion}>
-        <meshBasicMaterial attach="material" color={color(props.mode)} />
+        <meshBasicMaterial attach="material" color={color} />
       </mesh>)}
       {isHovered &&
         props.hoveredRelationState.filter((value) => value === true).length <=1 &&      
@@ -297,7 +229,6 @@ function Relation(props) {
 
 function Tetra(props) {
 
-  // const [clickedState, setClickedState] = useState(Array(16).fill(false));
   const [hoveredNodeState, setHoveredNodeState] = useState(Array(16).fill(false));
   const [hoveredRelationState, setHoveredRelationState] = useState(Array(256).fill(false));
 
@@ -375,24 +306,7 @@ function Tetra(props) {
     ref.current.rotation.z += 0.0008;
   });
 
-  const types = [
-    'ISTJ',
-    'ISFJ',
-    'INFJ',
-    'INTJ',
-    'ISTP',
-    'ISFP',
-    'INFP',
-    'INTP',
-    'ESTP',
-    'ESFP',
-    'ENFP',
-    'ENTP',
-    'ESTJ',
-    'ESFJ',
-    'ENFJ',
-    'ENTJ',
-  ];
+  const types = Object.keys(typeLabels)
 
   const handleNodeClick = (type) => {
     if(!props.isInitialModalOpen && props.typeModalState === 'NONE' && props.relationModalState === 'NONE')
@@ -441,7 +355,6 @@ function Tetra(props) {
               onClick={() => handleNodeClick(type)}
               onHover={(hovered) => handleNodeHover(i,hovered)}
               hoveredNodeState={hoveredNodeState}
-              // clicked={clickedState[i]}
               isInitialModalOpen={props.isInitialModalOpen}
               typeModalState={props.typeModalState}
             />

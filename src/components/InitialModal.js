@@ -1,9 +1,12 @@
 // import '../App.css';
 import { useState } from 'react';
 import styled from 'styled-components';
-import {symbols} from "../symbols.js"
+import { symbols } from "../symbols.js"
 import { typeLabels } from '../typeLabels.js';
 import { getBackgroundColor, getTextColor } from '../colorFunctions.js';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import { Fragment } from 'react';
 
 const StyledCloseButton = styled.button`
   position: absolute;
@@ -54,13 +57,23 @@ const StyledSliderContainer = styled.div`
   }
 `;
 
-function SliderContainer(props) {
-  const [value,setValue]=useState(props.value)
+const HtmlTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(() => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    color: 'rgba(255, 255, 255, 0.87)',
+    top: '-10px',
+    textAlign: 'center', // テキストを中央に配置する
+  },
+}));
 
-  const handleChange=(event)=>{
-    if(value===100){
+function SliderContainer(props) {
+  const [value, setValue] = useState(props.value)
+
+  const handleChange = (event) => {
+    if (value === 100) {
       setValue(0);
-    }else{
+    } else {
       setValue(100);
     }
     props.onChange(event)
@@ -68,15 +81,52 @@ function SliderContainer(props) {
 
   return (
     <StyledSliderContainer>
-      <div >{props.symbol1}</div>:&nbsp;&nbsp;
-       <div
-        style={{color: value===0 ? 'black':'rgb(190,190,190)'}} className='label-on' >{symbols[props.symbol1]['label']}
-      </div>
+
+      <div style={{ color: value === 0 ? 'black' : 'rgb(190,190,190)' }}>{props.symbol1}</div>:&nbsp;&nbsp;
+
+      <HtmlTooltip
+        title={
+          <Fragment>
+            <Typography color="inherit">{symbols[props.symbol1]['label']}</Typography>
+            {symbols[props.symbol1]['description1']} <br/>
+            {symbols[props.symbol1]['description2']}
+          </Fragment>
+        }
+        arrow
+      >
+        <div
+          className='label-off'
+          style={{ color: value === 0 ? 'black' : 'rgb(190,190,190)' }}
+        >
+          {symbols[props.symbol1]['label']}
+        </div>
+      </HtmlTooltip>
       <input type="range" min="0" max="100" step="100" value={props.value} onChange={handleChange} />
-      <div
-        className='label-off' style={{color: value===100 ? 'black':'rgb(190,190,190)'}}>{symbols[props.symbol2]['label']}
-       </div>&nbsp;&nbsp;:
-      <div >{props.symbol2}</div>
+      <HtmlTooltip
+        title={
+          <Fragment>
+            <Typography color="inherit">{symbols[props.symbol2]['label']}</Typography>
+            {symbols[props.symbol2]['description1']} <br/>
+            {symbols[props.symbol2]['description2']}
+          </Fragment>
+        }
+        arrow
+      >
+        <div
+          className='label-off'
+          style={{ color: value === 100 ? 'black' : 'rgb(190,190,190)' }}
+        >
+          {symbols[props.symbol2]['label']}
+        </div>
+      </HtmlTooltip>
+        &nbsp;&nbsp;:
+      <div 
+        style={{ color: value === 100 ? 'black' : 'rgb(190,190,190)' }}
+      
+      >
+        {props.symbol2}
+      </div>
+
     </StyledSliderContainer>
   );
 }
@@ -91,8 +141,7 @@ const StyledInitialModal = styled.div`
   border-radius: 10px;
   font-size:12px;
   padding: 20px 4px 8px 4px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
+  z-index: 100;
   max-width: 320px;
   width: 100%;
   text-align: center;
@@ -130,7 +179,7 @@ function InitialModal(props) {
   const [FTValue, setFTValue] = useState(props.center[2] === 'F' ? 0 : 100);
   const [PJValue, setPJValue] = useState(props.center[3] === 'P' ? 0 : 100);
 
-  const getCenter = () =>{
+  const getCenter = () => {
     return (EIValue < 50 ? 'E' : 'I') + (SNValue < 50 ? 'S' : 'N') + (FTValue < 50 ? 'F' : 'T') + (PJValue < 50 ? 'P' : 'J')
   }
 
@@ -145,21 +194,21 @@ function InitialModal(props) {
 
   const handleSNChange = (event) => {
     setSNValue(event.target.value);
-    let newCenter = getCenter().slice(0,1) + (event.target.value < 50 ? 'S' : 'N') + getCenter().slice(2)
+    let newCenter = getCenter().slice(0, 1) + (event.target.value < 50 ? 'S' : 'N') + getCenter().slice(2)
     setCenter(newCenter)
     props.handleCenterChange(newCenter)
   };
 
   const handleFTChange = (event) => {
     setFTValue(event.target.value);
-    let newCenter = getCenter().slice(0,2) + (event.target.value < 50 ? 'F' : 'T') + getCenter().slice(3)
+    let newCenter = getCenter().slice(0, 2) + (event.target.value < 50 ? 'F' : 'T') + getCenter().slice(3)
     setCenter(newCenter)
     props.handleCenterChange(newCenter)
   };
 
   const handlePJChange = (event) => {
     setPJValue(event.target.value);
-    let newCenter = getCenter().slice(0,3) + (event.target.value < 50 ? 'P' : 'J') + getCenter().slice(4)
+    let newCenter = getCenter().slice(0, 3) + (event.target.value < 50 ? 'P' : 'J') + getCenter().slice(4)
     setCenter(newCenter)
     props.handleCenterChange(newCenter)
   };
@@ -174,9 +223,9 @@ function InitialModal(props) {
 
   return (
 
-    <StyledInitialModal 
-      onClick={(event)=>{event.stopPropagation()}}
-      >
+    <StyledInitialModal
+      onClick={(event) => { event.stopPropagation() }}
+    >
       <label htmlFor="center-select">４つの観点から<br></br>性格のタイプを選んでください。</label><br></br><br></br>
 
       <SliderContainer symbol1="E" symbol2="I" value={EIValue} onChange={handleEIChange} />
@@ -186,12 +235,16 @@ function InitialModal(props) {
 
       <div 
         style={{
-          backgroundColor:getBackgroundColor(props.center),
-          color:getTextColor(props.center)
-        }} 
+          visibility: props.isClicked ? 'visible' : 'hidden', 
+          backgroundColor: getBackgroundColor(props.center),
+          color: getTextColor(props.center),
+          opacity:0.6,
+          marginTop:'-5px',
+          marginBottom:'-5px'
+        }}
         className='type'
       >
-        <StyledSelectedValues 
+        <StyledSelectedValues
           onChange={handleCenterChange}
         >
           <div>{EIValue < 50 ? 'E' : 'I'}</div>

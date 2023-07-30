@@ -122,18 +122,13 @@ padding:0px 8px 0px 8px;
     background-color: #0069d9;
   }
 
-
-  .description{
-    width:280px;
-    margin: 0 auto 20px auto;
-  }
-
 `;
 
 const StyledRelationDescription = styled.div`
     margin:0 auto;
     width: 280px;
     text-align:left;
+    font-size: 16px;
     span{
       display: inline-block;
       font-size: 16px;
@@ -231,30 +226,22 @@ function RelationDescription(props) {
           <p>さらに、一方の第二機能はもう一方の第七機能であるなど、{props.type1}と{props.type2}の心理機能は意識と無意識を逆転した関係にあります。</p>
         </StyledRelationDescription>
       )
-      case 'EXTINGUISHMENT':
-        return (
-          <StyledRelationDescription>
-            <p>{props.type1}の第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。</p>
-            <p>同様に、{props.type1}の第二機能が<ColoredFuncLabel type={props.type1} funcNum={2} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={2} />です。</p>
-            <p>このように、{props.type1}と{props.type2}は同じ領域を得意としていますが、内と外の方向性が反対になっています。</p>
-          </StyledRelationDescription>
-        )      
-        case 'EXTINGUISHMENT':
-          return (
-            <StyledRelationDescription>
-              <p>{props.type1}の第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。</p>
-              <p>同様に、{props.type1}の第二機能が<ColoredFuncLabel type={props.type1} funcNum={2} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={2} />です。</p>
-              <p>このように、{props.type1}と{props.type2}は同じ領域を得意としていますが、内と外の方向性が反対になっています。</p>
-            </StyledRelationDescription>
-          )
-          case 'SUPER_EGO':
-            return (
-              <StyledRelationDescription>
-                <p>{props.type1}の第一機能<ColoredFuncLabel type={props.type1} funcNum={1}/>と第二機能<ColoredFuncLabel type={props.type1} funcNum={2}/>は、{props.type2}側では苦手意識を感じる第三機能と第四機能にあたります。</p>
-                <p>{props.type2}の第一機能<ColoredFuncLabel type={props.type2} funcNum={1}/>と第二機能<ColoredFuncLabel type={props.type2} funcNum={2}/>は、{props.type1}側では苦手意識を感じる第三機能と第四機能にあたります。</p>
-                <p>このような場合に両者はストレスを感じると言われています。</p>
-              </StyledRelationDescription>
-            )
+    case 'EXTINGUISHMENT':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type1}の第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。</p>
+          <p>同様に、{props.type1}の第二機能が<ColoredFuncLabel type={props.type1} funcNum={2} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={2} />です。</p>
+          <p>このように、{props.type1}と{props.type2}は同じ領域を得意としていますが、内と外の方向性が反対になっています。</p>
+        </StyledRelationDescription>
+      )
+    case 'SUPER_EGO':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type1}の第一機能<ColoredFuncLabel type={props.type1} funcNum={1} />と第二機能<ColoredFuncLabel type={props.type1} funcNum={2} />は、{props.type2}側では苦手意識を感じる第三機能と第四機能にあたります。</p>
+          <p>{props.type2}の第一機能<ColoredFuncLabel type={props.type2} funcNum={1} />と第二機能<ColoredFuncLabel type={props.type2} funcNum={2} />は、{props.type1}側では苦手意識を感じる第三機能と第四機能にあたります。</p>
+          <p>このような場合に両者はストレスを感じると言われています。</p>
+        </StyledRelationDescription>
+      )
     case 'CONFLICT':
       return (
         <StyledRelationDescription>
@@ -366,62 +353,67 @@ const RoundedSquare2 = ({ size = 2.6, radius = 0.4, color = '#0088ff', opacity =
   );
 };
 
+const FunctionElement = (props) => {
+  return (
+    <>
+      <Text position={[props.x, props.y, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[props.type]['func'+props.funcNum])} anchorX="center" anchorY="middle">
+        {typeLabels[props.type]['func'+props.funcNum]}
+      </Text>
+      <Text position={[props.x-0.6, props.y+0.6, 0.01]} fontSize={0.4} color='#555555' anchorX="center" anchorY="middle">
+        {props.funcNum}
+      </Text>
+      <RoundedSquare2
+        position={[props.x ,props.y, 0]} 
+        color={getFuncPlaneColor(typeLabels[props.type]['func'+props.funcNum])} 
+       >
+       </RoundedSquare2> 
+    </>
+  )
+
+}
 const FunctionGrid = ({ position, type }) => {
   return (
-    <group position={position} rotation={[0, -Math.PI / 6, 0]}>
-      <Text position={[-1, 3, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func1'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func1']}
-      </Text>
-      <RoundedSquare2
-        position={[-1, 3, 0]} color={getFuncPlaneColor(typeLabels[type]['func1'])}
-      ></RoundedSquare2>
-      <Text position={[1, 3, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func8'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func8']}
-      </Text>
-      <RoundedSquare2
-        position={[1, 3, 0]} color={getFuncPlaneColor(typeLabels[type]['func8'])}
-      ></RoundedSquare2>
-
-      <Text position={[-1, 1, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func2'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func2']}
-      </Text>
-      <RoundedSquare2
-        position={[-1, 1, 0]} color={getFuncPlaneColor(typeLabels[type]['func2'])}
-      ></RoundedSquare2>
-      <Text position={[1, 1, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func7'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func7']}
-      </Text>
-      <RoundedSquare2
-        position={[1, 1, 0]} color={getFuncPlaneColor(typeLabels[type]['func7'])}
-      ></RoundedSquare2>
-      <Text position={[-1, -1, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func3'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func3']}
-      </Text>
-      <RoundedSquare2
-        position={[-1, -1, 0]} color={getFuncPlaneColor(typeLabels[type]['func3'])}
-      ></RoundedSquare2>
-      <Text position={[1, -1, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func6'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func6']}
-      </Text>
-      <RoundedSquare2
-        position={[1, -1, 0]} color={getFuncPlaneColor(typeLabels[type]['func6'])}
-      ></RoundedSquare2>
-      <Text position={[-1, -3, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func4'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func4']}
-      </Text>
-      <RoundedSquare2
-        position={[-1, -3, 0]} color={getFuncPlaneColor(typeLabels[type]['func6'])}
-      ></RoundedSquare2>
-      <Text position={[1, -3, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func5'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func5']}
-      </Text>
-      <RoundedSquare2
-        position={[1, -3, 0]} color={getFuncPlaneColor(typeLabels[type]['func5'])}
-      ></RoundedSquare2>
-
+    <group position={position} rotation={[0, -Math.PI / 4, 0]}>
+      <FunctionElement  x={-1} y={3} funcNum={1} type = {type}  />
+      <FunctionElement  x={1} y={3} funcNum={8} type = {type}  /> 
+      <FunctionElement  x={-1} y={1} funcNum={2} type = {type}  />
+      <FunctionElement  x={1} y={1} funcNum={7} type = {type}  />      
+      <FunctionElement  x={-1} y={-1} funcNum={3} type = {type}  />
+      <FunctionElement  x={1} y={-1} funcNum={6} type = {type}  />      
+      <FunctionElement  x={-1} y={-3} funcNum={4} type = {type}  />
+      <FunctionElement  x={1} y={-3} funcNum={5} type = {type}  />      
     </group>
   );
 };
+
+const Connections = (props) => {
+  const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+  const point1 = [-2.5, 3, +0.]
+  const point2 = [2.5, 3, 0.]
+
+  const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+
+    new THREE.Vector3(point1[0], point1[1], point1[2]),
+    new THREE.Vector3(point2[0], point2[1], point2[2]),
+  ]);
+
+  const xAxis = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(-2, 0, 0),
+    new THREE.Vector3(2, 0, 0)
+  ]);
+  const yAxis = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0, -2, 0),
+    new THREE.Vector3(0, 2, 0)
+  ]);
+
+  return (
+    <>
+    <line geometry={lineGeometry} material={lineMaterial} position={[0, 0, 0]} />
+    <line geometry={xAxis} material={lineMaterial} position={[0, 0, 0]} />
+    <line geometry={yAxis} material={lineMaterial} position={[0, 0, 0]} />
+    </>
+  );
+}
 
 const TwoFunctions = (props) => {
   const cameraRef = useRef();
@@ -442,17 +434,21 @@ const TwoFunctions = (props) => {
       style={{ height: '300px' }}
     >
       <color attach="background" args={['#ffffff']} />
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={1.0} />
       <pointLight position={[10, 10, 10]} />
 
       <OrbitControls args={[cameraPosition]} />
       <FunctionGrid
-        position={[-2.5, 0, 0]}
+        position={[-2, 0, 0]}
         type={props.type1}
       />
       <FunctionGrid
-        position={[2.5, 0, 0]}
+        position={[2, 0, 0]}
         type={props.type2}
+      />
+
+      <Connections
+        mode={props.mode}
       />
 
     </Canvas>
