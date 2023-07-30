@@ -122,18 +122,13 @@ padding:0px 8px 0px 8px;
     background-color: #0069d9;
   }
 
-
-  .description{
-    width:280px;
-    margin: 0 auto 20px auto;
-  }
-
 `;
 
 const StyledRelationDescription = styled.div`
     margin:0 auto;
     width: 280px;
     text-align:left;
+    font-size: 16px;
     span{
       display: inline-block;
       font-size: 16px;
@@ -358,62 +353,67 @@ const RoundedSquare2 = ({ size = 2.6, radius = 0.4, color = '#0088ff', opacity =
   );
 };
 
+const FunctionElement = (props) => {
+  return (
+    <>
+      <Text position={[props.x, props.y, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[props.type]['func'+props.funcNum])} anchorX="center" anchorY="middle">
+        {typeLabels[props.type]['func'+props.funcNum]}
+      </Text>
+      <Text position={[props.x-0.6, props.y+0.6, 0.01]} fontSize={0.4} color='#555555' anchorX="center" anchorY="middle">
+        {props.funcNum}
+      </Text>
+      <RoundedSquare2
+        position={[props.x ,props.y, 0]} 
+        color={getFuncPlaneColor(typeLabels[props.type]['func'+props.funcNum])} 
+       >
+       </RoundedSquare2> 
+    </>
+  )
+
+}
 const FunctionGrid = ({ position, type }) => {
   return (
-    <group position={position} rotation={[0, -Math.PI / 6, 0]}>
-      <Text position={[-1, 3, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func1'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func1']}
-      </Text>
-      <RoundedSquare2
-        position={[-1, 3, 0]} color={getFuncPlaneColor(typeLabels[type]['func1'])}
-      ></RoundedSquare2>
-      <Text position={[1, 3, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func8'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func8']}
-      </Text>
-      <RoundedSquare2
-        position={[1, 3, 0]} color={getFuncPlaneColor(typeLabels[type]['func8'])}
-      ></RoundedSquare2>
-
-      <Text position={[-1, 1, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func2'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func2']}
-      </Text>
-      <RoundedSquare2
-        position={[-1, 1, 0]} color={getFuncPlaneColor(typeLabels[type]['func2'])}
-      ></RoundedSquare2>
-      <Text position={[1, 1, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func7'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func7']}
-      </Text>
-      <RoundedSquare2
-        position={[1, 1, 0]} color={getFuncPlaneColor(typeLabels[type]['func7'])}
-      ></RoundedSquare2>
-      <Text position={[-1, -1, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func3'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func3']}
-      </Text>
-      <RoundedSquare2
-        position={[-1, -1, 0]} color={getFuncPlaneColor(typeLabels[type]['func3'])}
-      ></RoundedSquare2>
-      <Text position={[1, -1, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func6'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func6']}
-      </Text>
-      <RoundedSquare2
-        position={[1, -1, 0]} color={getFuncPlaneColor(typeLabels[type]['func6'])}
-      ></RoundedSquare2>
-      <Text position={[-1, -3, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func4'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func4']}
-      </Text>
-      <RoundedSquare2
-        position={[-1, -3, 0]} color={getFuncPlaneColor(typeLabels[type]['func6'])}
-      ></RoundedSquare2>
-      <Text position={[1, -3, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[type]['func5'])} anchorX="center" anchorY="middle">
-        {typeLabels[type]['func5']}
-      </Text>
-      <RoundedSquare2
-        position={[1, -3, 0]} color={getFuncPlaneColor(typeLabels[type]['func5'])}
-      ></RoundedSquare2>
-
+    <group position={position} rotation={[0, -Math.PI / 4, 0]}>
+      <FunctionElement  x={-1} y={3} funcNum={1} type = {type}  />
+      <FunctionElement  x={1} y={3} funcNum={8} type = {type}  /> 
+      <FunctionElement  x={-1} y={1} funcNum={2} type = {type}  />
+      <FunctionElement  x={1} y={1} funcNum={7} type = {type}  />      
+      <FunctionElement  x={-1} y={-1} funcNum={3} type = {type}  />
+      <FunctionElement  x={1} y={-1} funcNum={6} type = {type}  />      
+      <FunctionElement  x={-1} y={-3} funcNum={4} type = {type}  />
+      <FunctionElement  x={1} y={-3} funcNum={5} type = {type}  />      
     </group>
   );
 };
+
+const Connections = (props) => {
+  const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+  const point1 = [-2.5, 3, +0.]
+  const point2 = [2.5, 3, 0.]
+
+  const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+
+    new THREE.Vector3(point1[0], point1[1], point1[2]),
+    new THREE.Vector3(point2[0], point2[1], point2[2]),
+  ]);
+
+  const xAxis = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(-2, 0, 0),
+    new THREE.Vector3(2, 0, 0)
+  ]);
+  const yAxis = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0, -2, 0),
+    new THREE.Vector3(0, 2, 0)
+  ]);
+
+  return (
+    <>
+    <line geometry={lineGeometry} material={lineMaterial} position={[0, 0, 0]} />
+    <line geometry={xAxis} material={lineMaterial} position={[0, 0, 0]} />
+    <line geometry={yAxis} material={lineMaterial} position={[0, 0, 0]} />
+    </>
+  );
+}
 
 const TwoFunctions = (props) => {
   const cameraRef = useRef();
@@ -434,17 +434,21 @@ const TwoFunctions = (props) => {
       style={{ height: '300px' }}
     >
       <color attach="background" args={['#ffffff']} />
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={1.0} />
       <pointLight position={[10, 10, 10]} />
 
       <OrbitControls args={[cameraPosition]} />
       <FunctionGrid
-        position={[-2.5, 0, 0]}
+        position={[-2, 0, 0]}
         type={props.type1}
       />
       <FunctionGrid
-        position={[2.5, 0, 0]}
+        position={[2, 0, 0]}
         type={props.type2}
+      />
+
+      <Connections
+        mode={props.mode}
       />
 
     </Canvas>

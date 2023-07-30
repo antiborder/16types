@@ -1,5 +1,3 @@
-// import '../App.css';
-
 import { Canvas } from "@react-three/fiber"
 import { useState, useCallback } from 'react';
 import { OrbitControls } from '@react-three/drei'
@@ -11,12 +9,13 @@ import { Tetra } from '../components/Tetra.js';
 import styled from "styled-components";
 import { relationLabels } from "../relationLabels.js";
 import { typeLabels } from "../typeLabels.js";
+import { CenterSelectIcon, ModeSelectIcon, ResetIcon } from '../Icons.js';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 
 
-// typeの詳細。心理機能にホバーした時説明が出る。▼ではなくアイコンを使う
-// 二つの心理機能表の間に矢印を。心理機能の表に数字を入れる。
-// initialModalをマウスオーバーした時に、選択肢の説明が出る。ラベルが出るのは、1クリックした後。
-// ランキングや分類のデザインも決めておく。⇨表示、関係、中央、リセット
+// typeModal typeの詳細。▼ではなくアイコンを使う
+// RelationModal 二つの心理機能表の間に矢印を。
+// ControlPane 表示の列を追加。
 // Nodeをダブルクリックで中央に。
 // type名を黒とグレイで色分け。中央はフォントを大きめに。
 // ズーム機能の制限。並行移動の無効化。
@@ -32,14 +31,50 @@ import { typeLabels } from "../typeLabels.js";
 // sourcemap対応
 // 円環の配置も追加。
 
-const StyledCenterSelect = styled.select`
+const HtmlTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    color: 'rgba(255, 255, 255, 0.87)',
+    top: '-10px',
+    textAlign: 'center', // テキストを中央に配置する
+    zIndex: '300'
+  },
+}));
+
+const StyledControlPane = styled.div`
+
+  display: flex;
+  flex-direction: column;
   position: absolute;
-  width:80px;
-  height:20px;
-  top: 0px;
-  left: 0px;
-  text-align: center;
-  background-color: #fff;
+  top: 30px;
+  left: 30px;
+  background-color: white;
+  border-radius: 12px;
+  
+  .controlItemWrapper{
+    top: 8px;
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+    opacity: 0.8;
+  }
+  .controlIconWrapper{
+    margin-top: 4px;
+    margin-left:4px;
+  }
+`;
+
+const StyledCenterSelect = styled.select`
+  width:140px;
+  height:28px;
+  color: #0175FF;
+  background-color: transparent;
+  border:none;
+  font-size:16px;
+  font-weight:bold;
+  text-align:left;
+  margin-top:2px;
 `;
 
 function CenterSelect(props) {
@@ -55,12 +90,17 @@ function CenterSelect(props) {
 }
 
 const StyledModeSelect = styled.select`
-  position: absolute;
-  width:200px;
-  height:20px;
-  top: 0px;
-  left: 80px;
+  width:140px;
+  height:28px;
   text-align: center;
+  color: #0175FF;
+  font-size:16px;
+  border: none;
+  background-color: transparent;
+  text-align:left;
+  font-weight:bold;
+  margin-left: 4px;
+  margin-top:2px;
 `;
 
 function ModeSelect(props) {
@@ -75,30 +115,35 @@ function ModeSelect(props) {
   const relationModes = Object.keys(relationLabels).filter(mode => mode !== 'IDENTITY'); //選択肢用のmodes配列
   return (
     <StyledModeSelect onChange={handleModeChange} value={mode}>
-      <option value='RELATION'>--</option>
+      <option value='RELATION'>--------------</option>
       <option value='CENTER'>{props.center}との関係</option>
       {relationModes.map((mode) => (
-        <option key={mode} value={mode}> {mode} </option>
+        <option key={mode} value={mode}> {relationLabels[mode]['label']}の関係 </option>
       ))}
 
     </StyledModeSelect>
   );
 }
 
-const StyledInitialModalButton = styled.button`
-  position: absolute;
-  width:100px;
-  height:20px;
-  top: 0px;
-  left: 280px;
+const StyledResetButton = styled.button`
+  width:170px;
+  height:28px;
+  background-color: transparent;
   text-align: center;
+  color: #0175FF;
+  border: none;
+  text-align:left;
+  margin-top: 4px;
+  margin-left:-30px;
+  padding-left: 37px;
+  font-weight:bold;
 `;
 
-function InitialModalButton(props) {
+function ResetButton(props) {
   return (
-    <StyledInitialModalButton onClick={props.onClick}>
+    <StyledResetButton onClick={props.onClick}>
       Reset
-    </StyledInitialModalButton>
+    </StyledResetButton>
   );
 }
 
@@ -106,25 +151,66 @@ const StyledCanvasContainer = styled.div`
   height: 100%;
   width: 100%;
 `;
-const StyledH6 = styled.h6`
-  cursor: pointer;
-  &:hover {
-    .tooltip {
-      visibility: visible;
-    }
-  }
-`;
 
-const StyledTooltip = styled.div`
-  visibility: hidden;
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #333;
-  color: #fff;
-  padding: 5px;
-`;
+const ControlPane = (props) => {
+
+  return (
+    !props.isInitialModalOpen &&(
+    <StyledControlPane >
+      <Tooltip placement="right"
+        title={
+          '中央のタイプを選択'
+        }
+        arrow
+      >
+        <div className='controlItemWrapper' >
+          <div className='controlIconWrapper'>
+            <CenterSelectIcon className="controlPanelIcon"></CenterSelectIcon>
+          </div>
+          &nbsp;
+          <CenterSelect
+            center={props.center}
+            defaultValue=""
+            onChange={props.handleCenterSelectChange}
+          />
+        </div>
+      </Tooltip>
+      <div>
+      </div>
+      <Tooltip placement="right"
+        title={
+          '関係の種類を選択'
+        }
+        arrow
+      >
+        <div className='controlItemWrapper' >
+          <div className='controlIconWrapper' >
+            <ModeSelectIcon></ModeSelectIcon>
+          </div>
+          {/* &nbsp; */}
+          <ModeSelect
+            center={props.center}
+            onChange={props.handleModeChange}
+          />
+        </div>
+      </Tooltip>
+      <Tooltip placement="right"
+        title={
+          'リセット'
+        }
+        arrow
+      >
+        <div className='controlItemWrapper'>
+          <div className='controlIconWrapper'>
+            <ResetIcon />
+          </div>
+          <ResetButton onClick={props.openModal}/>
+        </div>
+      </Tooltip>
+    </StyledControlPane>
+    ))
+}
+
 function Home() {
 
   const InitialValue = () => {
@@ -135,6 +221,7 @@ function Home() {
       ['P', 'J']
     ];
 
+
     let initialValue = "";
     for (let i = 0; i < options.length; i++) {
       const choice = options[i][Math.floor(Math.random() * 2)];
@@ -143,6 +230,9 @@ function Home() {
 
     return initialValue;
   };
+
+  const [isInitialModalClicked, setIsInitialModalClicked] = useState(false)
+
   const [center, setCenter] = useState(InitialValue);
 
   const [mode, setMode] = useState("RELATION");
@@ -159,6 +249,7 @@ function Home() {
   const handleModalCenterChange = (newValue) => {
     setCenter(newValue);
     setRelationCenter(newValue)
+    setIsInitialModalClicked(true)
   };
 
   const handleModeChange = (event) => {
@@ -205,6 +296,7 @@ function Home() {
     setTypeModalState('NONE');
     setRelationModalState('NONE');
     setMode("RELATION");
+    setIsInitialModalClicked(false);
   }, [setisInitialModalOpen, setMode]);
 
   //モーダル外をクリックしてもcloseする処理
@@ -222,7 +314,9 @@ function Home() {
           onSelect={handleInitialModalSelect}
           center={center}
           relationCenter={relationCenter}
-          handleCenterChange={handleModalCenterChange} />
+          handleCenterChange={handleModalCenterChange}
+          isClicked={isInitialModalClicked}
+        />
       }
       {typeModalState !== 'NONE' &&
         <TypeModal
@@ -256,22 +350,17 @@ function Home() {
           <OrbitControls />
         </Canvas>
       </StyledCanvasContainer>
-      <StyledH6>
-        16 types
-        <StyledTooltip className="tooltip">16 types</StyledTooltip>
-      </StyledH6>
 
-      <CenterSelect
+      <div className='logo'>
+        {/* 16 types */}
+      </div>
+      <ControlPane
         center={center}
-        defaultValue=""
-        onChange={handleCenterSelectChange} />
-
-      < ModeSelect
-        center={center}
-        onChange={handleModeChange} />
-      <InitialModalButton onClick={openModal}>
-        Restart
-      </InitialModalButton>
+        handleCenterSelectChange={handleCenterSelectChange}
+        handleModeChange={handleModeChange}
+        openModal={openModal}
+        isInitialModalOpen = {isInitialModalOpen}
+      />
     </>
 
   );
