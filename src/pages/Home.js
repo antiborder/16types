@@ -10,37 +10,26 @@ import styled from "styled-components";
 import { relationLabels } from "../relationLabels.js";
 import { typeLabels } from "../typeLabels.js";
 import { CenterSelectIcon, ModeSelectIcon, ResetIcon } from '../Icons.js';
-import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 
 
 // typeModal typeの詳細。▼ではなくアイコンを使う
-// RelationModal 二つの心理機能表の間に矢印を。
-// ControlPane 表示の列を追加。
 // Nodeをダブルクリックで中央に。
+// 　バブル上ホバーで点滅するバグを修正
 // type名を黒とグレイで色分け。中央はフォントを大きめに。
+// RelationModal ２D表示と色を合わせたい。 ズーム機能の制御
 // ズーム機能の制限。並行移動の無効化。
 // タイプの表記（4文字と3文字）
-// 表示を切り替え。分類、ランキングなど、主機能、大分類など。
+// ControlPane 表示の列を追加。表示を切り替え。分類、ランキングなど、主機能、大分類など。
 // 性格分析について（ユング心理学、MBTI、ソシオニクス）
 // 心理機能について
 // 相性の考え方
+// modal外をクリックしたらmodalが閉じる処理
 //　外国語対応
 // Relationの移動を連続アニメーション。球の直径の変更もアニメーション。
 // Restartボタンで Mode SelectがRELATIONになるべき。
-// modal外をクリックしたら閉じる処理はgithub pagesではうまくいかないので諦め。
 // sourcemap対応
 // 円環の配置も追加。
-
-const HtmlTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    color: 'rgba(255, 255, 255, 0.87)',
-    top: '-10px',
-    textAlign: 'center', // テキストを中央に配置する
-    zIndex: '300'
-  },
-}));
 
 const StyledControlPane = styled.div`
 
@@ -51,13 +40,13 @@ const StyledControlPane = styled.div`
   left: 30px;
   background-color: white;
   border-radius: 12px;
+  opacity: 0.8;
   
   .controlItemWrapper{
     top: 8px;
     display: flex;
     flex-direction: row;
     text-align: left;
-    opacity: 0.8;
   }
   .controlIconWrapper{
     margin-top: 4px;

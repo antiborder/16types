@@ -27,7 +27,7 @@ export function getFuncTextColor(symbol){
 }
 
 export function getFuncBackgroundColor(symbol){
-  return hslToRgb(cognitiveFunctionLabels[symbol]['hue'], 0.1, 1)
+  return hslToRgb(cognitiveFunctionLabels[symbol]['hue'], 0.15, 1)
 }
 
 export function getFuncPlaneColor(symbol){

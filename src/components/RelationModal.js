@@ -13,6 +13,66 @@ import { getFuncBackgroundColor } from '../colorFunctions.js';
 import * as THREE from 'three';
 import { symbols } from '../symbols.js';
 
+function RelationModal(props) {
+
+  const getMode = (type1, type2) => {
+    const relation = relations.find(rel => rel.type1 === type1 && rel.type2 === type2);
+    return relation ? relation.mode : null;
+  }
+
+  let mode = getMode(props.type1, props.type2);
+
+  const handleSubmit = () => {
+    props.onSelect();
+  };
+
+  return (
+    <StyledRelationModal
+      onClick={(event) => { event.stopPropagation() }}
+    >
+      <div className='modal-content'>
+        <div className='title'><span className='type' style={{ color: getTextColor(props.type1) }}>{props.type1}</span> と<span className='type' style={{ color: getTextColor(props.type2) }}>{props.type2}</span>:</div><br></br>
+        <div className='relation'><span className='relation-label'>{relationLabels[mode]['label']}</span> の関係</div><br></br>
+        <div className='compatibility'>相性：
+          {Array.from({ length: relationLabels[mode]['compatibility'] }).map((_, index) => (
+            <span className='light-star' key={index}>★</span>
+          ))}
+          {Array.from({ length: 5 - relationLabels[mode]['compatibility'] }).map((_, index) => (
+            <span key={index} className='dark-star'>★</span>
+          ))}
+        </div>
+        <hr></hr>
+
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+          <div className='label-box' style={{ width: "50%", color: getTextColor(props.type1), border: `0.5px solid ${getTextColor(props.type1)}` }}>
+            <div className='row-type' style={{ background: getBackgroundColor(props.type1) }}>{props.type1}</div>
+            <div className='row-label1'>{typeLabels[props.type1]['label1']}</div>
+            {/* <div className='row-label2'>{typeLabels[props.type1]['label2']}</div> */}
+          </div>
+          <div className='label-box' style={{ width: "50%", color: getTextColor(props.type2), border: `0.5px solid ${getTextColor(props.type2)}` }}>
+            <div className='row-type' style={{ background: getBackgroundColor(props.type2) }}>{props.type2}</div>
+            <div className='row-label1'>{typeLabels[props.type2]['label1']}</div>
+            {/* <div className='row-label2'>{typeLabels[props.type2]['label2']}</div> */}
+          </div>
+        </div>
+
+        <TwoFunctions
+          type1={props.type1}
+          type2={props.type2}
+          mode={mode}
+        />
+        <StyledCloseButton onClick={handleSubmit}>&times;</StyledCloseButton>
+        <hr></hr>
+        ＜解説＞
+        <RelationDescription
+          type1={props.type1}
+          type2={props.type2}
+          mode={mode}
+        />
+      </div>
+    </StyledRelationModal>
+  );
+}
 
 const StyledCloseButton = styled.button`
   position: absolute;
@@ -40,7 +100,6 @@ background-color: rgba(255, 255, 255);
 border: 1px solid #ccc;
 border-radius: 10px;
 font-size:12px;
-// padding: 20px 4px 20px 4px;
 box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 z-index: 9999;
 max-width: 320px;
@@ -51,7 +110,7 @@ padding:0px 8px 0px 8px;
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
-    height:500px;
+    height:600px;
     width:100%;
     margin:0px;
     padding: 0px;
@@ -75,21 +134,6 @@ padding:0px 8px 0px 8px;
 
   .relation-label{
     font-size:20px;
-  }
-  .three-chars{
-      margin: 0px 40px 24px 0px;
-      padding:0;
-      text-align: right;
-      line-height:0;
-  }
-  .label1{
-    font-size: 16px;
-  }
-  .label2, .label3 {
-    font-size: 12px;
-    margin:0;
-    padding:0;
-    line-height:12px;
   }
 
   .light-star{
@@ -124,6 +168,19 @@ padding:0px 8px 0px 8px;
 
 `;
 
+function ColoredFuncLabel(props) {
+  return (
+    <span
+      style={{
+        color: getFuncTextColor(typeLabels[props.type]['func' + props.funcNum]),
+        backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func' + props.funcNum])
+      }}>
+      {typeLabels[props.type]['func' + props.funcNum]}
+    </span>
+  )
+
+}
+
 const StyledRelationDescription = styled.div`
     margin:0 auto;
     width: 280px;
@@ -137,21 +194,6 @@ const StyledRelationDescription = styled.div`
       
     }
 `;
-
-function ColoredFuncLabel(props) {
-  console.log(props.type)
-  console.log(props.funcNum)
-  return (
-    <span
-      style={{
-        color: getFuncTextColor(typeLabels[props.type]['func' + props.funcNum]),
-        backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func' + props.funcNum])
-      }}>
-      {typeLabels[props.type]['func' + props.funcNum]}
-    </span>
-  )
-
-}
 
 function RelationDescription(props) {
 
@@ -168,9 +210,9 @@ function RelationDescription(props) {
     case 'ACTIVATION':
       return (
         <StyledRelationDescription>
-          <p>{props.type1}が無意識的に苦手である第六機能<ColoredFuncLabel type={props.type1} funcNum={6} />と第五機能<ColoredFuncLabel type={props.type1} funcNum={5} />を{props.type2}は第一機能と第二機能で補うことができます。</p>
-          <p>また、{props.type2}が無意識的に苦手である第六機能<ColoredFuncLabel type={props.type2} funcNum={6} />と第五機能<ColoredFuncLabel type={props.type2} funcNum={5} />を{props.type1}は第一機能と第二機能で補うことができます。</p>
-          <p>このため{props.type1}と{props.type2}の相性は良いと言われています。</p>
+          <p>{props.type1}が無意識的に苦手である第五機能<ColoredFuncLabel type={props.type1} funcNum={5} />を{props.type2}は第二機能で補うことができます。</p>
+          <p>また、{props.type2}が無意識的に苦手である第五機能<ColoredFuncLabel type={props.type2} funcNum={5} />を{props.type1}は第二機能で補うことができます。</p>
+          <p>第一機能と第六機能も互いに補い合う関係にあります。このため{props.type1}と{props.type2}の相性は良いと言われています。</p>
 
         </StyledRelationDescription>
       )
@@ -187,9 +229,8 @@ function RelationDescription(props) {
       return (
         <StyledRelationDescription>
 
-          <p>{props.type1}の第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />で、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。内と外の違いはありますが、{symbols[typeLabels[props.type1]['func1'].charAt(0)]['label']}という点が共通しています。</p>
-          <p>また、{props.type1}が無意識的に苦手な<ColoredFuncLabel type={props.type1} funcNum={5} />を{props.type2}の第二機能で補い、{props.type2}が無意識的に苦手な<ColoredFuncLabel type={props.type2} funcNum={5} />を{props.type1}の第二機能で補うことができます。</p>
-          <p>このように、{props.type1}と{props.type2}は良好な関係を築きやすいと言えるでしょう。</p>
+          <p>{props.type1}が得意とする第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />で、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。内と外の違いはありますが、{symbols[typeLabels[props.type1]['func1'].charAt(0)]['label']}という点が共通しています。</p>
+          <p>衝突する要素も特に無く、{props.type1}と{props.type2}は違うように見えて意外とウマが合う関係と言えるでしょう。</p>
 
         </StyledRelationDescription>
       );
@@ -231,15 +272,15 @@ function RelationDescription(props) {
         <StyledRelationDescription>
           <p>{props.type1}の第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。</p>
           <p>同様に、{props.type1}の第二機能が<ColoredFuncLabel type={props.type1} funcNum={2} />であるのに対し、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={2} />です。</p>
-          <p>このように、{props.type1}と{props.type2}は同じ領域を得意としていますが、内と外の方向性が反対になっています。</p>
+          <p>{props.type1}と{props.type2}は全ての心理機能にわたり内と外の方向性が反対になっていますが、得意・不得意な分野は同じでるため興味関心は近いでしょう。</p>
         </StyledRelationDescription>
       )
     case 'SUPER_EGO':
       return (
         <StyledRelationDescription>
-          <p>{props.type1}の第一機能<ColoredFuncLabel type={props.type1} funcNum={1} />と第二機能<ColoredFuncLabel type={props.type1} funcNum={2} />は、{props.type2}側では苦手意識を感じる第三機能と第四機能にあたります。</p>
-          <p>{props.type2}の第一機能<ColoredFuncLabel type={props.type2} funcNum={1} />と第二機能<ColoredFuncLabel type={props.type2} funcNum={2} />は、{props.type1}側では苦手意識を感じる第三機能と第四機能にあたります。</p>
-          <p>このような場合に両者はストレスを感じると言われています。</p>
+          <p>{props.type1}が得意とする第一機能<ColoredFuncLabel type={props.type1} funcNum={1} />と第二機能<ColoredFuncLabel type={props.type1} funcNum={2} />は、{props.type2}側が苦手意識を感じる第三機能と第四機能にあたります。</p>
+          <p>{props.type2}が得意とする第一機能<ColoredFuncLabel type={props.type2} funcNum={1} />と第二機能<ColoredFuncLabel type={props.type2} funcNum={2} />は、{props.type1}側が苦手意識を感じる第三機能と第四機能にあたります。</p>
+          <p>このような場合には、両者はストレスを感じると言われています。</p>
         </StyledRelationDescription>
       )
     case 'CONFLICT':
@@ -247,7 +288,7 @@ function RelationDescription(props) {
         <StyledRelationDescription>
           <p>{props.type1}が強い苦手意識を持つ{typeLabels[props.type1]['func5']}が{props.type2}の第一機能となっており、このような場合には{props.type1}にストレスがかかると言われています。</p>
           <p>同様に、{props.type2}が強い苦手意識を持つ{typeLabels[props.type2]['func5']}は{props.type1}の第一機能なので、{props.type2}にもストレスがかかると言われています。</p>
-          <p>このように、互いにストレスを感じる関係とされています。</p>
+          <p>このように互いにストレスを感じる関係とされています。</p>
         </StyledRelationDescription>
       )
 
@@ -259,160 +300,19 @@ function RelationDescription(props) {
           <p>このため、{props.type2}側が{props.type1}側を一方的に求める非対称な関係となっています。</p>
         </StyledRelationDescription>
       )
+    case 'SUPERVISION':
+      return (
+        <StyledRelationDescription>
+          <p>{props.type2}は第四機能<ColoredFuncLabel type={props.type2} funcNum={4} />に苦手意識を持っているため、<ColoredFuncLabel type={props.type2} funcNum={4} />を第一機能に持つ{props.type1}に対してストレスを感じます。</p>
+          <p>ところが、{props.type2}の第一機能<ColoredFuncLabel type={props.type2} funcNum={1} />は{props.type1}にとって第二機能にあたるため、{props.type1}は{props.type2}に興味を持ちます。</p>
+          <p>この結果、{props.type1}側が近づこうとしても{props.type2}側は距離を置こうとする非対称な関係になると言われています。</p>
+        </StyledRelationDescription>
+      )
     default:
 
 
   }
 
-}
-function RelationModal(props) {
-
-  const getMode = (type1, type2) => {
-    const relation = relations.find(rel => rel.type1 === type1 && rel.type2 === type2);
-    return relation ? relation.mode : null;
-  }
-
-  let mode = getMode(props.type1, props.type2);
-
-  const handleSubmit = () => {
-    props.onSelect();
-  };
-
-  return (
-
-    <StyledRelationModal
-      onClick={(event) => { event.stopPropagation() }}
-    >
-      <div className='modal-content'>
-        <div className='title'><span className='type' style={{ color: getTextColor(props.type1) }}>{props.type1}</span> と<span className='type' style={{ color: getTextColor(props.type2) }}>{props.type2}</span>:</div><br></br>
-        <div className='relation'><span className='relation-label'>{relationLabels[mode]['label']}</span> の関係</div><br></br>
-        <div className='compatibility'>相性：
-          {Array.from({ length: relationLabels[mode]['compatibility'] }).map((_, index) => (
-            <span className='light-star' key={index}>★</span>
-          ))}
-          {Array.from({ length: 5 - relationLabels[mode]['compatibility'] }).map((_, index) => (
-            <span key={index} className='dark-star'>★</span>
-          ))}
-        </div>
-        <hr></hr>
-
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-          <div className='label-box' style={{ width: "50%", color: getTextColor(props.type1), border: `0.5px solid ${getTextColor(props.type1)}` }}>
-            <div className='row-type' style={{ background: getBackgroundColor(props.type1) }}>{props.type1}</div>
-            <div className='row-label1'>{typeLabels[props.type1]['label1']}</div>
-            {/* <div className='row-label2'>{typeLabels[props.type1]['label2']}</div> */}
-          </div>
-          <div className='label-box' style={{ width: "50%", color: getTextColor(props.type2), border: `0.5px solid ${getTextColor(props.type2)}` }}>
-            <div className='row-type' style={{ background: getBackgroundColor(props.type2) }}>{props.type2}</div>
-            <div className='row-label1'>{typeLabels[props.type2]['label1']}</div>
-            {/* <div className='row-label2'>{typeLabels[props.type2]['label2']}</div> */}
-          </div>
-        </div>
-
-        <TwoFunctions
-          type1={props.type1}
-          type2={props.type2}
-        />
-        <StyledCloseButton onClick={handleSubmit}>&times;</StyledCloseButton>
-        <hr></hr>
-        ＜解説＞
-        <RelationDescription
-          type1={props.type1}
-          type2={props.type2}
-          mode={mode}
-        />
-
-      </div>
-    </StyledRelationModal>
-  );
-}
-
-const RoundedSquare2 = ({ size = 2.6, radius = 0.4, color = '#0088ff', opacity = 0.1, ...props }) => {
-  const shape = new THREE.Shape();
-  const x = size / 2 - radius;
-  const y = size / 2 - radius;
-
-  // ポリゴンの形状を作成
-  shape.moveTo(-x, -y + radius);
-  shape.quadraticCurveTo(-x, -y, -x + radius, -y);
-  shape.lineTo(x - radius, -y);
-  shape.quadraticCurveTo(x, -y, x, -y + radius);
-  shape.lineTo(x, y - radius);
-  shape.quadraticCurveTo(x, y, x - radius, y);
-  shape.lineTo(-x + radius, y);
-  shape.quadraticCurveTo(-x, y, -x, y - radius);
-  shape.lineTo(-x, -y + radius);
-
-  // ポリゴンをShapeGeometryで描画
-  const geometry = new THREE.ShapeGeometry(shape);
-
-  // オブジェクトを描画
-  const material = new THREE.MeshStandardMaterial({ color: new THREE.Color(color), transparent: true, opacity });
-  return (
-    <mesh geometry={geometry} material={material} {...props} />
-  );
-};
-
-const FunctionElement = (props) => {
-  return (
-    <>
-      <Text position={[props.x, props.y, 0.01]} fontSize={1.0} color={getFuncTextColor(typeLabels[props.type]['func'+props.funcNum])} anchorX="center" anchorY="middle">
-        {typeLabels[props.type]['func'+props.funcNum]}
-      </Text>
-      <Text position={[props.x-0.6, props.y+0.6, 0.01]} fontSize={0.4} color='#555555' anchorX="center" anchorY="middle">
-        {props.funcNum}
-      </Text>
-      <RoundedSquare2
-        position={[props.x ,props.y, 0]} 
-        color={getFuncPlaneColor(typeLabels[props.type]['func'+props.funcNum])} 
-       >
-       </RoundedSquare2> 
-    </>
-  )
-
-}
-const FunctionGrid = ({ position, type }) => {
-  return (
-    <group position={position} rotation={[0, -Math.PI / 4, 0]}>
-      <FunctionElement  x={-1} y={3} funcNum={1} type = {type}  />
-      <FunctionElement  x={1} y={3} funcNum={8} type = {type}  /> 
-      <FunctionElement  x={-1} y={1} funcNum={2} type = {type}  />
-      <FunctionElement  x={1} y={1} funcNum={7} type = {type}  />      
-      <FunctionElement  x={-1} y={-1} funcNum={3} type = {type}  />
-      <FunctionElement  x={1} y={-1} funcNum={6} type = {type}  />      
-      <FunctionElement  x={-1} y={-3} funcNum={4} type = {type}  />
-      <FunctionElement  x={1} y={-3} funcNum={5} type = {type}  />      
-    </group>
-  );
-};
-
-const Connections = (props) => {
-  const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
-  const point1 = [-2.5, 3, +0.]
-  const point2 = [2.5, 3, 0.]
-
-  const lineGeometry = new THREE.BufferGeometry().setFromPoints([
-
-    new THREE.Vector3(point1[0], point1[1], point1[2]),
-    new THREE.Vector3(point2[0], point2[1], point2[2]),
-  ]);
-
-  const xAxis = new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(-2, 0, 0),
-    new THREE.Vector3(2, 0, 0)
-  ]);
-  const yAxis = new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(0, -2, 0),
-    new THREE.Vector3(0, 2, 0)
-  ]);
-
-  return (
-    <>
-    <line geometry={lineGeometry} material={lineMaterial} position={[0, 0, 0]} />
-    <line geometry={xAxis} material={lineMaterial} position={[0, 0, 0]} />
-    <line geometry={yAxis} material={lineMaterial} position={[0, 0, 0]} />
-    </>
-  );
 }
 
 const TwoFunctions = (props) => {
@@ -449,9 +349,199 @@ const TwoFunctions = (props) => {
 
       <Connections
         mode={props.mode}
+        type1={props.type1}
+        type2={props.type2}
       />
 
     </Canvas>
   );
 };
+
+const FunctionGrid = ({ position, type }) => {
+  return (
+    <group position={position} rotation={[0, -Math.PI / 4, 0]}>
+      <Text 
+      position={[0,4.2,0]}
+      fontSize={0.7}
+      color={ '#777777'}
+      >
+        {type}
+      </Text>
+      <FunctionElement x={-1} y={3} funcNum={1} type={type} />
+      <FunctionElement x={1} y={3} funcNum={8} type={type} />
+      <FunctionElement x={-1} y={1} funcNum={2} type={type} />
+      <FunctionElement x={1} y={1} funcNum={7} type={type} />
+      <FunctionElement x={-1} y={-1} funcNum={3} type={type} />
+      <FunctionElement x={1} y={-1} funcNum={6} type={type} />
+      <FunctionElement x={-1} y={-3} funcNum={4} type={type} />
+      <FunctionElement x={1} y={-3} funcNum={5} type={type} />
+    </group>
+  );
+};
+
+const FunctionElement = (props) => {
+  return (
+    <>
+      <Text
+        position={[props.x, props.y, 0.01]}
+        fontSize={1.0}
+        color={getFuncTextColor(typeLabels[props.type]['func' + props.funcNum])}
+        anchorX="center"
+        anchorY="middle">
+        {typeLabels[props.type]['func' + props.funcNum]}
+      </Text>
+      <Text
+        position={[props.x - 0.6, props.y + 0.6, 0.01]}
+        fontSize={0.4}
+        color='#555555'
+        anchorX="center" anchorY="middle">
+        {props.funcNum}
+      </Text>
+      <RoundedSquare
+        position={[props.x, props.y, 0]}
+        color={getFuncPlaneColor(typeLabels[props.type]['func' + props.funcNum])}
+      >
+      </RoundedSquare>
+    </>
+  )
+}
+
+const RoundedSquare = ({ size = 2.6, radius = 0.4, color = '#0088ff', opacity = 0.2, ...props }) => {
+  const shape = new THREE.Shape();
+  const x = size / 2 - radius;
+  const y = size / 2 - radius;
+
+  // ポリゴンの形状を作成
+  shape.moveTo(-x, -y + radius);
+  shape.quadraticCurveTo(-x, -y, -x + radius, -y);
+  shape.lineTo(x - radius, -y);
+  shape.quadraticCurveTo(x, -y, x, -y + radius);
+  shape.lineTo(x, y - radius);
+  shape.quadraticCurveTo(x, y, x - radius, y);
+  shape.lineTo(-x + radius, y);
+  shape.quadraticCurveTo(-x, y, -x, y - radius);
+  shape.lineTo(-x, -y + radius);
+
+  // ポリゴンをShapeGeometryで描画
+  const geometry = new THREE.ShapeGeometry(shape);
+
+  // オブジェクトを描画
+  const material = new THREE.MeshStandardMaterial({ color: new THREE.Color(color), transparent: true, opacity });
+  return (
+    <mesh geometry={geometry} material={material} {...props} />
+  );
+};
+
+const Connections = (props) => {
+  const funcPositions = {
+    'type1': {
+      'func1': [-2 - 1 / Math.sqrt(2), 3, -1 / Math.sqrt(2)],
+      'func8': [-2 + 1 / Math.sqrt(2), 3, +1 / Math.sqrt(2)],
+      'func2': [-2 - 1 / Math.sqrt(2), 1, -1 / Math.sqrt(2)],
+      'func7': [-2 + 1 / Math.sqrt(2), 1, +1 / Math.sqrt(2)],
+      'func3': [-2 - 1 / Math.sqrt(2), -1, -1 / Math.sqrt(2)],
+      'func6': [-2 + 1 / Math.sqrt(2), -1, +1 / Math.sqrt(2)],
+      'func4': [-2 - 1 / Math.sqrt(2), -3, -1 / Math.sqrt(2)],
+      'func5': [-2 + 1 / Math.sqrt(2), -3, +1 / Math.sqrt(2)],
+    },
+    'type2': {
+      'func1': [2 - 1 / Math.sqrt(2), 3, -1 / Math.sqrt(2)],
+      'func8': [2 + 1 / Math.sqrt(2), 3, +1 / Math.sqrt(2)],
+      'func2': [2 - 1 / Math.sqrt(2), 1, -1 / Math.sqrt(2)],
+      'func7': [2 + 1 / Math.sqrt(2), 1, +1 / Math.sqrt(2)],
+      'func3': [2 - 1 / Math.sqrt(2), -1, -1 / Math.sqrt(2)],
+      'func6': [2 + 1 / Math.sqrt(2), -1, +1 / Math.sqrt(2)],
+      'func4': [2 - 1 / Math.sqrt(2), -3, -1 / Math.sqrt(2)],
+      'func5': [2 + 1 / Math.sqrt(2), -3, +1 / Math.sqrt(2)],
+    }
+  }
+
+  let line1type1funcNum
+  let line1type2funcNum
+  let line2type1funcNum
+  let line2type2funcNum
+
+  switch (props.mode) {
+    case 'DUALITY': line1type1funcNum = 5; line1type2funcNum = 1; line2type1funcNum = 1; line2type2funcNum = 5; break
+    case 'ACTIVATION': line1type1funcNum = 5; line1type2funcNum = 2; line2type1funcNum = 2; line2type2funcNum = 5; break
+    case 'SEMI_DUALITY': line1type1funcNum = 5; line1type2funcNum = 1; line2type1funcNum = 1; line2type2funcNum = 5; break
+    case 'MIRAGE': line1type1funcNum = 1; line1type2funcNum = 1; line2type1funcNum = 1; line2type2funcNum = 1; break
+    case 'MIRROR': line1type1funcNum = 1; line1type2funcNum = 2; line2type1funcNum = 2; line2type2funcNum = 1; break
+    case 'COOPERATION': line1type1funcNum = 2; line1type2funcNum = 2; line2type1funcNum = 2; line2type2funcNum = 2; break
+    case 'CONGENERITY': line1type1funcNum = 1; line1type2funcNum = 1; line2type1funcNum = 1; line2type2funcNum = 1; break
+    case 'QUASI_IDENTITY': line1type1funcNum = 1; line1type2funcNum = 8; line2type1funcNum = 8; line2type2funcNum = 1; break
+    case 'EXTINGUISHMENT': line1type1funcNum = 1; line1type2funcNum = 1; line2type1funcNum = 2; line2type2funcNum = 2; break
+    case 'SUPER_EGO': line1type1funcNum = 1; line1type2funcNum = 3; line2type1funcNum = 3; line2type2funcNum = 1; break
+    case 'CONFLICT': line1type1funcNum = 1; line1type2funcNum = 4; line2type1funcNum = 4; line2type2funcNum = 1; break
+    case 'REQUEST': line1type1funcNum = 5; line1type2funcNum = 4; line2type1funcNum = 2; line2type2funcNum = 5; break
+    case 'SUPERVISION': line1type1funcNum = 1; line1type2funcNum = 4; line2type1funcNum = 2; line2type2funcNum = 1; break
+    case 'IDENTITY': line1type1funcNum = 1; line1type2funcNum = 2; line2type1funcNum = 2; line2type2funcNum = 1; break
+  }
+
+  return (
+    <>
+      <Connection
+        start={funcPositions['type1']['func' + line1type1funcNum]}
+        end={funcPositions['type2']['func' + line1type2funcNum]}
+        color={getFuncTextColor(typeLabels[props.type1]['func' + line1type1funcNum])}
+      />
+      <Connection
+        start={funcPositions['type1']['func' + line2type1funcNum]}
+        end={funcPositions['type2']['func' + line2type2funcNum]}
+        color={getFuncTextColor(typeLabels[props.type1]['func' + line2type1funcNum])}
+      />
+    </>
+  );
+}
+
+const Connection = (props) => {
+
+  const start = new THREE.Vector3(...props.start)
+  const end = new THREE.Vector3(...props.end)
+
+  const radius = 0.03
+  const distance = start.distanceTo(end)
+  const cylinderGeometry = new THREE.CylinderGeometry(radius, radius, distance * 0.8, 8);
+  const direction = end.clone().sub(start).normalize();
+  const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
+  const midpoint = start.clone().add(end).divideScalar(2);
+  const cylinderMaterial = new THREE.MeshBasicMaterial({ color: props.color });
+
+  const cone1Geometry = new THREE.CylinderGeometry(0, radius * 3, 0.8, 8);
+  const tip1Point = start.clone().divideScalar(6).add(end).multiplyScalar(6).divideScalar(7);
+  const cone2Geometry = new THREE.CylinderGeometry(radius * 3, 0, 0.8, 8);
+  const tip2Point = start.clone().divideScalar(0.12).add(end).multiplyScalar(0.12).divideScalar(1.12);
+
+
+  return (
+    <>
+      {/* <line geometry={lineGeometry} material={Material} position={midpoint} /> */}
+      <mesh
+        // ref={ref}
+        geometry={cylinderGeometry}
+        material={cylinderMaterial}
+        position={midpoint}
+        quaternion={quaternion}>
+        {/* <meshBasicMaterial attach="material" color={props.color} /> */}
+      </mesh>
+      <mesh
+        // ref={ref}
+        geometry={cone1Geometry}
+        material={cylinderMaterial}
+        position={tip1Point}
+        quaternion={quaternion}>
+        {/* <meshBasicMaterial attach="material" color={props.color} /> */}
+      </mesh>
+      <mesh
+        // ref={ref}
+        geometry={cone2Geometry}
+        material={cylinderMaterial}
+        position={tip2Point}
+        quaternion={quaternion}>
+        {/* <meshBasicMaterial attach="material" color={props.color} /> */}
+      </mesh>
+    </>
+  );
+}
+
 export { RelationModal };
