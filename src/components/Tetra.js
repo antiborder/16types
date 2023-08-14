@@ -2,236 +2,18 @@ import '../App.css';
 import * as THREE from 'three';
 import { useFrame } from "@react-three/fiber"
 import { useRef, useState } from 'react';
-import { config, useSpring, animated } from "@react-spring/three"
-import { Html } from '@react-three/drei'
+import { animated } from "@react-spring/three"
 
-import { relations} from '../relations.js';
-import styled from "styled-components";
-import {typeLabels} from "../typeLabels.js";
-import {relationLabels} from "../relationLabels.js"
-import { getSurfaceColor } from '../colorFunctions.js';
+import { relations } from '../constants/relations.js';
+import { typeLabels } from "../constants/typeLabels.js";
+import  Node  from './Node.js';
+import { Relation} from './Relation.js'
 
-
-const StyledNodeLabel = styled.div`
-  transform: translate(-50%, -10%);
-`;
-
-const StyledNodeBubble = styled.div`
-width: 140px;
-background: #fff;
-border-radius: 0px 20px 20px 20px;
-font-size: 12px;
-.label{
-  display:block;
-  font-size: 12px;
-  text-align: center;
-}
-div{
-  padding: 10px;
-}
-`;
-
-const Node = (props) => {
-  const [hovered, setHovered] = useState(false);
-
-  let visible = props.slot === 'XXXX' ? false : true;
-
-  const { scale } = useSpring({
-    scale: hovered ? 1.8 : 1,
-    config: config.wobbly,
-  });
-
-  const { position } = useSpring({
-    from: { position: [0, 0, 0] },
-    to: { position: [props.position.x, props.position.y, props.position.z] },
-    config: { duration: "500" }
-  });
-  const handleHover = (hovered) => {
-    setHovered(hovered)
-    props.onHover(hovered)
-  };
-
-  const getNodeColor = () => {
-    if (props.slot === 'XXXX') {
-      return "#CCC"
-    } else {
-        return getSurfaceColor(props.type)
-      }
-    
-  }
-
-  const getBaseRadius = () => {
-    switch (props.slot) {
-      case 'XXXX':
-        return 0.8 //5
-      case 'OOXO': case 'OXXX': case 'XXOX': case 'OOOO':
-        return 0.5 //4
-      case 'OXOO': case 'XOOX': case 'XOXX': case 'XOOO': case 'OOOX':
-        return 0.3 //3
-      case 'OXOX': case 'OOXX': case 'XXOO': case 'XOXO': case 'OXXO': 
-        return 0.2 //2
-      case 'XXXO':
-        return 0.15 //1
-      default:
-        return 0.2
-    }
-  }
-
-  return (
-    <animated.mesh
-      {...props}
-      onClick={() => { props.onClick() }}
-      onPointerOver={() => {
-        handleHover(true);
-       }
-     }
-     onPointerOut={() => handleHover(false)}
-      position={position}
-      scale={scale}
-      visible={visible}
-    >
-      <sphereGeometry args={[getBaseRadius(), 32, 16]} />
-      <meshStandardMaterial color={getNodeColor()} />      
-      {!props.isInitialModalOpen && (<Html
-        zIndexRange={[100, 5]} // Z-order range (default=[16777271, 0])
-      >
-        <StyledNodeLabel> 
-          {props.slot === 'XXXX' ? null : props.type}
-        </StyledNodeLabel>  
-      </Html>)}
-      {
-        hovered &&
-        props.hoveredNodeState.filter((value) => value === true).length <=1 &&      
-        (
-          <Html
-            position={[0, 0, 0]} // position relative to the node
-            zIndexRange={[100, 5]}
-          >
-            <StyledNodeBubble>
-              <div>
-                {props.type}：
-                <br></br><span className='label'>{typeLabels[props.type]['label1']}</span>
-              </div>
-            </StyledNodeBubble>
-          </Html>
-        )
-      }
-    </animated.mesh>
-  );
-};
-
-function Link(props) {
-  const ref = useRef();
-  const lineGeometry = new THREE.BufferGeometry().setFromPoints([props.pos1, props.pos2]);
-  const lineMaterial = new THREE.LineBasicMaterial({ color: "#999" });
-
-  return (
-    <animated.mesh {...props} geometry={lineGeometry} material={lineMaterial}>
-      <line ref={ref} geometry={lineGeometry}>
-        <meshBasicMaterial attach="material" color="#999" />
-      </line>
-    </animated.mesh>
-  );
-}
-
-const StyledRelationBubble = styled.div`
-width: 120px;
-background: #fff;
-border-radius: 0px 20px 20px 20px;
-font-size: 12px;
-div{
-  padding: 10px;
-}
-.relation{
-  display: block;
-  text-align: center;
-}
-.label{
-  font-size: 16px;
-}
-`;
-
-function Relation(props) {
-  // const [hovered, setHovered] = useState(false);
-  const ref = useRef();
-  const cylinderHeight = (props.mode==='REQUEST' || props.mode==='SUPERVISION') 
-    ? props.pos1.distanceTo(props.pos2)-1 
-    : props.pos1.distanceTo(props.pos2)-0.3;
-  const base_radius = relationLabels[props.mode]['width']
-
-  const [isHovered, setIsHovered] = useState(false);
-  const [radius, setRadius] = useState(base_radius);
-
-  const handleHover = (hovered) => {
-    setRadius(hovered ? base_radius + 0.04 : base_radius);
-    setIsHovered(hovered);
-    props.onHover(hovered)
-  };
-
-  const cylinderGeometry = new THREE.CylinderGeometry(radius, radius, cylinderHeight, 8);
-  const direction = props.pos2.clone().sub(props.pos1).normalize();
-  const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
-  const midpoint =  (props.mode==='REQUEST' || props.mode==='SUPERVISION') 
-    ? props.pos1.clone().divideScalar(0.8).add(props.pos2).multiplyScalar(0.8).divideScalar(1.8)
-    : props.pos1.clone().add(props.pos2).divideScalar(2);
-
-  const coneGeometry = new THREE.CylinderGeometry(0, 3*radius, 0.4, 8);
-  const tipPoint = props.pos1.clone().divideScalar(5).add(props.pos2).multiplyScalar(5).divideScalar(6);
-
-  const color = relationLabels[props.mode]['color']
-    
-  const cylinderMaterial = new THREE.MeshBasicMaterial({ color: color });
-
-  return (
-    <animated.mesh {...props}
-      onPointerOver={() => {
-         handleHover(true);
-        }
-      }
-      onClick={() => { props.onClick() }}
-      onPointerOut={() => handleHover(false)}>
-      <mesh ref={ref}
-        geometry={cylinderGeometry}
-        material={cylinderMaterial}
-        position={midpoint}
-        quaternion={quaternion}>
-        <meshBasicMaterial attach="material" color={color} />
-      </mesh>
-      {(props.mode ==='REQUEST' || props.mode ==='SUPERVISION') &&(
-      <mesh ref={ref}
-        geometry={coneGeometry}
-        material={cylinderMaterial}
-        position={tipPoint}
-        quaternion={quaternion}>
-        <meshBasicMaterial attach="material" color={color} />
-      </mesh>)}
-      {isHovered &&
-        props.hoveredRelationState.filter((value) => value === true).length <=1 &&      
-        (
-          <Html
-            position={midpoint} // position relative to the node
-            zIndexRange={[100, 5]}
-          >
-            <StyledRelationBubble >
-              <div>
-                {props.type1}と{props.type2}：<br></br>
-                <span className='relation'>
-                <span className='label'>{relationLabels[props.mode]['label']}</span>の関係
-                </span>
-              </div>
-            </StyledRelationBubble>
-          </Html>
-        )
-      }
-    </animated.mesh>
-  );
-}
 
 function Tetra(props) {
 
   const [hoveredNodeState, setHoveredNodeState] = useState(Array(16).fill(false));
   const [hoveredRelationState, setHoveredRelationState] = useState(Array(256).fill(false));
-
   const ref = useRef();
 
   const power = 1
@@ -309,16 +91,16 @@ function Tetra(props) {
   const types = Object.keys(typeLabels)
 
   const handleNodeClick = (type) => {
-    if(!props.isInitialModalOpen && props.typeModalState === 'NONE' && props.relationModalState === 'NONE')
-    props.setTypeModalState(type)
+    if (!props.isInitialModalOpen && props.typeModalState !== type && props.relationModalState === 'NONE')
+      props.setTypeModalState(type)
     props.setRelationModalState('NONE')
   };
 
-  const handleRelationClick = (type1,type2) =>{
-    if(!props.isInitialModalOpen && props.typeModalState === 'NONE'  && props.relationModalState === 'NONE')
-    props.setRelationModalState(type1 + '_' + type2)
+  const handleRelationClick = (type1, type2) => {
+    if (!props.isInitialModalOpen && props.typeModalState === 'NONE' && props.relationModalState === 'NONE')
+      props.setRelationModalState(type1 + '_' + type2)
     props.setTypeModalState('NONE')
-    
+
   };
 
   const handleNodeHover = (index) => {
@@ -347,16 +129,15 @@ function Tetra(props) {
 
         return (
           slot !== "XXXX"
-            ? <Node
+            ? <Node {...props}
               key={i}
               type={type}
               slot={slot}
               position={nodePositions[slot]}
-              onClick={() => handleNodeClick(type)}
-              onHover={(hovered) => handleNodeHover(i,hovered)}
+              onNodeClick={() => handleNodeClick(type)}
+              onNodeDoubleClick={() => { props.onNodeDoubleClick(type) }}
+              onHover={(hovered) => handleNodeHover(i, hovered)}
               hoveredNodeState={hoveredNodeState}
-              isInitialModalOpen={props.isInitialModalOpen}
-              typeModalState={props.typeModalState}
             />
             : ""
         );
@@ -385,8 +166,8 @@ function Tetra(props) {
             pos2={position(type2)}
             type1={type1}
             type2={type2}
-            onHover={(hovered) => handleRelationHover(i,hovered)}
-            onClick={() => handleRelationClick(type1,type2)}
+            onHover={(hovered) => handleRelationHover(i, hovered)}
+            onClick={() => handleRelationClick(type1, type2)}
             hoveredRelationState={hoveredRelationState}
             relationModalState={props.relationModalState}
             isInitialModalOpen={props.isInitialModalOpen}
@@ -399,6 +180,23 @@ function Tetra(props) {
 }
 
 export { Tetra };
+
+
+function Link(props) {
+  // const ref = useRef();
+  const lineGeometry = new THREE.BufferGeometry().setFromPoints([props.pos1, props.pos2]);
+  const lineMaterial = new THREE.LineBasicMaterial({ color: "#999" });
+
+  return (
+    <animated.mesh {...props} geometry={lineGeometry} material={lineMaterial}>
+      <line
+        // ref={ref} 
+        geometry={lineGeometry}>
+        <meshBasicMaterial attach="material" color="#999" />
+      </line>
+    </animated.mesh>
+  );
+}
 
 function compare(str1, str2) {
   let diff = ""
