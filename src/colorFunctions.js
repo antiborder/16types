@@ -1,5 +1,5 @@
-import { cognitiveFunctionLabels } from "./cognitiveFunctionLabels";
-import { typeLabels } from "./typeLabels";
+import { cognitiveFunctionLabels } from "./constants/cognitiveFunctionLabels";
+import { typeLabels } from "./constants/typeLabels";
 
 export function hslToRgb(h, s, v) {
   let f = (n, k=(n+h/60)%6) => v - v*s*Math.max( Math.min(k,4-k,1), 0);     

@@ -11,7 +11,7 @@ const relationLabels = {
     'SUPER_EGO': {'label':"超自我",'compatibility':2, 'width':0.03, 'color':"#B28EA9"},
     'CONFLICT': {'label':"衝突",'compatibility':1, 'width':0.03, 'color':"#B2A98E"},
     'REQUEST': {'label':"  要求",'compatibility':2, 'width':0.03, 'color':"#8EB297"},
-    'SUPERVISION':{'label': "管理",'compatibility':2, 'width':0.03, 'color':"#8E97B2"},
+    'SUPERVISION':{'label': "管理",'compatibility':2, 'width':0.03, 'color':"#7E97C2"},
     'IDENTITY': {'label':"同一",'compatibility':4, 'width':0.04, 'color':"#E55B5B"},
 };
 

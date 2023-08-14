@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { typeLabels } from "../typeLabels.js";
-import { relations } from "../relations.js"
-import { relationLabels } from "../relationLabels.js"
+import { typeLabels } from "../constants/typeLabels.js";
+import { relations } from "../constants/relations.js"
+import { relationLabels } from "../constants/relationLabels.js"
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls } from '@react-three/drei';
 import { Text } from '@react-three/drei';
@@ -11,7 +11,7 @@ import { getFuncTextColor } from '../colorFunctions.js';
 import { getFuncPlaneColor } from '../colorFunctions.js';
 import { getFuncBackgroundColor } from '../colorFunctions.js';
 import * as THREE from 'three';
-import { symbols } from '../symbols.js';
+import { symbols } from '../constants/symbols.js';
 
 function RelationModal(props) {
 
@@ -230,7 +230,7 @@ function RelationDescription(props) {
         <StyledRelationDescription>
 
           <p>{props.type1}が得意とする第一機能が<ColoredFuncLabel type={props.type1} funcNum={1} />で、{props.type2}の第一機能は<ColoredFuncLabel type={props.type2} funcNum={1} />です。内と外の違いはありますが、{symbols[typeLabels[props.type1]['func1'].charAt(0)]['label']}という点が共通しています。</p>
-          <p>衝突する要素も特に無く、{props.type1}と{props.type2}は違うように見えて意外とウマが合う関係と言えるでしょう。</p>
+          <p>衝突する要素も特に無く、{props.type1}と{props.type2}は違うようにみえる割には意外とマッチする関係と言えるでしょう。</p>
 
         </StyledRelationDescription>
       );
@@ -309,8 +309,6 @@ function RelationDescription(props) {
         </StyledRelationDescription>
       )
     default:
-
-
   }
 
 }
@@ -476,6 +474,7 @@ const Connections = (props) => {
     case 'REQUEST': line1type1funcNum = 5; line1type2funcNum = 4; line2type1funcNum = 2; line2type2funcNum = 5; break
     case 'SUPERVISION': line1type1funcNum = 1; line1type2funcNum = 4; line2type1funcNum = 2; line2type2funcNum = 1; break
     case 'IDENTITY': line1type1funcNum = 1; line1type2funcNum = 2; line2type1funcNum = 2; line2type2funcNum = 1; break
+    default: line1type1funcNum = 1; line1type2funcNum = 2; line2type1funcNum = 2; line2type2funcNum = 1; break
   }
 
   return (

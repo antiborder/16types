@@ -48,7 +48,7 @@ const relations = [
     { 'mode': 'MIRROR', 'type1': 'ISFJ', 'type2': 'ESFJ' },
 
     { 'mode': 'COOPERATION', 'type1': 'INTJ', 'type2': 'ISTJ' },
-    { 'mode': 'COOPERATION', 'type1': 'INFP', 'type2': 'ISFP' },
+    { 'mode': 'COOPERATION', 'type1': 'INFP', 'type2': 'INTP' },
     { 'mode': 'COOPERATION', 'type1': 'INFJ', 'type2': 'ISFJ' },
     { 'mode': 'COOPERATION', 'type1': 'ENFP', 'type2': 'ESFP' },
     { 'mode': 'COOPERATION', 'type1': 'ENTP', 'type2': 'ESTP' },
@@ -128,7 +128,7 @@ const relations = [
     { 'mode': 'SUPERVISION', 'type1': 'ESFP', 'type2': 'INFP' },
     { 'mode': 'SUPERVISION', 'type1': 'ENFJ', 'type2': 'INTJ' },
     { 'mode': 'SUPERVISION', 'type1': 'ESFJ', 'type2': 'ISTJ' },
-    { 'mode': 'SUPERVISION', 'type1': 'ENTP', 'type2': 'INFP' },
+    { 'mode': 'SUPERVISION', 'type1': 'INFP', 'type2': 'ENTP' },
     { 'mode': 'SUPERVISION', 'type1': 'ISFP', 'type2': 'ESTP' },
     { 'mode': 'SUPERVISION', 'type1': 'ENTJ', 'type2': 'INFJ' },
     { 'mode': 'SUPERVISION', 'type1': 'ESTJ', 'type2': 'ISFJ' },

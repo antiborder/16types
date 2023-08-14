@@ -1,11 +1,11 @@
 // import '../App.css';
 import styled from 'styled-components';
-import { typeLabels } from "../typeLabels.js";
-import { symbols } from "../symbols.js"
+import { typeLabels } from "../constants/typeLabels.js";
+import { symbols } from "../constants/symbols.js"
 import { getTextColor, getBackgroundColor } from '../colorFunctions.js';
 import { } from '../colorFunctions.js';
 import { getFuncTextColor, getFuncBackgroundColor } from '../colorFunctions.js';
-import { cognitiveFunctionLabels } from '../cognitiveFunctionLabels.js';
+import { cognitiveFunctionLabels } from '../constants/cognitiveFunctionLabels.js';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { Fragment } from 'react';
 
@@ -176,7 +176,7 @@ const StyledTypeModal = styled.div`
 
 const HtmlTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
-))(({ }) => ({
+))(() => ({
   [`& .${tooltipClasses.tooltip}`]: {
     color: 'rgba(255, 255, 255, 0.87)',
     top: '-10px',

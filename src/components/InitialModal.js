@@ -1,12 +1,105 @@
 // import '../App.css';
 import { useState } from 'react';
 import styled from 'styled-components';
-import { symbols } from "../symbols.js"
-import { typeLabels } from '../typeLabels.js';
+import { symbols } from "../constants/symbols.js"
+import { typeLabels } from '../constants/typeLabels.js';
 import { getBackgroundColor, getTextColor } from '../colorFunctions.js';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { Fragment } from 'react';
+
+function InitialModal(props) {
+  const [EIValue, setEIValue] = useState(props.center[0] === 'E' ? 0 : 100);
+  const [SNValue, setSNValue] = useState(props.center[1] === 'S' ? 0 : 100);
+  const [FTValue, setFTValue] = useState(props.center[2] === 'F' ? 0 : 100);
+  const [PJValue, setPJValue] = useState(props.center[3] === 'P' ? 0 : 100);
+
+  const getCenter = () => {
+    return (EIValue < 50 ? 'E' : 'I') + (SNValue < 50 ? 'S' : 'N') + (FTValue < 50 ? 'F' : 'T') + (PJValue < 50 ? 'P' : 'J')
+  }
+
+  const [center, setCenter] = useState(getCenter());
+
+  const handleEIChange = (event) => {
+    setEIValue(event.target.value);
+    let newCenter = (event.target.value < 50 ? 'E' : 'I') + getCenter().slice(1)
+    setCenter(newCenter)
+    props.handleCenterChange(newCenter)
+  };
+
+  const handleSNChange = (event) => {
+    setSNValue(event.target.value);
+    let newCenter = getCenter().slice(0, 1) + (event.target.value < 50 ? 'S' : 'N') + getCenter().slice(2)
+    setCenter(newCenter)
+    props.handleCenterChange(newCenter)
+  };
+
+  const handleFTChange = (event) => {
+    setFTValue(event.target.value);
+    let newCenter = getCenter().slice(0, 2) + (event.target.value < 50 ? 'F' : 'T') + getCenter().slice(3)
+    setCenter(newCenter)
+    props.handleCenterChange(newCenter)
+  };
+
+  const handlePJChange = (event) => {
+    setPJValue(event.target.value);
+    let newCenter = getCenter().slice(0, 3) + (event.target.value < 50 ? 'P' : 'J') + getCenter().slice(4)
+    setCenter(newCenter)
+    props.handleCenterChange(newCenter)
+  };
+
+  const handleSubmit = () => {
+    props.onSelect();
+  };
+
+  const handleCenterChange = (event) => {
+    props.handleCenterChange(center)
+  }
+
+  return (
+
+    <StyledInitialModal
+      onClick={(event) => { event.stopPropagation() }}
+    >
+      <label htmlFor="center-select">４つの観点から<br></br>性格のタイプを選んでください。</label><br></br><br></br>
+
+      <SliderContainer symbol1="E" symbol2="I" value={EIValue} onChange={handleEIChange} />
+      <SliderContainer symbol1="S" symbol2="N" value={SNValue} onChange={handleSNChange} />
+      <SliderContainer symbol1="F" symbol2="T" value={FTValue} onChange={handleFTChange} />
+      <SliderContainer symbol1="P" symbol2="J" value={PJValue} onChange={handlePJChange} />
+
+      <div 
+        style={{
+          visibility: props.isClicked ? 'visible' : 'hidden', 
+          backgroundColor: getBackgroundColor(props.center),
+          color: getTextColor(props.center),
+          opacity:0.6,
+          marginTop:'-5px',
+          marginBottom:'-5px'
+        }}
+        className='type'
+      >
+        <StyledSelectedValues
+          onChange={handleCenterChange}
+        >
+          <div>{EIValue < 50 ? 'E' : 'I'}</div>
+          <div>{SNValue < 50 ? 'S' : 'N'}</div>
+          <div>{FTValue < 50 ? 'F' : 'T'}</div>
+          <div>{PJValue < 50 ? 'P' : 'J'}</div>
+        </StyledSelectedValues>
+        <div className='label'>{typeLabels[props.center]['label1']}</div>
+      </div>
+
+      <StyledCloseButton onClick={handleSubmit}>&times;</StyledCloseButton>
+      <StyledStartButton onClick={handleSubmit}>Start</StyledStartButton>
+
+    </StyledInitialModal>
+
+  );
+}
+
+export { InitialModal };
+
 
 const StyledCloseButton = styled.button`
   position: absolute;
@@ -172,95 +265,3 @@ const StyledSelectedValues = styled.div`
   font-size: 20px;
   padding: 4px;
 `;
-
-function InitialModal(props) {
-  const [EIValue, setEIValue] = useState(props.center[0] === 'E' ? 0 : 100);
-  const [SNValue, setSNValue] = useState(props.center[1] === 'S' ? 0 : 100);
-  const [FTValue, setFTValue] = useState(props.center[2] === 'F' ? 0 : 100);
-  const [PJValue, setPJValue] = useState(props.center[3] === 'P' ? 0 : 100);
-
-  const getCenter = () => {
-    return (EIValue < 50 ? 'E' : 'I') + (SNValue < 50 ? 'S' : 'N') + (FTValue < 50 ? 'F' : 'T') + (PJValue < 50 ? 'P' : 'J')
-  }
-
-  const [center, setCenter] = useState(getCenter());
-
-  const handleEIChange = (event) => {
-    setEIValue(event.target.value);
-    let newCenter = (event.target.value < 50 ? 'E' : 'I') + getCenter().slice(1)
-    setCenter(newCenter)
-    props.handleCenterChange(newCenter)
-  };
-
-  const handleSNChange = (event) => {
-    setSNValue(event.target.value);
-    let newCenter = getCenter().slice(0, 1) + (event.target.value < 50 ? 'S' : 'N') + getCenter().slice(2)
-    setCenter(newCenter)
-    props.handleCenterChange(newCenter)
-  };
-
-  const handleFTChange = (event) => {
-    setFTValue(event.target.value);
-    let newCenter = getCenter().slice(0, 2) + (event.target.value < 50 ? 'F' : 'T') + getCenter().slice(3)
-    setCenter(newCenter)
-    props.handleCenterChange(newCenter)
-  };
-
-  const handlePJChange = (event) => {
-    setPJValue(event.target.value);
-    let newCenter = getCenter().slice(0, 3) + (event.target.value < 50 ? 'P' : 'J') + getCenter().slice(4)
-    setCenter(newCenter)
-    props.handleCenterChange(newCenter)
-  };
-
-  const handleSubmit = () => {
-    props.onSelect();
-  };
-
-  const handleCenterChange = (event) => {
-    props.handleCenterChange(center)
-  }
-
-  return (
-
-    <StyledInitialModal
-      onClick={(event) => { event.stopPropagation() }}
-    >
-      <label htmlFor="center-select">４つの観点から<br></br>性格のタイプを選んでください。</label><br></br><br></br>
-
-      <SliderContainer symbol1="E" symbol2="I" value={EIValue} onChange={handleEIChange} />
-      <SliderContainer symbol1="S" symbol2="N" value={SNValue} onChange={handleSNChange} />
-      <SliderContainer symbol1="F" symbol2="T" value={FTValue} onChange={handleFTChange} />
-      <SliderContainer symbol1="P" symbol2="J" value={PJValue} onChange={handlePJChange} />
-
-      <div 
-        style={{
-          visibility: props.isClicked ? 'visible' : 'hidden', 
-          backgroundColor: getBackgroundColor(props.center),
-          color: getTextColor(props.center),
-          opacity:0.6,
-          marginTop:'-5px',
-          marginBottom:'-5px'
-        }}
-        className='type'
-      >
-        <StyledSelectedValues
-          onChange={handleCenterChange}
-        >
-          <div>{EIValue < 50 ? 'E' : 'I'}</div>
-          <div>{SNValue < 50 ? 'S' : 'N'}</div>
-          <div>{FTValue < 50 ? 'F' : 'T'}</div>
-          <div>{PJValue < 50 ? 'P' : 'J'}</div>
-        </StyledSelectedValues>
-        <div className='label'>{typeLabels[props.center]['label1']}</div>
-      </div>
-
-      <StyledCloseButton onClick={handleSubmit}>&times;</StyledCloseButton>
-      <StyledStartButton onClick={handleSubmit}>Start</StyledStartButton>
-
-    </StyledInitialModal>
-
-  );
-}
-
-export { InitialModal };
