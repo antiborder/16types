@@ -7,28 +7,28 @@ import { InitialModal } from '../components/InitialModal.js';
 import { TypeModal } from '../components/TypeModal.js';
 import { RelationModal } from '../components/RelationModal.js';
 import { Tetra } from '../components/Tetra.js';
-import {ControlPane} from "../components/ControlPane.js"
+import { ControlPane } from "../components/ControlPane.js"
 
 
 // 相性の考え方
-// 心理機能について
-// modal外をクリックしたらmodalが閉じる処理
-// helpページに飛べるように。
-
 // フォント
+
+// modal外をクリックしたらmodalが閉じる処理
+//ヘルプへのリンクは？マークにする
 // relationModal ２D表示と色を合わせたい。 ズーム機能の制御 3Dの背景はグレイ
 // ズーム機能の制限。並行移動の無効化。
+// sourcemap対応
 
-// ControlPaneのラベル切り替えで 分類、ランキングなど、など。
-//　外国語対応
+// ControlPaneのラベル切り替えで 分類、ランキング、アニメでの役どころなど。
+// 外国語対応
 // Relationの移動を連続アニメーション。球の直径の変更もアニメーション。
 // typeModal typeの詳細。▼ではなくアイコンを使う
-// sourcemap対応
-// 円環の配置も追加。
-// タイプの表記（4文字と3文字）3文字表記もタイプによって透過を。
+// タイプのラベル　3文字表記もタイプによって透過を。
 
 
 function Home() {
+
+  const [shape, setShape] = useState('SPHERE')
 
   const InitialValue = () => {
     const options = [
@@ -54,10 +54,24 @@ function Home() {
 
   const [mode, setMode] = useState("RELATION");
   const [relationCenter, setRelationCenter] = useState(center)
-  const [label , setLabel] =useState("MBTI_4")
+  const [label, setLabel] = useState("MBTI_4")
   const [isInitialModalOpen, setisInitialModalOpen] = useState(true);
   const [typeModalState, setTypeModalState] = useState("NONE")
   const [relationModalState, setRelationModalState] = useState("NONE")
+
+  const handleDeform = () => {
+    if (shape === "SPHERE") {
+      setShape("RING");
+      if (mode === "RELATION") setMode("NONE")
+    }
+    else if (shape === "RING") {
+      setShape("SPHERE");
+      if (mode === "NONE"){
+        setMode("RELATION")
+        setRelationCenter(center)
+      }
+    }
+  };
 
   const handleCenterSelectChange = (event) => {
     setCenter(event.target.value);
@@ -116,15 +130,22 @@ function Home() {
     setisInitialModalOpen(true);
     setTypeModalState('NONE');
     setRelationModalState('NONE');
+    setShape("SPHERE")
     setMode("RELATION");
     setIsInitialModalClicked(false);
   }, [setisInitialModalOpen, setMode]);
 
-  const handleNodeDoubleCLick=(type)=>{
+  const handleNodeDoubleCLick = (type) => {
+    setShape("SPHERE")
     setCenter(type)
     setRelationCenter(type)
     // setMode("CENTER")
 
+  }
+  const handleSeeRelation = (mode) => {
+    setMode(mode)
+    setRelationModalState('NONE')
+    setShape("RING")
   }
 
   //モーダル外をクリックしてもcloseする処理
@@ -156,6 +177,7 @@ function Home() {
         <RelationModal
           relation={relationModalState}
           onSelect={handleRelationModalSelect}
+          onSeeRelation={handleSeeRelation}
           type1={relationModalState.substring(0, 4)}
           type2={relationModalState.substring(5, 9)}
         />
@@ -163,10 +185,11 @@ function Home() {
       <StyledCanvasContainer>
         <Canvas camera={{ position: [0, 0, 20] }}>
           <Tetra
+            shape={shape}
             center={center}
             setCenter={setCenter}
             mode={mode}
-            label = {label}
+            label={label}
             onNodeDoubleClick={handleNodeDoubleCLick}
             setMode={setMode}
             relationCenter={relationCenter}
@@ -188,14 +211,16 @@ function Home() {
         {/* 16 types */}
       </div>
       <ControlPane
+        shape={shape}
         center={center}
+        onDeform={handleDeform}
         handleCenterSelectChange={handleCenterSelectChange}
-        mode = {mode}
+        mode={mode}
         handleModeChange={handleModeChange}
-        label = {label}
+        label={label}
         handleLabelChange={handleLabelChange}
         openModal={openModal}
-        isInitialModalOpen = {isInitialModalOpen}
+        isInitialModalOpen={isInitialModalOpen}
       />
     </>
 
