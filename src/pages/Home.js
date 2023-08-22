@@ -1,206 +1,35 @@
 import { Canvas } from "@react-three/fiber"
 import { useState, useCallback } from 'react';
 import { OrbitControls } from '@react-three/drei'
+import styled from "styled-components";
 
+import '../App.css';
 import { InitialModal } from '../components/InitialModal.js';
 import { TypeModal } from '../components/TypeModal.js';
 import { RelationModal } from '../components/RelationModal.js';
 import { Tetra } from '../components/Tetra.js';
-import styled from "styled-components";
-import { relationLabels } from "../relationLabels.js";
-import { typeLabels } from "../typeLabels.js";
-import { CenterSelectIcon, ModeSelectIcon, ResetIcon } from '../Icons.js';
-import Tooltip from '@mui/material/Tooltip';
+import { ControlPane } from "../components/ControlPane.js"
 
 
-// typeModal typeの詳細。▼ではなくアイコンを使う
-// Nodeをダブルクリックで中央に。
-// 　バブル上ホバーで点滅するバグを修正
-// type名を黒とグレイで色分け。中央はフォントを大きめに。
-// RelationModal ２D表示と色を合わせたい。 ズーム機能の制御
-// ズーム機能の制限。並行移動の無効化。
-// タイプの表記（4文字と3文字）
-// ControlPane 表示の列を追加。表示を切り替え。分類、ランキングなど、主機能、大分類など。
-// 性格分析について（ユング心理学、MBTI、ソシオニクス）
-// 心理機能について
 // 相性の考え方
+// フォント
+
 // modal外をクリックしたらmodalが閉じる処理
-//　外国語対応
-// Relationの移動を連続アニメーション。球の直径の変更もアニメーション。
-// Restartボタンで Mode SelectがRELATIONになるべき。
+//ヘルプへのリンクは？マークにする
+// relationModal ２D表示と色を合わせたい。 ズーム機能の制御 3Dの背景はグレイ
+// ズーム機能の制限。並行移動の無効化。
 // sourcemap対応
-// 円環の配置も追加。
 
-const StyledControlPane = styled.div`
+// ControlPaneのラベル切り替えで 分類、ランキング、アニメでの役どころなど。
+// 外国語対応
+// Relationの移動を連続アニメーション。球の直径の変更もアニメーション。
+// typeModal typeの詳細。▼ではなくアイコンを使う
+// タイプのラベル　3文字表記もタイプによって透過を。
 
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 30px;
-  left: 30px;
-  background-color: white;
-  border-radius: 12px;
-  opacity: 0.8;
-  
-  .controlItemWrapper{
-    top: 8px;
-    display: flex;
-    flex-direction: row;
-    text-align: left;
-  }
-  .controlIconWrapper{
-    margin-top: 4px;
-    margin-left:4px;
-  }
-`;
-
-const StyledCenterSelect = styled.select`
-  width:140px;
-  height:28px;
-  color: #0175FF;
-  background-color: transparent;
-  border:none;
-  font-size:16px;
-  font-weight:bold;
-  text-align:left;
-  margin-top:2px;
-`;
-
-function CenterSelect(props) {
-  const types = Object.keys(typeLabels); //選択肢用のtypes配列
-  return (
-    <StyledCenterSelect value={props.center} onChange={props.onChange}>
-
-      {types.map((type) => (
-        <option key={type} value={type}> {type} </option>
-      ))}
-    </StyledCenterSelect>
-  );
-}
-
-const StyledModeSelect = styled.select`
-  width:140px;
-  height:28px;
-  text-align: center;
-  color: #0175FF;
-  font-size:16px;
-  border: none;
-  background-color: transparent;
-  text-align:left;
-  font-weight:bold;
-  margin-left: 4px;
-  margin-top:2px;
-`;
-
-function ModeSelect(props) {
-  const [mode, setMode] = useState(props.mode)
-
-  const handleModeChange = (event) => {
-    const value = event.target.value === 'CENTER' ? 'RELATION' : event.target.value;
-    setMode(value)
-    props.onChange(event, value);
-  };
-
-  const relationModes = Object.keys(relationLabels).filter(mode => mode !== 'IDENTITY'); //選択肢用のmodes配列
-  return (
-    <StyledModeSelect onChange={handleModeChange} value={mode}>
-      <option value='RELATION'>--------------</option>
-      <option value='CENTER'>{props.center}との関係</option>
-      {relationModes.map((mode) => (
-        <option key={mode} value={mode}> {relationLabels[mode]['label']}の関係 </option>
-      ))}
-
-    </StyledModeSelect>
-  );
-}
-
-const StyledResetButton = styled.button`
-  width:170px;
-  height:28px;
-  background-color: transparent;
-  text-align: center;
-  color: #0175FF;
-  border: none;
-  text-align:left;
-  margin-top: 4px;
-  margin-left:-30px;
-  padding-left: 37px;
-  font-weight:bold;
-`;
-
-function ResetButton(props) {
-  return (
-    <StyledResetButton onClick={props.onClick}>
-      Reset
-    </StyledResetButton>
-  );
-}
-
-const StyledCanvasContainer = styled.div`
-  height: 100%;
-  width: 100%;
-`;
-
-const ControlPane = (props) => {
-
-  return (
-    !props.isInitialModalOpen &&(
-    <StyledControlPane >
-      <Tooltip placement="right"
-        title={
-          '中央のタイプを選択'
-        }
-        arrow
-      >
-        <div className='controlItemWrapper' >
-          <div className='controlIconWrapper'>
-            <CenterSelectIcon className="controlPanelIcon"></CenterSelectIcon>
-          </div>
-          &nbsp;
-          <CenterSelect
-            center={props.center}
-            defaultValue=""
-            onChange={props.handleCenterSelectChange}
-          />
-        </div>
-      </Tooltip>
-      <div>
-      </div>
-      <Tooltip placement="right"
-        title={
-          '関係の種類を選択'
-        }
-        arrow
-      >
-        <div className='controlItemWrapper' >
-          <div className='controlIconWrapper' >
-            <ModeSelectIcon></ModeSelectIcon>
-          </div>
-          {/* &nbsp; */}
-          <ModeSelect
-            center={props.center}
-            onChange={props.handleModeChange}
-          />
-        </div>
-      </Tooltip>
-      <Tooltip placement="right"
-        title={
-          'リセット'
-        }
-        arrow
-      >
-        <div className='controlItemWrapper'>
-          <div className='controlIconWrapper'>
-            <ResetIcon />
-          </div>
-          <ResetButton onClick={props.openModal}/>
-        </div>
-      </Tooltip>
-    </StyledControlPane>
-    ))
-}
 
 function Home() {
+
+  const [shape, setShape] = useState('SPHERE')
 
   const InitialValue = () => {
     const options = [
@@ -226,9 +55,24 @@ function Home() {
 
   const [mode, setMode] = useState("RELATION");
   const [relationCenter, setRelationCenter] = useState(center)
+  const [label, setLabel] = useState("MBTI_4")
   const [isInitialModalOpen, setisInitialModalOpen] = useState(true);
   const [typeModalState, setTypeModalState] = useState("NONE")
   const [relationModalState, setRelationModalState] = useState("NONE")
+
+  const handleDeform = () => {
+    if (shape === "SPHERE") {
+      setShape("RING");
+      if (mode === "RELATION") setMode("NONE")
+    }
+    else if (shape === "RING") {
+      setShape("SPHERE");
+      if (mode === "NONE"){
+        setMode("RELATION")
+        setRelationCenter(center)
+      }
+    }
+  };
 
   const handleCenterSelectChange = (event) => {
     setCenter(event.target.value);
@@ -252,6 +96,9 @@ function Home() {
     }
   };
 
+  const handleLabelChange = (event) => {
+    setLabel(event.target.value);
+  };
 
   const centralize = () => {
     const oldCenter = center
@@ -284,9 +131,23 @@ function Home() {
     setisInitialModalOpen(true);
     setTypeModalState('NONE');
     setRelationModalState('NONE');
+    setShape("SPHERE")
     setMode("RELATION");
     setIsInitialModalClicked(false);
   }, [setisInitialModalOpen, setMode]);
+
+  const handleNodeDoubleCLick = (type) => {
+    setShape("SPHERE")
+    setCenter(type)
+    setRelationCenter(type)
+    // setMode("CENTER")
+
+  }
+  const handleSeeRelation = (mode) => {
+    setMode(mode)
+    setRelationModalState('NONE')
+    setShape("RING")
+  }
 
   //モーダル外をクリックしてもcloseする処理
   // useEffect(() => {
@@ -317,6 +178,7 @@ function Home() {
         <RelationModal
           relation={relationModalState}
           onSelect={handleRelationModalSelect}
+          onSeeRelation={handleSeeRelation}
           type1={relationModalState.substring(0, 4)}
           type2={relationModalState.substring(5, 9)}
         />
@@ -324,9 +186,15 @@ function Home() {
       <StyledCanvasContainer>
         <Canvas camera={{ position: [0, 0, 20] }}>
           <Tetra
+            shape={shape}
             center={center}
+            setCenter={setCenter}
             mode={mode}
+            label={label}
+            onNodeDoubleClick={handleNodeDoubleCLick}
+            setMode={setMode}
             relationCenter={relationCenter}
+            setRelationCenter={setRelationCenter}
             isInitialModalOpen={isInitialModalOpen}
             typeModalState={typeModalState}
             setTypeModalState={setTypeModalState}
@@ -344,11 +212,16 @@ function Home() {
         {/* 16 types */}
       </div>
       <ControlPane
+        shape={shape}
         center={center}
+        onDeform={handleDeform}
         handleCenterSelectChange={handleCenterSelectChange}
+        mode={mode}
         handleModeChange={handleModeChange}
+        label={label}
+        handleLabelChange={handleLabelChange}
         openModal={openModal}
-        isInitialModalOpen = {isInitialModalOpen}
+        isInitialModalOpen={isInitialModalOpen}
       />
     </>
 
@@ -373,3 +246,7 @@ const reverse = (type) => {
   return reversedType;
 };
 
+const StyledCanvasContainer = styled.div`
+  height: 100%;
+  width: 100%;
+`;

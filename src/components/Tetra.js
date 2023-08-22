@@ -1,237 +1,21 @@
-import '../App.css';
 import * as THREE from 'three';
 import { useFrame } from "@react-three/fiber"
 import { useRef, useState } from 'react';
-import { config, useSpring, animated } from "@react-spring/three"
-import { Html } from '@react-three/drei'
-
-import { relations} from '../relations.js';
+import { animated } from "@react-spring/three"
+import { Html } from '@react-three/drei';
 import styled from "styled-components";
-import {typeLabels} from "../typeLabels.js";
-import {relationLabels} from "../relationLabels.js"
-import { getSurfaceColor } from '../colorFunctions.js';
 
+import { relations } from '../constants/relations.js';
+import { typeLabels } from "../constants/typeLabels.js";
+import Node from './Node.js';
+import { Relation } from './Relation.js'
+import { getFuncTextColor } from '../colorFunctions.js';
 
-const StyledNodeLabel = styled.div`
-  transform: translate(-50%, -10%);
-`;
-
-const StyledNodeBubble = styled.div`
-width: 140px;
-background: #fff;
-border-radius: 0px 20px 20px 20px;
-font-size: 12px;
-.label{
-  display:block;
-  font-size: 12px;
-  text-align: center;
-}
-div{
-  padding: 10px;
-}
-`;
-
-const Node = (props) => {
-  const [hovered, setHovered] = useState(false);
-
-  let visible = props.slot === 'XXXX' ? false : true;
-
-  const { scale } = useSpring({
-    scale: hovered ? 1.8 : 1,
-    config: config.wobbly,
-  });
-
-  const { position } = useSpring({
-    from: { position: [0, 0, 0] },
-    to: { position: [props.position.x, props.position.y, props.position.z] },
-    config: { duration: "500" }
-  });
-  const handleHover = (hovered) => {
-    setHovered(hovered)
-    props.onHover(hovered)
-  };
-
-  const getNodeColor = () => {
-    if (props.slot === 'XXXX') {
-      return "#CCC"
-    } else {
-        return getSurfaceColor(props.type)
-      }
-    
-  }
-
-  const getBaseRadius = () => {
-    switch (props.slot) {
-      case 'XXXX':
-        return 0.8 //5
-      case 'OOXO': case 'OXXX': case 'XXOX': case 'OOOO':
-        return 0.5 //4
-      case 'OXOO': case 'XOOX': case 'XOXX': case 'XOOO': case 'OOOX':
-        return 0.3 //3
-      case 'OXOX': case 'OOXX': case 'XXOO': case 'XOXO': case 'OXXO': 
-        return 0.2 //2
-      case 'XXXO':
-        return 0.15 //1
-      default:
-        return 0.2
-    }
-  }
-
-  return (
-    <animated.mesh
-      {...props}
-      onClick={() => { props.onClick() }}
-      onPointerOver={() => {
-        handleHover(true);
-       }
-     }
-     onPointerOut={() => handleHover(false)}
-      position={position}
-      scale={scale}
-      visible={visible}
-    >
-      <sphereGeometry args={[getBaseRadius(), 32, 16]} />
-      <meshStandardMaterial color={getNodeColor()} />      
-      {!props.isInitialModalOpen && (<Html
-        zIndexRange={[100, 5]} // Z-order range (default=[16777271, 0])
-      >
-        <StyledNodeLabel> 
-          {props.slot === 'XXXX' ? null : props.type}
-        </StyledNodeLabel>  
-      </Html>)}
-      {
-        hovered &&
-        props.hoveredNodeState.filter((value) => value === true).length <=1 &&      
-        (
-          <Html
-            position={[0, 0, 0]} // position relative to the node
-            zIndexRange={[100, 5]}
-          >
-            <StyledNodeBubble>
-              <div>
-                {props.type}：
-                <br></br><span className='label'>{typeLabels[props.type]['label1']}</span>
-              </div>
-            </StyledNodeBubble>
-          </Html>
-        )
-      }
-    </animated.mesh>
-  );
-};
-
-function Link(props) {
-  const ref = useRef();
-  const lineGeometry = new THREE.BufferGeometry().setFromPoints([props.pos1, props.pos2]);
-  const lineMaterial = new THREE.LineBasicMaterial({ color: "#999" });
-
-  return (
-    <animated.mesh {...props} geometry={lineGeometry} material={lineMaterial}>
-      <line ref={ref} geometry={lineGeometry}>
-        <meshBasicMaterial attach="material" color="#999" />
-      </line>
-    </animated.mesh>
-  );
-}
-
-const StyledRelationBubble = styled.div`
-width: 120px;
-background: #fff;
-border-radius: 0px 20px 20px 20px;
-font-size: 12px;
-div{
-  padding: 10px;
-}
-.relation{
-  display: block;
-  text-align: center;
-}
-.label{
-  font-size: 16px;
-}
-`;
-
-function Relation(props) {
-  // const [hovered, setHovered] = useState(false);
-  const ref = useRef();
-  const cylinderHeight = (props.mode==='REQUEST' || props.mode==='SUPERVISION') 
-    ? props.pos1.distanceTo(props.pos2)-1 
-    : props.pos1.distanceTo(props.pos2)-0.3;
-  const base_radius = relationLabels[props.mode]['width']
-
-  const [isHovered, setIsHovered] = useState(false);
-  const [radius, setRadius] = useState(base_radius);
-
-  const handleHover = (hovered) => {
-    setRadius(hovered ? base_radius + 0.04 : base_radius);
-    setIsHovered(hovered);
-    props.onHover(hovered)
-  };
-
-  const cylinderGeometry = new THREE.CylinderGeometry(radius, radius, cylinderHeight, 8);
-  const direction = props.pos2.clone().sub(props.pos1).normalize();
-  const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction);
-  const midpoint =  (props.mode==='REQUEST' || props.mode==='SUPERVISION') 
-    ? props.pos1.clone().divideScalar(0.8).add(props.pos2).multiplyScalar(0.8).divideScalar(1.8)
-    : props.pos1.clone().add(props.pos2).divideScalar(2);
-
-  const coneGeometry = new THREE.CylinderGeometry(0, 3*radius, 0.4, 8);
-  const tipPoint = props.pos1.clone().divideScalar(5).add(props.pos2).multiplyScalar(5).divideScalar(6);
-
-  const color = relationLabels[props.mode]['color']
-    
-  const cylinderMaterial = new THREE.MeshBasicMaterial({ color: color });
-
-  return (
-    <animated.mesh {...props}
-      onPointerOver={() => {
-         handleHover(true);
-        }
-      }
-      onClick={() => { props.onClick() }}
-      onPointerOut={() => handleHover(false)}>
-      <mesh ref={ref}
-        geometry={cylinderGeometry}
-        material={cylinderMaterial}
-        position={midpoint}
-        quaternion={quaternion}>
-        <meshBasicMaterial attach="material" color={color} />
-      </mesh>
-      {(props.mode ==='REQUEST' || props.mode ==='SUPERVISION') &&(
-      <mesh ref={ref}
-        geometry={coneGeometry}
-        material={cylinderMaterial}
-        position={tipPoint}
-        quaternion={quaternion}>
-        <meshBasicMaterial attach="material" color={color} />
-      </mesh>)}
-      {isHovered &&
-        props.hoveredRelationState.filter((value) => value === true).length <=1 &&      
-        (
-          <Html
-            position={midpoint} // position relative to the node
-            zIndexRange={[100, 5]}
-          >
-            <StyledRelationBubble >
-              <div>
-                {props.type1}と{props.type2}：<br></br>
-                <span className='relation'>
-                <span className='label'>{relationLabels[props.mode]['label']}</span>の関係
-                </span>
-              </div>
-            </StyledRelationBubble>
-          </Html>
-        )
-      }
-    </animated.mesh>
-  );
-}
 
 function Tetra(props) {
 
   const [hoveredNodeState, setHoveredNodeState] = useState(Array(16).fill(false));
   const [hoveredRelationState, setHoveredRelationState] = useState(Array(256).fill(false));
-
   const ref = useRef();
 
   const power = 1
@@ -261,6 +45,35 @@ function Tetra(props) {
     "XXXO": new THREE.Vector3(-3 * l3Ratio, 3 * l3Ratio, 3 * l3Ratio),
 
     "XXXX": null
+  }
+
+  const outerR = 3
+  const innerR = 2
+  const outerZ = 1.5
+  const innerZ = -outerZ
+
+
+  let ringNodePositions = {
+    "ENFJ": new THREE.Vector3(outerR * Math.sin(0), outerR * Math.cos(0), outerZ),
+    "INFP": new THREE.Vector3(innerR * Math.sin(0), innerR * Math.cos(0), innerZ),
+    "ESFJ": new THREE.Vector3(outerR * Math.sin(Math.PI / 4), outerR * Math.cos(Math.PI / 4), outerZ),
+    "ISFP": new THREE.Vector3(innerR * Math.sin(Math.PI / 4), innerR * Math.cos(Math.PI / 4), innerZ),
+
+    "ESFP": new THREE.Vector3(outerR * Math.sin(Math.PI * 2 / 4), outerR * Math.cos(Math.PI * 2 / 4), outerZ),
+    "ISFJ": new THREE.Vector3(innerR * Math.sin(Math.PI * 2 / 4), innerR * Math.cos(Math.PI * 2 / 4), innerZ),
+    "ESTP": new THREE.Vector3(outerR * Math.sin(Math.PI * 3 / 4), outerR * Math.cos(Math.PI * 3 / 4), outerZ),
+    "ISTJ": new THREE.Vector3(innerR * Math.sin(Math.PI * 3 / 4), innerR * Math.cos(Math.PI * 3 / 4), innerZ),
+
+    "ESTJ": new THREE.Vector3(outerR * Math.sin(Math.PI * 4 / 4), outerR * Math.cos(Math.PI * 4 / 4), outerZ),
+    "ISTP": new THREE.Vector3(innerR * Math.sin(Math.PI * 4 / 4), innerR * Math.cos(Math.PI * 4 / 4), innerZ),
+    "ENTJ": new THREE.Vector3(outerR * Math.sin(Math.PI * 5 / 4), outerR * Math.cos(Math.PI * 5 / 4), outerZ),
+    "INTP": new THREE.Vector3(innerR * Math.sin(Math.PI * 5 / 4), innerR * Math.cos(Math.PI * 5 / 4), innerZ),
+
+    "ENTP": new THREE.Vector3(outerR * Math.sin(Math.PI * 6 / 4), outerR * Math.cos(Math.PI * 6 / 4), outerZ),
+    "INTJ": new THREE.Vector3(innerR * Math.sin(Math.PI * 6 / 4), innerR * Math.cos(Math.PI * 6 / 4), innerZ),
+    "ENFP": new THREE.Vector3(outerR * Math.sin(Math.PI * 7 / 4), outerR * Math.cos(Math.PI * 7 / 4), outerZ),
+    "INFJ": new THREE.Vector3(innerR * Math.sin(Math.PI * 7 / 4), innerR * Math.cos(Math.PI * 7 / 4), innerZ),
+
   }
 
   let linkPositions = [
@@ -296,29 +109,33 @@ function Tetra(props) {
     { 'pos1': nodePositions['OOXX'], 'pos2': nodePositions['OXXX'] },
   ]
 
-  const position = (type) => {
-    let diff = compare(type, props.center)
-    return nodePositions[diff]
+  const position = (type, shape) => {
+    if (shape === "SPHERE") {
+      let diff = compare(type, props.center)
+      return nodePositions[diff]
+    } else if (shape === "RING") {
+      return ringNodePositions[type]
+    }
   }
 
   useFrame(() => {
-    ref.current.rotation.x += 0.0004;
-    ref.current.rotation.z += 0.0008;
+    ref.current.rotation.x += 0.0002;
+    ref.current.rotation.z += 0.0004;
   });
 
   const types = Object.keys(typeLabels)
 
   const handleNodeClick = (type) => {
-    if(!props.isInitialModalOpen && props.typeModalState === 'NONE' && props.relationModalState === 'NONE')
-    props.setTypeModalState(type)
+    if (!props.isInitialModalOpen && props.typeModalState !== type && props.relationModalState === 'NONE')
+      props.setTypeModalState(type)
     props.setRelationModalState('NONE')
   };
 
-  const handleRelationClick = (type1,type2) =>{
-    if(!props.isInitialModalOpen && props.typeModalState === 'NONE'  && props.relationModalState === 'NONE')
-    props.setRelationModalState(type1 + '_' + type2)
+  const handleRelationClick = (type1, type2) => {
+    if (!props.isInitialModalOpen && props.typeModalState === 'NONE' && props.relationModalState === 'NONE')
+      props.setRelationModalState(type1 + '_' + type2)
     props.setTypeModalState('NONE')
-    
+
   };
 
   const handleNodeHover = (index) => {
@@ -344,19 +161,18 @@ function Tetra(props) {
       {types.map((type, i) => {
 
         let slot = compare(type, props.center);
-
+        console.log(type)
         return (
-          slot !== "XXXX"
-            ? <Node
+          (slot !== "XXXX" || props.shape === 'RING')
+            ? <Node {...props}
               key={i}
               type={type}
               slot={slot}
-              position={nodePositions[slot]}
-              onClick={() => handleNodeClick(type)}
-              onHover={(hovered) => handleNodeHover(i,hovered)}
+              position={props.shape === 'SPHERE' ? nodePositions[slot] : ringNodePositions[type]}
+              onNodeClick={() => handleNodeClick(type)}
+              onNodeDoubleClick={() => { props.onNodeDoubleClick(type) }}
+              onHover={(hovered) => handleNodeHover(i, hovered)}
               hoveredNodeState={hoveredNodeState}
-              isInitialModalOpen={props.isInitialModalOpen}
-              typeModalState={props.typeModalState}
             />
             : ""
         );
@@ -364,7 +180,7 @@ function Tetra(props) {
       })}
 
       {/* Link components */}
-      {linkPositions.map(({ pos1, pos2 }, i) => (
+      {props.shape === 'SPHERE' && linkPositions.map(({ pos1, pos2 }, i) => (
         <Link key={i} pos1={pos1} pos2={pos2} />
       ))}
 
@@ -375,18 +191,19 @@ function Tetra(props) {
         const isRelatedToXXXX = compare(type1, props.center) === 'XXXX' || compare(type2, props.center) === 'XXXX'
         const isRelatedToCenter = (type1 === props.relationCenter || type2 === props.relationCenter)
 
-        if (!isRelatedToXXXX &&
+        if (
+          !(isRelatedToXXXX && props.shape === 'SPHERE') &&
           (isSameMode || (isRelationMode && isRelatedToCenter))
         ) {
           return <Relation
             key={i}
             mode={mode}
-            pos1={position(type1)}
-            pos2={position(type2)}
+            pos1={position(type1, props.shape)}
+            pos2={position(type2, props.shape)}
             type1={type1}
             type2={type2}
-            onHover={(hovered) => handleRelationHover(i,hovered)}
-            onClick={() => handleRelationClick(type1,type2)}
+            onHover={(hovered) => handleRelationHover(i, hovered)}
+            onClick={() => handleRelationClick(type1, type2)}
             hoveredRelationState={hoveredRelationState}
             relationModalState={props.relationModalState}
             isInitialModalOpen={props.isInitialModalOpen}
@@ -394,11 +211,46 @@ function Tetra(props) {
         }
         return null
       })}
+      {props.shape === "RING" && (<>
+        <FuncText
+          func={'N'}
+          angle={Math.PI * 6.5 / 4}
+        />
+        <FuncText
+          func={'T'}
+          angle={Math.PI * 4.5 / 4}
+        />
+        <FuncText
+          func={'S'}
+          angle={Math.PI * 2.5 / 4}
+        />
+        <FuncText
+          func={'F'}
+          angle={Math.PI * 0.5 / 4}
+        />
+      </>)}
     </animated.mesh>
   );
 }
 
 export { Tetra };
+
+
+function Link(props) {
+  // const ref = useRef();
+  const lineGeometry = new THREE.BufferGeometry().setFromPoints([props.pos1, props.pos2]);
+  const lineMaterial = new THREE.LineBasicMaterial({ color: "#999" });
+
+  return (
+    <animated.mesh {...props} geometry={lineGeometry} material={lineMaterial}>
+      <line
+        // ref={ref} 
+        geometry={lineGeometry}>
+        <meshBasicMaterial attach="material" color="#999" />
+      </line>
+    </animated.mesh>
+  );
+}
 
 function compare(str1, str2) {
   let diff = ""
@@ -411,3 +263,24 @@ function compare(str1, str2) {
   }
   return diff
 }
+
+const FuncText = (props) => {
+  return (
+
+    <Html zIndexRange={[1, 10]}
+      position={[5 * Math.sin(props.angle), 5 * Math.cos(props.angle), 0]}
+    >
+      <StyledFuncText
+        style={{color: getFuncTextColor(props.func + 'e') }}>
+        {props.func}
+      </StyledFuncText>
+    </Html>
+
+  )
+}
+
+const StyledFuncText = styled.div`
+  opacity: 0.2;
+  font-weight: bold;
+  font-size: 48px;
+`;

@@ -2,17 +2,25 @@
   box-sizing: border-box;
 }
 
+
 html,
-body #root {
-  width: 100%;
-  height: 100vh;
+body {
+  height: 100%;
   margin: 0;
   padding: 0;
-  background: rgb(183, 179, 181);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+#root {
+  flex: 1;
   background: linear-gradient(
     117deg,
-    rgba(245, 245, 245, 1) 5%,
-    rgba(200, 200, 200, 0.9556197478991597) 100%
+    rgba(220, 220, 220, 1) 5%,
+    rgba(255, 255, 255, 1) 100%
   );
 }
 
