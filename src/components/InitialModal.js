@@ -1,12 +1,13 @@
-// import '../App.css';
 import { useState } from 'react';
 import styled from 'styled-components';
+import Typography from '@mui/material/Typography';
+import { Fragment } from 'react';
+import { Link } from 'react-router-dom';
+
 import { symbols } from "../constants/symbols.js"
 import { typeLabels } from '../constants/typeLabels.js';
 import { getBackgroundColor, getTextColor } from '../colorFunctions.js';
-import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
-import { Fragment } from 'react';
+import HtmlTooltip from './HtmlTooltip.js';
 
 function InitialModal(props) {
   const [EIValue, setEIValue] = useState(props.center[0] === 'E' ? 0 : 100);
@@ -68,14 +69,14 @@ function InitialModal(props) {
       <SliderContainer symbol1="F" symbol2="T" value={FTValue} onChange={handleFTChange} />
       <SliderContainer symbol1="P" symbol2="J" value={PJValue} onChange={handlePJChange} />
 
-      <div 
+      <div
         style={{
-          visibility: props.isClicked ? 'visible' : 'hidden', 
+          visibility: props.isClicked ? 'visible' : 'hidden',
           backgroundColor: getBackgroundColor(props.center),
           color: getTextColor(props.center),
-          opacity:0.6,
-          marginTop:'-5px',
-          marginBottom:'-5px'
+          opacity: 0.6,
+          marginTop: '-5px',
+          marginBottom: '-5px'
         }}
         className='type'
       >
@@ -91,136 +92,13 @@ function InitialModal(props) {
       </div>
 
       <StyledCloseButton onClick={handleSubmit}>&times;</StyledCloseButton>
-      <StyledStartButton onClick={handleSubmit}>Start</StyledStartButton>
+        <StyledStartButton onClick={handleSubmit}>Start</StyledStartButton>
+        <div style={{textAlign:'right'}}>
+        <Link style={{ marginLeft: 'auto', marginRight: '12px' }} to="/16types/pages/typology" target="_blank" rel="noopener noreferrer">タイプ論とは？</Link>
+        </div>
 
     </StyledInitialModal>
 
-  );
-}
-
-export { InitialModal };
-
-
-const StyledCloseButton = styled.button`
-  position: absolute;
-  width: 35px;
-  height: 35px;
-  top: -15px;
-  right: -15px;
-  background-color: #ccc;
-  border-radius: 20px;
-  border-width: 0px;
-  border-color: #f2f2f2;
-  font-size: 40px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const StyledStartButton = styled.button`
-// position: absolute;
-width: 50px;
-height: 30px;
-bottom: 10px;
-margin: 16px auto;
-background-color: #0575FF;
-border-radius: 10px;
-border: none;
-outline: none;
-font-size: 16px;
-color: white;
-text-align: center;
-`;
-
-const StyledSliderContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-  padding: 5px;
-
-  .label-on{
-    font-size:20px;
-    color: black;
-  }
-  .label-off{
-    font-size:20px;
-    color: gray;
-  }
-`;
-
-const HtmlTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(() => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    color: 'rgba(255, 255, 255, 0.87)',
-    top: '-10px',
-    textAlign: 'center', // テキストを中央に配置する
-  },
-}));
-
-function SliderContainer(props) {
-  const [value, setValue] = useState(props.value)
-
-  const handleChange = (event) => {
-    if (value === 100) {
-      setValue(0);
-    } else {
-      setValue(100);
-    }
-    props.onChange(event)
-  }
-
-  return (
-    <StyledSliderContainer>
-
-      <div style={{ color: value === 0 ? 'black' : 'rgb(190,190,190)' }}>{props.symbol1}</div>:&nbsp;&nbsp;
-
-      <HtmlTooltip
-        title={
-          <Fragment>
-            <Typography color="inherit">{symbols[props.symbol1]['label']}</Typography>
-            {symbols[props.symbol1]['description1']} <br/>
-            {symbols[props.symbol1]['description2']}
-          </Fragment>
-        }
-        arrow
-      >
-        <div
-          className='label-off'
-          style={{ color: value === 0 ? 'black' : 'rgb(190,190,190)' }}
-        >
-          {symbols[props.symbol1]['label']}
-        </div>
-      </HtmlTooltip>
-      <input type="range" min="0" max="100" step="100" value={props.value} onChange={handleChange} />
-      <HtmlTooltip
-        title={
-          <Fragment>
-            <Typography color="inherit">{symbols[props.symbol2]['label']}</Typography>
-            {symbols[props.symbol2]['description1']} <br/>
-            {symbols[props.symbol2]['description2']}
-          </Fragment>
-        }
-        arrow
-      >
-        <div
-          className='label-off'
-          style={{ color: value === 100 ? 'black' : 'rgb(190,190,190)' }}
-        >
-          {symbols[props.symbol2]['label']}
-        </div>
-      </HtmlTooltip>
-        &nbsp;&nbsp;:
-      <div 
-        style={{ color: value === 100 ? 'black' : 'rgb(190,190,190)' }}
-      
-      >
-        {props.symbol2}
-      </div>
-
-    </StyledSliderContainer>
   );
 }
 
@@ -255,6 +133,128 @@ const StyledInitialModal = styled.div`
     background-color: #0069d9;
   }
 `;
+export { InitialModal };
+
+
+const StyledCloseButton = styled.button`
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  top: -15px;
+  right: -15px;
+  background-color: #ccc;
+  border-radius: 20px;
+  border-width: 0px;
+  border-color: #f2f2f2;
+  font-size: 40px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const StyledStartButton = styled.button`
+// position: absolute;
+width: 50px;
+height: 30px;
+bottom: 10px;
+margin: 16px auto 0px;
+background-color: #0575FF;
+border-radius: 10px;
+border: none;
+outline: none;
+font-size: 16px;
+color: white;
+text-align: center;
+`;
+
+const StyledSliderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  padding: 5px;
+
+  input{
+    width:80px;
+  }
+  .label-on{
+    font-size:24px;
+    color: black;
+  }
+  .label-off{
+    font-size:24px;
+    // color: gray;
+  }
+`;
+
+function SliderContainer(props) {
+  const [value, setValue] = useState(props.value)
+
+  const handleChange = (event) => {
+    if (value === 100) {
+      setValue(0);
+    } else {
+      setValue(100);
+    }
+    props.onChange(event)
+  }
+
+  return (
+    <StyledSliderContainer>
+
+      <div style={{ color: value === 0 ? 'black' : 'rgb(190,190,190)' }}>{props.symbol1}</div>:&nbsp;&nbsp;
+
+      <HtmlTooltip
+        placement="left"
+        title={
+          <Fragment>
+            <Typography color="inherit">{symbols[props.symbol1]['label']}</Typography>
+            {symbols[props.symbol1]['description1']} <br />
+            {symbols[props.symbol1]['description2']}
+          </Fragment>
+        }
+        arrow
+      >
+        <div
+          className='label-off'
+          style={{ color: value === 0 ? 'black' : '#AAAAAA' }}
+        >
+          {symbols[props.symbol1]['label']}
+        </div>
+      </HtmlTooltip>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="range" min="0" max="100" step="100" value={props.value} onChange={handleChange} />
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <HtmlTooltip
+        placement="right"
+        title={
+          <Fragment>
+            <Typography color="inherit">{symbols[props.symbol2]['label']}</Typography>
+            {symbols[props.symbol2]['description1']} <br />
+            {symbols[props.symbol2]['description2']}
+          </Fragment>
+        }
+        top arrow
+      >
+        <div
+          className='label-off'
+          style={{ color: value === 100 ? 'black' : '#AAAAAA' }}
+        >
+          {symbols[props.symbol2]['label']}
+        </div>
+      </HtmlTooltip>
+      &nbsp;&nbsp;:
+      <div
+        style={{ color: value === 100 ? 'black' : 'rgb(190,190,190)' }}
+      >
+        {props.symbol2}
+      </div>
+    </StyledSliderContainer>
+  );
+}
+
+
 
 const StyledSelectedValues = styled.div`
   text-align:center;

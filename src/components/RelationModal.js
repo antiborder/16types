@@ -26,6 +26,10 @@ function RelationModal(props) {
     props.onSelect();
   };
 
+  const handleSeeRelation= (mode)=>{
+    props.onSeeRelation(mode)
+  }
+
   return (
     <StyledRelationModal
       onClick={(event) => { event.stopPropagation() }}
@@ -40,6 +44,11 @@ function RelationModal(props) {
           {Array.from({ length: 5 - relationLabels[mode]['compatibility'] }).map((_, index) => (
             <span key={index} className='dark-star'>★</span>
           ))}
+        </div>
+        <div>
+          <span className="seeRelation" onClick={()=>handleSeeRelation(mode)}>
+            {relationLabels[mode]['label']}の関係を見る
+            </span>
         </div>
         <hr></hr>
 
@@ -135,7 +144,8 @@ padding:0px 8px 0px 8px;
   .relation-label{
     font-size:20px;
   }
-
+.compatibility{
+  margin-bottom: 4px;
   .light-star{
     color: #DB9;
     font-size:20px
@@ -143,6 +153,12 @@ padding:0px 8px 0px 8px;
   .dark-star{
     color: #DDD;
     font-size:20px
+  }
+}
+  .seeRelation{
+    color:#0000FF;
+    cursor: pointer;
+    text-decoration: underline;        
   }
   hr{
     width:80%;
@@ -358,10 +374,10 @@ const TwoFunctions = (props) => {
 const FunctionGrid = ({ position, type }) => {
   return (
     <group position={position} rotation={[0, -Math.PI / 4, 0]}>
-      <Text 
-      position={[0,4.2,0]}
-      fontSize={0.7}
-      color={ '#777777'}
+      <Text
+        position={[0, 4.2, 0]}
+        fontSize={0.7}
+        color={'#777777'}
       >
         {type}
       </Text>

@@ -9,7 +9,7 @@ const Typology = () => {
             <div className='pageTitle'>ユングのタイプ論</div>
             <div className='preface'>
                 ユングのタイプ論とは、人を多様なタイプに分類したものです。<br />
-                MBTIとソシオニクスはどちらもユングのタイプ論に基づいて作られました。
+                MBTIとソシオニクス(社会人格学)はどちらもユングのタイプ論に基づいて作られました。
             </div>
             <div className='diagram'>
                 <div className='parentTheory'>
@@ -45,7 +45,7 @@ const Typology = () => {
                     </div>
                     <div className='theoryBox'>
                         <div className='theoryHeader'>
-                            ソシオニクス
+                            ソシオニクス(社会人格学)
                         </div>
                         <div className='theoryBody'>
                             ・ユングの理論に基づく<br />

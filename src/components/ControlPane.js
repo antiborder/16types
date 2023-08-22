@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import styled from "styled-components";
 import Tooltip from '@mui/material/Tooltip';
+import { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
+import HtmlTooltip from './HtmlTooltip.js';
 import { relationLabels } from "../constants/relationLabels.js";
 import { typeLabels } from "../constants/typeLabels.js";
-import { CenterSelectIcon, ModeSelectIcon, ResetIcon, LabelIcon,HelpIcon } from '../assets/Icons.js';
+import { CenterSelectIcon, ModeSelectIcon, ResetIcon, LabelIcon, HelpIcon, CubeIcon, OctagonIcon } from '../assets/Icons.js';
 
 
 const ControlPane = (props) => {
@@ -12,6 +15,21 @@ const ControlPane = (props) => {
     return (
         !props.isInitialModalOpen && (
             <StyledControlPane >
+
+                <Tooltip placement="right"
+                    title={'変形'}
+                    arrow>
+                    <div className='controlItemWrapper'>
+                        <div className='controlIconWrapper'>
+                            {
+                                (props.shape === "SPHERE" && <CubeIcon />)
+                                || (props.shape === "RING" && <OctagonIcon />)
+                            }
+                        </div>
+                        <DeformButton onClick={props.onDeform} />
+                    </div>
+                </Tooltip>
+
                 <Tooltip placement="right"
                     title={
                         '中央のタイプを選択'
@@ -76,8 +94,20 @@ const ControlPane = (props) => {
                         <ResetButton onClick={props.openModal} />
                     </div>
                 </Tooltip>
-                <Tooltip placement="right"
-                    title={'ヘルプ'}
+
+                <HtmlTooltip placement="right-start" style={{padding:'0px'}}
+                    backgroundColor={'#FFFFFF'}
+                    title={
+                        <div>
+                        <Fragment>
+                            <div classname='helpLinks'  style={{fontSize:'16px',textAlign:'left'}}>
+                                <Link to="/16types/pages/typology"  target="_blank" rel="noopener noreferrer">タイプ論とは？</Link><br/>
+                                <Link to="/16types/pages/function"  target="_blank" rel="noopener noreferrer">心理機能について</Link><br/>
+                                <Link to="/16types/pages/type_label"  target="_blank" rel="noopener noreferrer">タイプ名の表記</Link><br/>
+                            </div>
+                        </Fragment>
+                         </div>
+                    }
                     arrow>
                     <div className='controlItemWrapper'>
                         <div className='controlIconWrapper'>
@@ -85,7 +115,7 @@ const ControlPane = (props) => {
                         </div>
                         <HelpButton onClick={props.openModal} />
                     </div>
-                </Tooltip>
+                </HtmlTooltip>
             </StyledControlPane>
         ))
 }
@@ -112,6 +142,31 @@ const StyledControlPane = styled.div`
     margin-top: 4px;
     margin-left:4px;
   }
+
+`;
+
+function DeformButton(props) {
+    return (
+        <StyledDeformButton onClick={props.onClick}>
+            Deform
+        </StyledDeformButton>
+    );
+}
+
+const StyledDeformButton = styled.button`
+  width:170px;
+  height:28px;
+  background-color: transparent;
+  text-align: center;
+  color: #0175FF;
+  font-size:16px;
+  border: none;
+  text-align:left;
+  margin-top: 4px;
+  margin-left:-30px;
+  padding-left: 37px;
+  font-weight:bold;
+  cursor: pointer;
 `;
 
 function CenterSelect(props) {
@@ -197,6 +252,7 @@ const StyledLabelSelect = styled.select`
   text-align: center;
   color: #0175FF;
   font-size:16px;
+  font-size:16px;
   border: none;
   background-color: transparent;
   text-align:left;
@@ -220,6 +276,7 @@ const StyledResetButton = styled.button`
   background-color: transparent;
   text-align: center;
   color: #0175FF;
+  font-size:16px;
   border: none;
   text-align:left;
   margin-top: 4px;
@@ -231,7 +288,7 @@ const StyledResetButton = styled.button`
 
 function HelpButton(props) {
     return (
-        <StyledResetButton onClick={props.onClick}>
+        <StyledResetButton>
             Help
         </StyledResetButton>
     );

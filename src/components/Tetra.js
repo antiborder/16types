@@ -3,11 +3,14 @@ import * as THREE from 'three';
 import { useFrame } from "@react-three/fiber"
 import { useRef, useState } from 'react';
 import { animated } from "@react-spring/three"
+import { Text, Html } from '@react-three/drei';
+import styled from "styled-components";
 
 import { relations } from '../constants/relations.js';
 import { typeLabels } from "../constants/typeLabels.js";
-import  Node  from './Node.js';
-import { Relation} from './Relation.js'
+import Node from './Node.js';
+import { Relation } from './Relation.js'
+import { getFuncTextColor } from '../colorFunctions.js';
 
 
 function Tetra(props) {
@@ -45,6 +48,35 @@ function Tetra(props) {
     "XXXX": null
   }
 
+  const outerR = 3
+  const innerR = 2
+  const outerZ = 1.5
+  const innerZ = -outerZ
+
+
+  let ringNodePositions = {
+    "ENFJ": new THREE.Vector3(outerR * Math.sin(0), outerR * Math.cos(0), outerZ),
+    "INFP": new THREE.Vector3(innerR * Math.sin(0), innerR * Math.cos(0), innerZ),
+    "ESFJ": new THREE.Vector3(outerR * Math.sin(Math.PI / 4), outerR * Math.cos(Math.PI / 4), outerZ),
+    "ISFP": new THREE.Vector3(innerR * Math.sin(Math.PI / 4), innerR * Math.cos(Math.PI / 4), innerZ),
+
+    "ESFP": new THREE.Vector3(outerR * Math.sin(Math.PI * 2 / 4), outerR * Math.cos(Math.PI * 2 / 4), outerZ),
+    "ISFJ": new THREE.Vector3(innerR * Math.sin(Math.PI * 2 / 4), innerR * Math.cos(Math.PI * 2 / 4), innerZ),
+    "ESTP": new THREE.Vector3(outerR * Math.sin(Math.PI * 3 / 4), outerR * Math.cos(Math.PI * 3 / 4), outerZ),
+    "ISTJ": new THREE.Vector3(innerR * Math.sin(Math.PI * 3 / 4), innerR * Math.cos(Math.PI * 3 / 4), innerZ),
+
+    "ESTJ": new THREE.Vector3(outerR * Math.sin(Math.PI * 4 / 4), outerR * Math.cos(Math.PI * 4 / 4), outerZ),
+    "ISTP": new THREE.Vector3(innerR * Math.sin(Math.PI * 4 / 4), innerR * Math.cos(Math.PI * 4 / 4), innerZ),
+    "ENTJ": new THREE.Vector3(outerR * Math.sin(Math.PI * 5 / 4), outerR * Math.cos(Math.PI * 5 / 4), outerZ),
+    "INTP": new THREE.Vector3(innerR * Math.sin(Math.PI * 5 / 4), innerR * Math.cos(Math.PI * 5 / 4), innerZ),
+
+    "ENTP": new THREE.Vector3(outerR * Math.sin(Math.PI * 6 / 4), outerR * Math.cos(Math.PI * 6 / 4), outerZ),
+    "INTJ": new THREE.Vector3(innerR * Math.sin(Math.PI * 6 / 4), innerR * Math.cos(Math.PI * 6 / 4), innerZ),
+    "ENFP": new THREE.Vector3(outerR * Math.sin(Math.PI * 7 / 4), outerR * Math.cos(Math.PI * 7 / 4), outerZ),
+    "INFJ": new THREE.Vector3(innerR * Math.sin(Math.PI * 7 / 4), innerR * Math.cos(Math.PI * 7 / 4), innerZ),
+
+  }
+
   let linkPositions = [
     { 'pos1': nodePositions['OOOO'], 'pos2': nodePositions['XOOO'] },
     { 'pos1': nodePositions['OOOO'], 'pos2': nodePositions['OXOO'] },
@@ -78,14 +110,18 @@ function Tetra(props) {
     { 'pos1': nodePositions['OOXX'], 'pos2': nodePositions['OXXX'] },
   ]
 
-  const position = (type) => {
-    let diff = compare(type, props.center)
-    return nodePositions[diff]
+  const position = (type, shape) => {
+    if (shape === "SPHERE") {
+      let diff = compare(type, props.center)
+      return nodePositions[diff]
+    } else if (shape === "RING") {
+      return ringNodePositions[type]
+    }
   }
 
   useFrame(() => {
-    ref.current.rotation.x += 0.0004;
-    ref.current.rotation.z += 0.0008;
+    ref.current.rotation.x += 0.0002;
+    ref.current.rotation.z += 0.0004;
   });
 
   const types = Object.keys(typeLabels)
@@ -126,14 +162,14 @@ function Tetra(props) {
       {types.map((type, i) => {
 
         let slot = compare(type, props.center);
-
+        console.log(type)
         return (
-          slot !== "XXXX"
+          (slot !== "XXXX" || props.shape === 'RING')
             ? <Node {...props}
               key={i}
               type={type}
               slot={slot}
-              position={nodePositions[slot]}
+              position={props.shape === 'SPHERE' ? nodePositions[slot] : ringNodePositions[type]}
               onNodeClick={() => handleNodeClick(type)}
               onNodeDoubleClick={() => { props.onNodeDoubleClick(type) }}
               onHover={(hovered) => handleNodeHover(i, hovered)}
@@ -145,7 +181,7 @@ function Tetra(props) {
       })}
 
       {/* Link components */}
-      {linkPositions.map(({ pos1, pos2 }, i) => (
+      {props.shape === 'SPHERE' && linkPositions.map(({ pos1, pos2 }, i) => (
         <Link key={i} pos1={pos1} pos2={pos2} />
       ))}
 
@@ -156,14 +192,15 @@ function Tetra(props) {
         const isRelatedToXXXX = compare(type1, props.center) === 'XXXX' || compare(type2, props.center) === 'XXXX'
         const isRelatedToCenter = (type1 === props.relationCenter || type2 === props.relationCenter)
 
-        if (!isRelatedToXXXX &&
+        if (
+          !(isRelatedToXXXX && props.shape === 'SPHERE') &&
           (isSameMode || (isRelationMode && isRelatedToCenter))
         ) {
           return <Relation
             key={i}
             mode={mode}
-            pos1={position(type1)}
-            pos2={position(type2)}
+            pos1={position(type1, props.shape)}
+            pos2={position(type2, props.shape)}
             type1={type1}
             type2={type2}
             onHover={(hovered) => handleRelationHover(i, hovered)}
@@ -175,6 +212,24 @@ function Tetra(props) {
         }
         return null
       })}
+      {props.shape === "RING" && (<>
+        <FuncText
+          func={'N'}
+          angle={Math.PI * 6.5 / 4}
+        />
+        <FuncText
+          func={'T'}
+          angle={Math.PI * 4.5 / 4}
+        />
+        <FuncText
+          func={'S'}
+          angle={Math.PI * 2.5 / 4}
+        />
+        <FuncText
+          func={'F'}
+          angle={Math.PI * 0.5 / 4}
+        />
+      </>)}
     </animated.mesh>
   );
 }
@@ -209,3 +264,24 @@ function compare(str1, str2) {
   }
   return diff
 }
+
+const FuncText = (props) => {
+  return (
+
+    <Html zIndexRange={[1, 10]}
+      position={[5 * Math.sin(props.angle), 5 * Math.cos(props.angle), 0]}
+    >
+      <StyledFuncText
+        style={{color: getFuncTextColor(props.func + 'e') }}>
+        {props.func}
+      </StyledFuncText>
+    </Html>
+
+  )
+}
+
+const StyledFuncText = styled.div`
+  opacity: 0.2;
+  font-weight: bold;
+  font-size: 48px;
+`;
