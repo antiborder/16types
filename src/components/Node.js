@@ -1,6 +1,5 @@
 import '../assets/ComicSans.css';
 
-// import '../App.css';
 import { useRef, useState } from 'react';
 import { config, useSpring, animated } from "@react-spring/three"
 import { Html } from '@react-three/drei'
