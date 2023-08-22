@@ -1,6 +1,6 @@
-import '../App.css';
+// import '../App.css';
 import * as THREE from 'three';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { animated } from "@react-spring/three"
 import { Html } from '@react-three/drei'
 
@@ -12,7 +12,7 @@ import { getTextColor } from '../colorFunctions';
 function Relation(props) {
     const [bubbleHovered, setBubbleHovered] = useState(false)
     const cylinderHeight = (props.mode === 'REQUEST' || props.mode === 'SUPERVISION')
-        ? props.pos1.distanceTo(props.pos2) - 1
+        ? props.pos1.distanceTo(props.pos2) - 0.5
         : props.pos1.distanceTo(props.pos2) - 0.3;
     const base_radius = relationLabels[props.mode]['width']
 
@@ -36,7 +36,7 @@ function Relation(props) {
         : props.pos1.clone().add(props.pos2).divideScalar(2);
 
     const coneGeometry = new THREE.CylinderGeometry(0, 3 * radius, 0.4, 8);
-    const tipPoint = props.pos1.clone().divideScalar(5).add(props.pos2).multiplyScalar(5).divideScalar(6);
+    const tipPoint = props.pos1.clone().divideScalar(7).add(props.pos2).multiplyScalar(7).divideScalar(8);
     const color = relationLabels[props.mode]['color']
     const cylinderMaterial = new THREE.MeshBasicMaterial({ color: color });
 
@@ -101,14 +101,21 @@ const RelationBubble = (props) => {
                 <span className='typeSymbol' style={{ color: getTextColor(props.type2) }}>
                     {props.type2}
                 </span>：<br></br>
+                <div className='compatibility'>
+                    {Array.from({ length: relationLabels[props.mode]['compatibility'] }).map((_, index) => (
+                        <span className='light-star' key={index}>★</span>
+                    ))}
+                    {Array.from({ length: 5 - relationLabels[props.mode]['compatibility'] }).map((_, index) => (
+                        <span key={index} className='dark-star'>★</span>
+                    ))}
+                </div>
                 <div className='relation'>
                     <span className='label'>{relationLabels[props.mode]['label']}</span>の関係
                 </div>
-                <div className='modalLink'
-                    onClick={props.onClick}
-                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
-                >
+                <div onClick={props.onClick} style={{textAlign:'center'}}>
+                    <span className='modalLink'>
                     詳細をみる
+                        </span>
                 </div>
             </div>
         </StyledRelationBubble>
@@ -137,8 +144,20 @@ const StyledRelationBubble = styled.div`
     .label{
         font-size: 16px;        
     }
+    .compatibility{
+        text-align:center;
+    .light-star{
+        color: #DB9;
+        font-size:16px
+      }
+      .dark-star{
+        color: #DDD;
+        font-size:16px
+      }
+    }
     .modalLink{
         color:#0000FF;
-        text-align:center;
+        cursor: pointer;
+        text-decoration: underline;        
       }
     `;

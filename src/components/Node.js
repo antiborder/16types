@@ -1,6 +1,6 @@
 import '../assets/ComicSans.css';
 
-import '../App.css';
+// import '../App.css';
 import { useRef, useState } from 'react';
 import { config, useSpring, animated } from "@react-spring/three"
 import { Html } from '@react-three/drei'
@@ -15,7 +15,7 @@ const Node = (props) => {
   const [bubbleHovered, setBubbleHovered] = useState(false)
   const clickCount = useRef(0)
 
-  let visible = props.slot === 'XXXX' ? false : true;
+  let visible = (props.slot==='XXXX' && props.shape==="SPHERE") ? false : true;
 
   const { scale } = useSpring({
     scale: hovered ? 1.8 : 1,
@@ -44,7 +44,7 @@ const Node = (props) => {
           props.onNodeClick() //ただのクリック
         }
         clickCount.current = 0 //初期化
-      }, 400) //<-待ち時間の設定 =400ms
+      }, 300) //<-待ち時間の設定 =400ms
     } else if (clickCount.current > 1) { //2回目以降は
       props.onNodeDoubleClick() //ダブルクリック
       clickCount.current = 0 //初期化
@@ -52,27 +52,29 @@ const Node = (props) => {
   }
 
   const getNodeColor = () => {
-    if (props.slot === 'XXXX') {
-      return "#CCC"
-    } else {
+    // if (props.slot === 'XXXX') {
+      // return "#CCC"
+    // } else {
       return getSurfaceColor(props.type)
-    }
+    // }
   }
 
   const getBaseRadius = () => {
     switch (props.slot) {
+      case 'OOOO':
+        return 0.4
       case 'XXXX':
-        return 0.8 //5
-      case 'OOXO': case 'OXXX': case 'XXOX': case 'OOOO':
-        return 0.5 //4
+        return 0.3 //5 0.8
+      case 'OOXO': case 'OXXX': case 'XXOX': 
+        return 0.3 //4 0.5
       case 'OXOO': case 'XOOX': case 'XOXX': case 'XOOO': case 'OOOX':
-        return 0.3 //3
+        return 0.3 //3 0.3
       case 'OXOX': case 'OOXX': case 'XXOO': case 'XOXO': case 'OXXO':
-        return 0.2 //2
+        return 0.3 //2 0.2
       case 'XXXO':
-        return 0.15 //1
+        return 0.3 //1 0.15
       default:
-        return 0.2
+        return 0.3
     }
   }
 
@@ -124,7 +126,7 @@ const Node = (props) => {
 export default Node;
 
 const NodeLabel = (props) => {
-  const symbol = props.slot === 'XXXX' ? null : props.type
+  const symbol = (props.slot === 'XXXX' && props.shape==='SPHERE') ? null : props.type
   return (
     (props.label === 'MBTI_4' && (
       <MbtiNodeLabel {...props} symbol={symbol} />
@@ -168,7 +170,10 @@ const SocionicsNodeLabel = (props => {
 const MbtiNodeLabel = (props) => {
   return (
     <StyledMbtiNodeLabel
-      style={{ zIndex: 10, fontSize: props.slot === 'OOOO' ? '20px' : '16px', display: 'flex' }}
+      style={{ 
+        zIndex: 10, 
+        fontSize: props.slot === 'OOOO' ? '24px' : '16px', display: 'flex' ,
+      }}
     >
       <div style={{ opacity: props.slot.charAt(0) === 'O' ? 1 : 0.4 }}> {props.symbol.charAt(0)}</div>
       <div style={{ opacity: props.slot.charAt(1) === 'O' ? 1 : 0.4 }}> {props.symbol.charAt(1)}</div>
@@ -190,11 +195,15 @@ const NodeBubble = (props) => {
       <div className='label'>
         {typeLabels[props.type]['label1']}
       </div>
-      <div className='modalLink' style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={props.onClick}>
+      <div onClick={props.onClick}>
+        <span className='modalLink'>
         詳細をみる
+        </span>
       </div>
-      <div className='modalLink' style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={props.onDoubleClick}>
+      <div onClick={props.onDoubleClick}>
+        <span className='modalLink'>
         {props.type}を中央にする
+        </span>
       </div>
     </StyledNodeBubble>)
 
@@ -206,7 +215,8 @@ const StyledMbtiNodeLabel = styled.div`
 
 const StyledNodeBubble = styled.div`
   position:absolute;
-  top:20%;
+  top:10px;
+  left:10px;
   width: 180px;
   background: #fff;
   border-radius: 0px 32px 32px 32px;
@@ -224,6 +234,8 @@ const StyledNodeBubble = styled.div`
   }
   .modalLink{
     color:#0000FF;
+    cursor: pointer;
+    text-decoration: underline;
   }
   div{
     padding: 2px;
