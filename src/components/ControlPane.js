@@ -103,7 +103,7 @@ const ControlPane = (props) => {
                             <div classname='helpLinks'  style={{fontSize:'16px',textAlign:'left'}}>
                                 <Link to="/16types/pages/typology"  target="_blank" rel="noopener noreferrer">タイプ論とは？</Link><br/>
                                 <Link to="/16types/pages/function"  target="_blank" rel="noopener noreferrer">心理機能について</Link><br/>
-                                <Link to="/16types/pages/type_label"  target="_blank" rel="noopener noreferrer">タイプ名の表記</Link><br/>
+                                <Link to="/16types/pages/type-label"  target="_blank" rel="noopener noreferrer">タイプ名の表記</Link><br/>
                             </div>
                         </Fragment>
                          </div>
