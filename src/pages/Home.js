@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 import { OrbitControls } from '@react-three/drei'
 import styled from "styled-components";
 
+import '../App.css';
 import { InitialModal } from '../components/InitialModal.js';
 import { TypeModal } from '../components/TypeModal.js';
 import { RelationModal } from '../components/RelationModal.js';

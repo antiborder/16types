@@ -32,7 +32,7 @@ const TypeLabel = () => {
             </div>
             <div className='subTitle'>MBTIとソシオニクスの表記の違い</div>
             <p className='sentence'>
-            特にややこしいのが、MBTIとソシオニクスの４文字表記が似ている点です。<br />
+                特にややこしいのが、MBTIとソシオニクスの４文字表記が似ている点です。<br />
                 ソシオニクスでは、4文字目のpまたはjをアルファベットの小文字で表記します。
                 上の表を見てもわかるように、MBTIとソシオニクスの表記は
                 <ul>
@@ -63,18 +63,33 @@ const TypeLabel = () => {
             </p> */}
             <div className='subTitle'>3文字表記</div>
             <p className='sentence'>
-                3文字表記の意味は次の通りです。
+                ソシオニクスの3文字表記の意味は次の通りです。
                 <ul>
                     <li>1文字目：第1機能を表します。</li>
                     <ul>
-                        <li>S：感覚</li>
-                        <li>I ：直感</li>
-                        <li>E：感情</li>
-                        <li>L：思考</li>
+                        <li>S：Sensing → 感覚</li>
+                        <li>I ：Intuitive → 直感</li>
+                        <li>E：Emotional → 感情</li>
+                        <li>L：Logical → 思考</li>
+                    </ul><br/>
+                    <li>2文字目：第2機能を表します。</li>
+                    <ul>
+                        <li>(記号の意味は第1機能と同じ)</li>
+                    </ul><br/>
+
+                    <li>3文字目：関心の方向性を表します。</li>
+                    <ul>
+                        <li>E：Extraverted → 外向的</li>
+                        <li>I ：Introverted → 内向的</li>
                     </ul>
-                    <li>2文字目：第2機能を表します。記号の意味は第1機能と同じです。 </li>
-                    <li>3文字目：方向性（内向的 / 外向的)を表します。</li>
                 </ul>
+                例えばEIEなら、
+                <ul>
+                    <li>第1機能：　E　→　感情</li>
+                    <li>第2機能：　I　→　直感</li>
+                    <li>方向性　:　E　→　外向的</li>
+                </ul>
+                となります。
             </p>
             <div className="toHome">
                 <Link to="/16types" >HOME</Link>
@@ -92,7 +107,7 @@ const TypeRow = (props) => {
             'j' : 'p'
     const fourChars = props.type.substring(0, 3) + fourthChar
     return (
-        <tr style={{ fontSize: '16px', lineHeight: '1.5'}}>
+        <tr style={{ fontSize: '16px', lineHeight: '1.5' }}>
             <td>
                 {Array.from(props.type).map((char, i) => {
                     return <span className='char'
@@ -133,23 +148,25 @@ const TypeRow = (props) => {
 
 const StyledCognitiveFunction = styled.div`
     margin: 0 auto;
-width:500px;
-    .subTitle{
+    width:500px;
+    text-align: center;
     
-    text-align:left;
-    margin-top: 36px;
-    font-size:20px;
-    font-weight:bold;
+    .subTitle{
+        text-align:left;
+        margin-top: 36px;
+        
+        font-size:20px;
+        font-weight:bold;
     }
     .pageTitle{
-        margin-top: 36px;
+        margin-top: 60px;
         font-size:32px;
     }
-    text-align: center;
+    
     .sentence {
         width: 500px;
         text-align:left;
-        margin:40px auto 0px auto;
+        margin:10px auto 0px auto;
     }
     .diagram{
         display:flex;
@@ -171,10 +188,10 @@ width:500px;
         tr td {
             border: 1px solid lightgray;
         }
-.char{
-    display: inline-block;
-    width: 12px;
-}
+        .char{
+            display: inline-block;
+            width: 12px;
+        }
     }
     
      .toHome{
