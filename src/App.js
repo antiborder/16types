@@ -20,7 +20,7 @@ function App() {
         <Route path="*" element={<NoMatch />} />
         <Route path={`${process.env.PUBLIC_URL}/pages/typology`} element={<Typology/>} />
         <Route path={`${process.env.PUBLIC_URL}/pages/function`} element={<CognitiveFunction/>} />
-        <Route path={`${process.env.PUBLIC_URL}/pages/type_label`} element={<TypeLabel/>} />
+        <Route path={`${process.env.PUBLIC_URL}/pages/type-label`} element={<TypeLabel/>} />
       </Routes>
     </>
   );
