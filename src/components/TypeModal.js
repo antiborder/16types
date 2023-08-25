@@ -162,10 +162,11 @@ const StyledTypeModal = styled.div`
       padding:0px; 
       font-size:24px;
       line-height:0;
+      font-family: Arial, sans-serif;
 
     }
     .three-chars{
-        margin: 0px 40px 24px 0px;
+        margin: 4px 40px 10px 0px;
         padding:0;
         text-align: right;
         line-height:0;
@@ -173,21 +174,24 @@ const StyledTypeModal = styled.div`
     }
     .label1{
       font-size: 24px;
+      font-family: "mochy","Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro", Arial, sans-serif;
     }
     .label2, .label3 {
       font-size: 12px;
       margin-top:-8px;
       padding:0;
       line-height:12px;
+      font-family: "mochy","Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro", Arial, sans-serif;
     }
     hr{
       width:80%;
       border-color: #FFFFFF;
     }
     .symbols{
-      margin:0 auto;
+      margin:0px auto 12px;
       width:160px;
       border-radius: 20px;
+      font-family: Arial, sans-serif;
 
       .symbol{
         font-size:24px
@@ -200,8 +204,7 @@ const StyledTypeModal = styled.div`
 
     .functionDetailWrapper{
       display: flex;
-      margin-right:10px;
-      margin-left:10px;
+      margin:8px 10px 16px 10px;
 
       .functionDetailSquare{
         border-radius: 10px;
@@ -209,6 +212,8 @@ const StyledTypeModal = styled.div`
         text-align:center;
         margin-left:10px;
         margin-right:10px;
+        margin-bottom:8px;
+        padding:8px 0;
       }
     }
 

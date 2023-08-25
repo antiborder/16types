@@ -10,7 +10,7 @@ const CognitiveFunction = () => {
         <StyledCognitiveFunction>
             <div className='pageTitle'>心理機能</div>
             <div className='sentence'>
-                ユングの類型論では、心の機能について下記4つの類型を考えます。
+                ユングの類型論では、心の機能について次の４種類を考えます。
             </div>
             <div className='diagram'>
                 <div className='diagramContents'>
@@ -43,7 +43,7 @@ const CognitiveFunction = () => {
                 </div>
             </div>
             <div className='sentence'>
-                関心の方向性は次の2種類です。
+                関心の方向性は次の２種類です。
             </div>
             <div className='diagram'>
                 <div className='diagramContents'>
@@ -61,7 +61,7 @@ const CognitiveFunction = () => {
             </div>
 
             <div className='sentence'>
-                これらを掛け合わせると心理機能は計8種類になります。
+                これらを掛け合わせると心理機能は計８種類になります。
             </div>
 
             <div className='diagram'>
@@ -160,6 +160,7 @@ const StyledCognitiveFunction = styled.div`
         color:#777777;
         align-items: center;
         justify-content: center;
+        font-family: "mochy","Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro", Arial, sans-serif;
     }
 
     table {
@@ -231,8 +232,7 @@ const StyledFuncBox = styled.div`
         font-size:16px;
     }
     .origin{
-
-        margin-top: -6px;
+        margin-top: -2px;
         font-size:12px;
         .upper{
             font-size:24px;
@@ -242,7 +242,6 @@ const StyledFuncBox = styled.div`
         }
     }
     .description{
-        // margin-top:4px;
         font-size:12px;
         color:#333333;
     }

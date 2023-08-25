@@ -11,6 +11,7 @@ import { Tetra } from '../components/Tetra.js';
 import { ControlPane } from "../components/ControlPane.js"
 
 
+//解説ページにWikiへのリンク。
 // 相性の考え方
 // フォント
 

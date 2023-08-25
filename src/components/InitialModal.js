@@ -62,7 +62,7 @@ function InitialModal(props) {
     <StyledInitialModal
       onClick={(event) => { event.stopPropagation() }}
     >
-      <label htmlFor="center-select">４つの観点から<br></br>性格のタイプを選んでください。</label><br></br><br></br>
+      <label className='topPhrase' htmlFor="center-select">４つの観点から<br></br>性格のタイプを選んでください。</label><br></br><br></br>
 
       <SliderContainer symbol1="E" symbol2="I" value={EIValue} onChange={handleEIChange} />
       <SliderContainer symbol1="S" symbol2="N" value={SNValue} onChange={handleSNChange} />
@@ -92,10 +92,10 @@ function InitialModal(props) {
       </div>
 
       <StyledCloseButton onClick={handleSubmit}>&times;</StyledCloseButton>
-        <StyledStartButton onClick={handleSubmit}>Start</StyledStartButton>
-        <div style={{textAlign:'right'}}>
+      <StyledStartButton onClick={handleSubmit}>Start</StyledStartButton>
+      <div style={{ textAlign: 'right' }}>
         <Link style={{ marginLeft: 'auto', marginRight: '12px' }} to="/16types/pages/typology" target="_blank" rel="noopener noreferrer">タイプ論とは？</Link>
-        </div>
+      </div>
 
     </StyledInitialModal>
 
@@ -116,6 +116,11 @@ const StyledInitialModal = styled.div`
   max-width: 320px;
   width: 100%;
   text-align: center;
+  .topPhrase{
+    display: block;
+    font-size: 16px;
+    margin-bottom:8px;
+  }
   .type{
     text-align:center;
     margin : 0 auto;
@@ -179,11 +184,11 @@ const StyledSliderContainer = styled.div`
     width:80px;
   }
   .label-on{
-    font-size:24px;
+    font-size:22px;
     color: black;
   }
   .label-off{
-    font-size:24px;
+    font-size:22px;
     // color: gray;
   }
 `;
@@ -203,8 +208,9 @@ function SliderContainer(props) {
   return (
     <StyledSliderContainer>
 
-      <div style={{ color: value === 0 ? 'black' : 'rgb(190,190,190)' }}>{props.symbol1}</div>:&nbsp;&nbsp;
-
+      <div style={{ color: value === 0 ? 'black' : 'rgb(190,190,190)', fontFamily: "Arial, sans-serif" }}>
+        {props.symbol1}
+      </div>:&nbsp;&nbsp;
       <HtmlTooltip
         placement="left"
         title={
@@ -223,9 +229,9 @@ function SliderContainer(props) {
           {symbols[props.symbol1]['label']}
         </div>
       </HtmlTooltip>
-      &nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;
       <input type="range" min="0" max="100" step="100" value={props.value} onChange={handleChange} />
-      &nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;
       <HtmlTooltip
         placement="right"
         title={
@@ -244,9 +250,9 @@ function SliderContainer(props) {
           {symbols[props.symbol2]['label']}
         </div>
       </HtmlTooltip>
-      &nbsp;&nbsp;:
+      &nbsp;&nbsp;  :
       <div
-        style={{ color: value === 100 ? 'black' : 'rgb(190,190,190)' }}
+        style={{ color: value === 100 ? 'black' : 'rgb(190,190,190)', fontFamily: "Arial, sans-serif" }}
       >
         {props.symbol2}
       </div>
@@ -264,4 +270,5 @@ const StyledSelectedValues = styled.div`
   width: 100%;
   font-size: 20px;
   padding: 4px;
+  font-family: Arial, sans-serif;
 `;

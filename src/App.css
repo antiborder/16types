@@ -8,6 +8,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  font-family: "gyate", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro", Arial, sans-serif;
 }
 
 body {
@@ -30,8 +31,31 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   color: black;
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-  font-size: 5px;
+  font-family: "azuki","Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro", Arial, sans-serif;
+  font-size: 50px;
   z-index: 0;
   letter-spacing: 1px;
+
+  
+}
+
+@font-face {
+  font-family: 'azuki'; /* フォント名 */
+  /* フォーマットごとにパスを指定 */
+  src: url('../src/assets/azuki.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'mochy'; /* フォント名 */
+  /* フォーマットごとにパスを指定 */
+  src: url('../src/assets/MochiyPopOne-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'maru401'; /* フォント名 */
+  /* フォーマットごとにパスを指定 */
+  src: url('../src/assets/maru401.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'gyate'; /* フォント名 */
+  /* フォーマットごとにパスを指定 */
+  src: url('../src/assets/Gyate-Luminescence.ttf') format('truetype');
 }
