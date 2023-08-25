@@ -14,7 +14,7 @@ const Node = (props) => {
   const [bubbleHovered, setBubbleHovered] = useState(false)
   const clickCount = useRef(0)
 
-  let visible = (props.slot==='XXXX' && props.shape==="SPHERE") ? false : true;
+  let visible = (props.slot === 'XXXX' && props.shape === "SPHERE") ? false : true;
 
   const { scale } = useSpring({
     scale: hovered ? 1.8 : 1,
@@ -52,9 +52,9 @@ const Node = (props) => {
 
   const getNodeColor = () => {
     // if (props.slot === 'XXXX') {
-      // return "#CCC"
+    // return "#CCC"
     // } else {
-      return getSurfaceColor(props.type)
+    return getSurfaceColor(props.type)
     // }
   }
 
@@ -64,7 +64,7 @@ const Node = (props) => {
         return 0.4
       case 'XXXX':
         return 0.3 //5 0.8
-      case 'OOXO': case 'OXXX': case 'XXOX': 
+      case 'OOXO': case 'OXXX': case 'XXOX':
         return 0.3 //4 0.5
       case 'OXOO': case 'XOOX': case 'XOXX': case 'XOOO': case 'OOOX':
         return 0.3 //3 0.3
@@ -125,17 +125,19 @@ const Node = (props) => {
 export default Node;
 
 const NodeLabel = (props) => {
-  const symbol = (props.slot === 'XXXX' && props.shape==='SPHERE') ? null : props.type
+  const symbol = (props.slot === 'XXXX' && props.shape === 'SPHERE') ? null : props.type
   return (
-    (props.label === 'MBTI_4' && (
-      <MbtiNodeLabel {...props} symbol={symbol} />
-    ))
-    || (props.label === 'SOCI_3' && (
-      <SocionicsNodeLabel {...props} symbol={symbol} />
-    ))
-    || (props.label === 'FUNC' && (
-      <FuncNodeLabel {...props} symbol={symbol} />
-    ))
+    (<div style={{ fontFamily: 'Arial, sans-serif' }}>{
+        (props.label === 'MBTI_4' && (
+          <MbtiNodeLabel {...props} symbol={symbol} />
+        ))
+        || (props.label === 'SOCI_3' && (
+          <SocionicsNodeLabel {...props} symbol={symbol} />
+        ))
+        || (props.label === 'FUNC' && (
+          <FuncNodeLabel {...props} symbol={symbol} />
+        ))
+      }</div>)
   )
 
 }
@@ -169,9 +171,9 @@ const SocionicsNodeLabel = (props => {
 const MbtiNodeLabel = (props) => {
   return (
     <StyledMbtiNodeLabel
-      style={{ 
-        zIndex: 10, 
-        fontSize: props.slot === 'OOOO' ? '24px' : '16px', display: 'flex' ,
+      style={{
+        zIndex: 10,
+        fontSize: props.slot === 'OOOO' ? '24px' : '16px', display: 'flex',
       }}
     >
       <div style={{ opacity: props.slot.charAt(0) === 'O' ? 1 : 0.4 }}> {props.symbol.charAt(0)}</div>
@@ -187,7 +189,7 @@ const NodeBubble = (props) => {
   return (
     <StyledNodeBubble style={{ backgroundColor: props.backgroundColor, borderColor: props.textColor }}>
       <div style={{ textAlign: 'left' }}>
-        <span className='symbol' style={{ color: props.textColor }}>
+        <span className='symbol' style={{ color: props.textColor,fontFamily: 'Arial, sans-serif' }}>
           {props.type}
         </span>：
       </div>
@@ -196,12 +198,12 @@ const NodeBubble = (props) => {
       </div>
       <div onClick={props.onClick}>
         <span className='modalLink'>
-        詳細をみる
+          詳細をみる
         </span>
       </div>
       <div onClick={props.onDoubleClick}>
         <span className='modalLink'>
-        {props.type}を中央にする
+          {props.type}を中央にする
         </span>
       </div>
     </StyledNodeBubble>)
@@ -229,7 +231,7 @@ const StyledNodeBubble = styled.div`
   }
   .label{
     font-size: 16px;
-    font-weight: bold;
+    font-family: "mochy","Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro", Arial, sans-serif;
   }
   .modalLink{
     color:#0000FF;
@@ -239,4 +241,5 @@ const StyledNodeBubble = styled.div`
   div{
     padding: 2px;
   }
+
 `;
