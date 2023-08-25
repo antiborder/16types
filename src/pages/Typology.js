@@ -1,6 +1,6 @@
-import {  Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from "styled-components";
-import {RightDownIcon, LeftDownIcon} from '../assets/Icons';
+import { RightDownIcon, LeftDownIcon } from '../assets/Icons';
 
 
 const Typology = () => {
@@ -9,7 +9,7 @@ const Typology = () => {
             <div className='pageTitle'>ユングのタイプ論</div>
             <div className='preface'>
                 ユングのタイプ論とは、人を多様なタイプに分類したものです。<br />
-                MBTIとソシオニクス(社会人格学)はどちらもユングのタイプ論に基づいて作られました。
+                ユングのタイプ論に基づいて、「MBTI」や「ソシオニクス(社会人格学)」という理論が作られました。
             </div>
             <div className='diagram'>
                 <div className='parentTheory'>
@@ -26,9 +26,9 @@ const Typology = () => {
                 </div>
                 <div className='arrowsContainer'>
                     <div className='arrows'>
-                    <LeftDownIcon />
-                    <div></div>
-                    <RightDownIcon />
+                        <LeftDownIcon />
+                        <div></div>
+                        <RightDownIcon />
                     </div>
                 </div>
                 <div className='childTheory'>
@@ -41,6 +41,14 @@ const Typology = () => {
                             ・心理的傾向や性格を評価<br />
                             ・相性論は無い<br />
                             ・アメリカ等で人気
+                            <div style={{ textAlign: 'right', marginTop: '8px' }}>
+                                <a href='https://ja.wikipedia.org/wiki/MBTI'
+                                    target='_blank'
+                                    rel="noopener noreferrer"
+                                    style={{ color: 'gray' }}>
+                                    [参考] Wikipedia(MBTI)
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <div className='theoryBox'>
@@ -52,6 +60,14 @@ const Typology = () => {
                             ・タイプ間相互作用も論じる<br />
                             ・相性論がある<br />
                             ・ロシア等で人気
+                            <div style={{ textAlign: 'right', marginTop: '8px' }}>
+                                <a href='https://ja.wikipedia.org/wiki/%E3%82%BD%E3%82%B7%E3%82%AA%E3%83%8B%E3%82%AF%E3%82%B9'
+                                    target='_blank'
+                                    rel="noopener noreferrer"
+                                    style={{ color: 'gray' }}>
+                                    [参考] Wikipedia<span style={{fontSize:'10px'}}>(ソシオニクス)</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -80,14 +96,14 @@ const StyledTypology = styled.div`
     text-align: center;
     .preface {
         text-align:center;
-        width: 700px;
+        width: 800px;
         margin:40px auto;
     }
     .diagram{
         width: 700px;
         background-color:white;
 
-        margin:20px auto;
+        margin:20px auto 40px auto;
         padding:20px;
         border-radius:16px;
     }

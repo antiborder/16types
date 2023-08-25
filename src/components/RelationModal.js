@@ -35,7 +35,7 @@ function RelationModal(props) {
       onClick={(event) => { event.stopPropagation() }}
     >
       <div className='modal-content'>
-        <div className='title'><span className='type' style={{ color: getTextColor(props.type1) }}>{props.type1}</span> と<span className='type' style={{ color: getTextColor(props.type2) }}>{props.type2}</span>:</div><br></br>
+        <div className='title'><span className='type' style={{ color: getTextColor(props.type1) }}>{props.type1}</span> &nbsp;と&nbsp;<span className='type' style={{ color: getTextColor(props.type2) }}>{props.type2}</span>:</div><br></br>
         <div className='relation'><span className='relation-label'>{relationLabels[mode]['label']}</span> の関係</div><br></br>
         <div className='compatibility'>相性：
           {Array.from({ length: relationLabels[mode]['compatibility'] }).map((_, index) => (
@@ -139,6 +139,7 @@ padding:0px 8px 0px 8px;
     padding:0px; 
     font-size:24px;
     line-height:0;
+    font-family: Arial, sans-serif;
   }
 
   .relation-label{
@@ -156,9 +157,11 @@ padding:0px 8px 0px 8px;
   }
 }
   .seeRelation{
+    display:block;
     color:#0000FF;
     cursor: pointer;
-    text-decoration: underline;        
+    text-decoration: underline;
+    margin-bottom:16px;
   }
   hr{
     width:80%;
@@ -166,12 +169,16 @@ padding:0px 8px 0px 8px;
 
   .label-box{
     margin: 8px 8px 24px 8px;
+    padding:2px 2px 4px 2px;
     border-radius: 8px;
+    
+    
 
     .row-type{
       border-radius: 4px;
       margin: 4px;
       font-size:16px;
+      font-family: Arial, sans-serif;
     }
     .row-label1{
       font-size:12px;
@@ -188,6 +195,8 @@ function ColoredFuncLabel(props) {
   return (
     <span
       style={{
+        display:'inline-block',
+        height: '24px',
         color: getFuncTextColor(typeLabels[props.type]['func' + props.funcNum]),
         backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func' + props.funcNum])
       }}>
@@ -202,6 +211,7 @@ const StyledRelationDescription = styled.div`
     width: 280px;
     text-align:left;
     font-size: 16px;
+    line-height: 1.5;
     span{
       display: inline-block;
       font-size: 16px;
@@ -302,8 +312,8 @@ function RelationDescription(props) {
     case 'CONFLICT':
       return (
         <StyledRelationDescription>
-          <p>{props.type1}が強い苦手意識を持つ{typeLabels[props.type1]['func5']}が{props.type2}の第一機能となっており、このような場合には{props.type1}にストレスがかかると言われています。</p>
-          <p>同様に、{props.type2}が強い苦手意識を持つ{typeLabels[props.type2]['func5']}は{props.type1}の第一機能なので、{props.type2}にもストレスがかかると言われています。</p>
+          <p>{props.type1}が強い苦手意識を持つ<ColoredFuncLabel type={props.type1} funcNum={4} />が{props.type2}の第一機能となっており、このような場合には{props.type1}にストレスがかかると言われています。</p>
+          <p>同様に、{props.type2}が強い苦手意識を持つ<ColoredFuncLabel type={props.type2} funcNum={4} />は{props.type1}の第一機能なので、{props.type2}にもストレスがかかると言われています。</p>
           <p>このように互いにストレスを感じる関係とされています。</p>
         </StyledRelationDescription>
       )

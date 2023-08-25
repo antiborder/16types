@@ -95,10 +95,10 @@ const RelationBubble = (props) => {
         <StyledRelationBubble
             style={{ borderColor: relationLabels[props.mode]['color'] }}>
             <div>
-                <span className='typeSymbol' style={{ color: getTextColor(props.type1) }}>
+                <span className='typeSymbol' style={{ color: getTextColor(props.type1),fontFamily: 'Arial, sans-serif' }}>
                     {props.type1}
                 </span >と
-                <span className='typeSymbol' style={{ color: getTextColor(props.type2) }}>
+                <span className='typeSymbol' style={{ color: getTextColor(props.type2),fontFamily: 'Arial, sans-serif' }}>
                     {props.type2}
                 </span>：<br></br>
                 <div className='compatibility'>
@@ -112,7 +112,7 @@ const RelationBubble = (props) => {
                 <div className='relation'>
                     <span className='label'>{relationLabels[props.mode]['label']}</span>の関係
                 </div>
-                <div onClick={props.onClick} style={{textAlign:'center'}}>
+                <div onClick={props.onClick} style={{textAlign:'center',marginTop:'8px'}}>
                     <span className='modalLink'>
                     詳細をみる
                         </span>
@@ -140,6 +140,7 @@ const StyledRelationBubble = styled.div`
     .relation{
         display: block;
         text-align: center;
+        margin-top: 4px;
     }
     .label{
         font-size: 16px;        
