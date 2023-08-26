@@ -322,7 +322,7 @@ function RelationDescription(props) {
       return (
         <StyledRelationDescription>
           <p>{props.type2}は<ColoredFuncLabel type={props.type2} funcNum={5} />を無意識的に苦手としているため、<ColoredFuncLabel type={props.type1} funcNum={2} />を得意分野の第二機能に持つ{props.type1}には魅力を感じます。</p>
-          <p>ところが、{props.type1}は{props.type1}をそれほど魅力的には感じません。{props.type1}が無意識的に苦手としている<ColoredFuncLabel type={props.type1} funcNum={5} />は{props.type2}にとっても苦手な第四機能だからです。</p>
+          <p>ところが、{props.type1}は{props.type2}をそれほど魅力的には感じません。{props.type1}が無意識的に苦手としている<ColoredFuncLabel type={props.type1} funcNum={5} />は{props.type2}にとっても苦手な第四機能だからです。</p>
           <p>このため、{props.type2}側が{props.type1}側を一方的に求める非対称な関係となっています。</p>
         </StyledRelationDescription>
       )
