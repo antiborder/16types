@@ -111,7 +111,7 @@ const relations = [
     { 'mode': 'REQUEST', 'type1': 'ESTP', 'type2': 'ESFJ' },
     { 'mode': 'REQUEST', 'type1': 'ISTP', 'type2': 'INTJ' },
     { 'mode': 'REQUEST', 'type1': 'INTP', 'type2': 'ISTJ' },
-    { 'mode': 'REQUEST', 'type1': 'ISFJ', 'type2': 'INFP' },
+    { 'mode': 'REQUEST', 'type1': 'INFP', 'type2': 'ISFJ' },
     { 'mode': 'REQUEST', 'type1': 'ISFP', 'type2': 'INFJ' },
     { 'mode': 'REQUEST', 'type1': 'ENTJ', 'type2': 'ESTP' },
     { 'mode': 'REQUEST', 'type1': 'ESTJ', 'type2': 'ENTP' },
