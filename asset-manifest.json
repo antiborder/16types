@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/16types/static/css/main.7e2ff6ff.css",
+    "main.js": "/16types/static/js/main.c40fc938.js",
+    "static/js/787.24295994.chunk.js": "/16types/static/js/787.24295994.chunk.js",
+    "static/media/azuki.ttf": "/16types/static/media/azuki.8e71322c4021dcaf8e12.ttf",
+    "static/media/MochiyPopOne-Regular.ttf": "/16types/static/media/MochiyPopOne-Regular.bbb9d9fc503018eae9cb.ttf",
+    "static/media/Gyate-Luminescence.ttf": "/16types/static/media/Gyate-Luminescence.bc3cbddf76d955504c40.ttf",
+    "static/media/maru401.ttf": "/16types/static/media/maru401.a9ddc02679d95eab0e38.ttf",
+    "index.html": "/16types/index.html",
+    "main.7e2ff6ff.css.map": "/16types/static/css/main.7e2ff6ff.css.map",
+    "main.c40fc938.js.map": "/16types/static/js/main.c40fc938.js.map",
+    "787.24295994.chunk.js.map": "/16types/static/js/787.24295994.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7e2ff6ff.css",
+    "static/js/main.c40fc938.js"
+  ]
+}
