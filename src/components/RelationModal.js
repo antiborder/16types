@@ -26,7 +26,7 @@ function RelationModal(props) {
     props.onSelect();
   };
 
-  const handleSeeRelation= (mode)=>{
+  const handleSeeRelation = (mode) => {
     props.onSeeRelation(mode)
   }
 
@@ -46,9 +46,9 @@ function RelationModal(props) {
           ))}
         </div>
         <div>
-          <span className="seeRelation" onClick={()=>handleSeeRelation(mode)}>
+          <span className="seeRelation" onClick={() => handleSeeRelation(mode)}>
             {relationLabels[mode]['label']}の関係を見る
-            </span>
+          </span>
         </div>
         <hr></hr>
 
@@ -105,7 +105,7 @@ position: fixed;
 top: 50%;
 left: 50%;
 transform: translate(-50%, -50%);
-background-color: rgba(255, 255, 255); 
+background-color: rgba(255, 255, 255);
 border: 1px solid #ccc;
 border-radius: 10px;
 font-size:12px;
@@ -135,8 +135,8 @@ padding:0px 8px 0px 8px;
 
   text-align: center;
   .type{
-    margin:0px;   
-    padding:0px; 
+    margin:0px;
+    padding:0px;
     font-size:24px;
     line-height:0;
     font-family: Arial, sans-serif;
@@ -171,8 +171,8 @@ padding:0px 8px 0px 8px;
     margin: 8px 8px 24px 8px;
     padding:2px 2px 4px 2px;
     border-radius: 8px;
-    
-    
+
+
 
     .row-type{
       border-radius: 4px;
@@ -195,7 +195,7 @@ function ColoredFuncLabel(props) {
   return (
     <span
       style={{
-        display:'inline-block',
+        display: 'inline-block',
         height: '24px',
         color: getFuncTextColor(typeLabels[props.type]['func' + props.funcNum]),
         backgroundColor: getFuncBackgroundColor(typeLabels[props.type]['func' + props.funcNum])
@@ -217,7 +217,7 @@ const StyledRelationDescription = styled.div`
       font-size: 16px;
       padding: 2px 4px;
       border-radius:8px;
-      
+
     }
 `;
 

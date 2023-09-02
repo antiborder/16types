@@ -130,9 +130,10 @@ function Tetra(props) {
   };
 
   const handleRelationClick = (type1, type2) => {
-    if (!props.isInitialModalOpen && props.typeModalState === 'NONE' && props.relationModalState === 'NONE')
+    if (!props.isInitialModalOpen && props.typeModalState === 'NONE' && props.relationModalState === 'NONE'){
       props.setRelationModalState(type1 + '_' + type2)
     props.setTypeModalState('NONE')
+  }
 
   };
 
@@ -240,7 +241,7 @@ function Link(props) {
   return (
     <animated.mesh {...props} geometry={lineGeometry} material={lineMaterial}>
       <line
-        // ref={ref} 
+        // ref={ref}
         geometry={lineGeometry}>
         <meshBasicMaterial attach="material" color="#999" />
       </line>
