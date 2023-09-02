@@ -51,11 +51,7 @@ const Node = (props) => {
   }
 
   const getNodeColor = () => {
-    // if (props.slot === 'XXXX') {
-    // return "#CCC"
-    // } else {
     return getSurfaceColor(props.type)
-    // }
   }
 
   const getBaseRadius = () => {
