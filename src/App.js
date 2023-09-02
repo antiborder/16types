@@ -13,17 +13,30 @@ function App() {
       <Routes>
         <Route path={`${process.env.PUBLIC_URL}/`} element={<Home/>} />
         <Route path={`${process.env.PUBLIC_URL}/pages/types/1`} element={<Type type = {1} />} />
-        <Route path={`${process.env.PUBLIC_URL}/test`} element={<>
-              
-            <h1>Hello React Router v6</h1>
-            </>} />
-        <Route path="*" element={<NoMatch />} />
         <Route path={`${process.env.PUBLIC_URL}/pages/typology`} element={<Typology/>} />
         <Route path={`${process.env.PUBLIC_URL}/pages/function`} element={<CognitiveFunction/>} />
         <Route path={`${process.env.PUBLIC_URL}/pages/type-label`} element={<TypeLabel/>} />
+        <Route path="*" element={<NoMatch />} />
       </Routes>
     </>
   );
 }
 
-export default App;
+export {App};
+
+const App2=()=> {
+  return (
+    <>
+      <Routes>
+         {/* <Route path={`${process.env.PUBLIC_URL}/`} element={<Home/>} />
+        <Route path={`${process.env.PUBLIC_URL}/pages/types/1`} element={<Type type = {1} />} />
+        <Route path={`${process.env.PUBLIC_URL}/pages/typology`} element={<Typology/>} />
+        <Route path={`${process.env.PUBLIC_URL}/pages/function`} element={<CognitiveFunction/>} />
+        <Route path={`${process.env.PUBLIC_URL}/pages/type-label`} element={<TypeLabel/>} />
+        <Route path="pages/*" element={<NoMatch />} /> */}
+      </Routes>
+    </>
+  );
+}
+
+export {App2};

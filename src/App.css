@@ -17,12 +17,27 @@ body {
 }
 
 #root {
+  @media (max-width: 350px) {
+    width: fit-content;
+  }
   flex: 1;
   background: linear-gradient(
     117deg,
     rgba(220, 220, 220, 1) 5%,
     rgba(255, 255, 255, 1) 100%
   );
+}
+
+#root2 {
+  @media (max-width: 350px) {
+    width: fit-content;
+  }
+  background : lightgray;
+  background: linear-gradient(
+    117deg,
+    rgba(220, 220, 220, 1) 5%,
+    rgba(255, 255, 255, 1) 100%
+  )
 }
 
 .logo {
@@ -41,21 +56,17 @@ body {
 
 @font-face {
   font-family: 'azuki'; /* フォント名 */
-  /* フォーマットごとにパスを指定 */
   src: url('../src/assets/azuki.ttf') format('truetype');
 }
 @font-face {
   font-family: 'mochy'; /* フォント名 */
-  /* フォーマットごとにパスを指定 */
   src: url('../src/assets/MochiyPopOne-Regular.ttf') format('truetype');
 }
 @font-face {
   font-family: 'maru401'; /* フォント名 */
-  /* フォーマットごとにパスを指定 */
   src: url('../src/assets/maru401.ttf') format('truetype');
 }
 @font-face {
   font-family: 'gyate'; /* フォント名 */
-  /* フォーマットごとにパスを指定 */
   src: url('../src/assets/Gyate-Luminescence.ttf') format('truetype');
 }

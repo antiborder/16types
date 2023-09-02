@@ -1,26 +1,22 @@
 import { Link } from 'react-router-dom';
 import styled from "styled-components";
 import { typeLabels } from '../constants/typeLabels';
-
+import StyledHelpPage from './StyledHelpPage';
 
 
 const TypeLabel = () => {
     const types = Object.keys(typeLabels).sort()
     return (
-        <StyledCognitiveFunction>
+        <StyledHelpPage>
+            <StyledTypeLabel>
             <div className='pageTitle'>タイプ名の表記</div>
-            <div className='subTitle'>タイプ名の対応表</div>
-            <p className='sentence'>
-                MBTIとソシオニクスは異なる理論なのでタイプの表記方法に違いがあります。<br />
-                下の表はMBTIとソシオニクスの表記の対応表です。<br />
-                ソシオニクスには３文字表記と４文字表記の2種類があります。
-            </p>
+            <div className='subTitle'>１６タイプ一覧表</div>
             <div className='diagram'>
                 <table>
                     <tr>
                         <td>MBTI表記</td>
-                        <td>ソシオニクス<br />4文字表記</td>
-                        <td>ソシオニクス<br />3文字表記</td>
+                        <td>ソシオニクス<br />４文字表記</td>
+                        <td>ソシオニクス<br />３文字表記</td>
                         <td>第1 / 第2機能</td>
                     </tr>
                     {types.map((type) => {
@@ -30,6 +26,11 @@ const TypeLabel = () => {
 
                 </table>
             </div>
+            <p className='sentence'>
+                MBTIとソシオニクスは異なる理論なのでタイプの表記方法に違いがあります。<br />
+                ソシオニクスには３文字表記と４文字表記の２種類があります。
+            </p>
+
             <div className='subTitle'>MBTIとソシオニクスの表記の違い</div>
             <p className='sentence'>
                 特にややこしいのが、MBTIとソシオニクスの４文字表記が似ている点です。<br />
@@ -64,7 +65,7 @@ const TypeLabel = () => {
             <div className='subTitle'>3文字表記</div>
             <p className='sentence'>
                 ソシオニクスの3文字表記の意味は次の通りです。
-                <ul>
+                <ul className = 'box'>
                     <li>1文字目：第1機能を表します。</li>
                     <ul>
                         <li>S：Sensing → 感覚</li>
@@ -83,8 +84,8 @@ const TypeLabel = () => {
                         <li>I ：Introverted → 内向的</li>
                     </ul>
                 </ul>
-                例えばEIEなら、
-                <ul>
+                例えば &nbsp;EIE &nbsp;なら、
+                <ul className='box'>
                     <li>第1機能：　E　→　感情</li>
                     <li>第2機能：　I　→　直感</li>
                     <li>方向性　:　E　→　外向的</li>
@@ -94,11 +95,31 @@ const TypeLabel = () => {
             <div className="toHome">
                 <Link to="/16types" >HOME</Link>
             </div>
-        </StyledCognitiveFunction>
+            </StyledTypeLabel>
+        </StyledHelpPage>
     )
 }
 
 export default TypeLabel;
+
+const StyledTypeLabel = styled.div`
+
+table {
+    font-size:14px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    td{
+        width:120px;
+    }
+    tr td {
+        border: 1px solid lightgray;
+    }
+    .char{
+        display: inline-block;
+        width: 12px;
+    }
+}
+`
 
 const TypeRow = (props) => {
     const fourthChar =
@@ -145,59 +166,4 @@ const TypeRow = (props) => {
 
     )
 }
-
-const StyledCognitiveFunction = styled.div`
-    margin: 0 auto;
-    width:500px;
-    text-align: center;
-    
-    .subTitle{
-        text-align:left;
-        margin-top: 36px;
-        
-        font-size:20px;
-        font-weight:bold;
-    }
-    .pageTitle{
-        margin-top: 60px;
-        font-size:32px;
-    }
-    
-    .sentence {
-        width: 500px;
-        text-align:left;
-        margin:10px auto 0px auto;
-    }
-    .diagram{
-        display:flex;
-        width: 500px;
-        background-color:white;
-        margin:20px auto;
-        padding:8px;
-        border-radius:16px;
-    }
-
-
-    table {
-        font-size:14px;
-        margin: 0 auto;
-        border-collapse: collapse;
-        td{
-            width:120px;
-        }
-        tr td {
-            border: 1px solid lightgray;
-        }
-        .char{
-            display: inline-block;
-            width: 12px;
-        }
-    }
-    
-     .toHome{
-        margin:10px;
-        padding:10px;
-     }
-`;
-
 

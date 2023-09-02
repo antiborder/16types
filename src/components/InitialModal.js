@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import Typography from '@mui/material/Typography';
-import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import { symbols } from "../constants/symbols.js"
 import { typeLabels } from '../constants/typeLabels.js';
 import { getBackgroundColor, getTextColor } from '../colorFunctions.js';
-import HtmlTooltip from './HtmlTooltip.js';
+import SliderContainer from './SliderContainer.js';
 
 function InitialModal(props) {
   const [EIValue, setEIValue] = useState(props.center[0] === 'E' ? 0 : 100);
@@ -21,41 +18,12 @@ function InitialModal(props) {
 
   const [center, setCenter] = useState(getCenter());
 
-  const handleEIChange = (event) => {
-    setEIValue(event.target.value);
-    let newCenter = (event.target.value < 50 ? 'E' : 'I') + getCenter().slice(1)
+  const handleChange = (setter, symbol1, symbol2, charIndex, event) => {
+    setter(event.target.value);
+    const newCenter = center.substring(0, charIndex-1) + (event.target.value < 50 ? symbol1 : symbol2) + center.substring(charIndex);
     setCenter(newCenter)
-    props.handleCenterChange(newCenter)
+    props.onCenterChange(newCenter)
   };
-
-  const handleSNChange = (event) => {
-    setSNValue(event.target.value);
-    let newCenter = getCenter().slice(0, 1) + (event.target.value < 50 ? 'S' : 'N') + getCenter().slice(2)
-    setCenter(newCenter)
-    props.handleCenterChange(newCenter)
-  };
-
-  const handleFTChange = (event) => {
-    setFTValue(event.target.value);
-    let newCenter = getCenter().slice(0, 2) + (event.target.value < 50 ? 'F' : 'T') + getCenter().slice(3)
-    setCenter(newCenter)
-    props.handleCenterChange(newCenter)
-  };
-
-  const handlePJChange = (event) => {
-    setPJValue(event.target.value);
-    let newCenter = getCenter().slice(0, 3) + (event.target.value < 50 ? 'P' : 'J') + getCenter().slice(4)
-    setCenter(newCenter)
-    props.handleCenterChange(newCenter)
-  };
-
-  const handleSubmit = () => {
-    props.onSelect();
-  };
-
-  const handleCenterChange = (event) => {
-    props.handleCenterChange(center)
-  }
 
   return (
 
@@ -64,10 +32,10 @@ function InitialModal(props) {
     >
       <label className='topPhrase' htmlFor="center-select">４つの観点から<br></br>性格のタイプを選んでください。</label><br></br><br></br>
 
-      <SliderContainer symbol1="E" symbol2="I" value={EIValue} onChange={handleEIChange} />
-      <SliderContainer symbol1="S" symbol2="N" value={SNValue} onChange={handleSNChange} />
-      <SliderContainer symbol1="F" symbol2="T" value={FTValue} onChange={handleFTChange} />
-      <SliderContainer symbol1="P" symbol2="J" value={PJValue} onChange={handlePJChange} />
+      <SliderContainer symbol1="E" symbol2="I" value={EIValue} onChange={(e)=>handleChange(setEIValue, 'E','I',1,e)} />
+      <SliderContainer symbol1="S" symbol2="N" value={SNValue} onChange={(e)=>handleChange(setSNValue, 'S','N',2,e)} />
+      <SliderContainer symbol1="F" symbol2="T" value={FTValue} onChange={(e)=>handleChange(setFTValue, 'F','T',3,e)} />
+      <SliderContainer symbol1="P" symbol2="J" value={PJValue} onChange={(e)=>handleChange(setPJValue, 'P','J',4,e)} />
 
       <div
         style={{
@@ -81,7 +49,7 @@ function InitialModal(props) {
         className='type'
       >
         <StyledSelectedValues
-          onChange={handleCenterChange}
+          onChange={()=>props.onCenterChange(center)}
         >
           <div>{EIValue < 50 ? 'E' : 'I'}</div>
           <div>{SNValue < 50 ? 'S' : 'N'}</div>
@@ -91,8 +59,8 @@ function InitialModal(props) {
         <div className='label'>{typeLabels[props.center]['label1']}</div>
       </div>
 
-      <StyledCloseButton onClick={handleSubmit}>&times;</StyledCloseButton>
-      <StyledStartButton onClick={handleSubmit}>Start</StyledStartButton>
+      <StyledCloseButton onClick={props.onSelect}>&times;</StyledCloseButton>
+      <StyledStartButton onClick={props.onSelect}>Start</StyledStartButton>
       <div style={{ textAlign: 'right' }}>
         <Link style={{ marginLeft: 'auto', marginRight: '12px' }} to="/16types/pages/typology" target="_blank" rel="noopener noreferrer">タイプ論とは？</Link>
       </div>
@@ -140,7 +108,16 @@ const StyledInitialModal = styled.div`
 `;
 export { InitialModal };
 
-
+const StyledSelectedValues = styled.div`
+  text-align:center;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  font-size: 20px;
+  padding: 4px;
+  font-family: Arial, sans-serif;
+`;
 const StyledCloseButton = styled.button`
   position: absolute;
   width: 35px;
@@ -171,104 +148,4 @@ outline: none;
 font-size: 16px;
 color: white;
 text-align: center;
-`;
-
-const StyledSliderContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-  padding: 5px;
-
-  input{
-    width:80px;
-  }
-  .label-on{
-    font-size:22px;
-    color: black;
-  }
-  .label-off{
-    font-size:22px;
-    // color: gray;
-  }
-`;
-
-function SliderContainer(props) {
-  const [value, setValue] = useState(props.value)
-
-  const handleChange = (event) => {
-    if (value === 100) {
-      setValue(0);
-    } else {
-      setValue(100);
-    }
-    props.onChange(event)
-  }
-
-  return (
-    <StyledSliderContainer>
-
-      <div style={{ color: value === 0 ? 'black' : 'rgb(190,190,190)', fontFamily: "Arial, sans-serif" }}>
-        {props.symbol1}
-      </div>:&nbsp;&nbsp;
-      <HtmlTooltip
-        placement="left"
-        title={
-          <Fragment>
-            <Typography color="inherit">{symbols[props.symbol1]['label']}</Typography>
-            {symbols[props.symbol1]['description1']} <br />
-            {symbols[props.symbol1]['description2']}
-          </Fragment>
-        }
-        arrow
-      >
-        <div
-          className='label-off'
-          style={{ color: value === 0 ? 'black' : '#AAAAAA' }}
-        >
-          {symbols[props.symbol1]['label']}
-        </div>
-      </HtmlTooltip>
-      &nbsp;&nbsp;
-      <input type="range" min="0" max="100" step="100" value={props.value} onChange={handleChange} />
-      &nbsp;&nbsp;
-      <HtmlTooltip
-        placement="right"
-        title={
-          <Fragment>
-            <Typography color="inherit">{symbols[props.symbol2]['label']}</Typography>
-            {symbols[props.symbol2]['description1']} <br />
-            {symbols[props.symbol2]['description2']}
-          </Fragment>
-        }
-        top arrow
-      >
-        <div
-          className='label-off'
-          style={{ color: value === 100 ? 'black' : '#AAAAAA' }}
-        >
-          {symbols[props.symbol2]['label']}
-        </div>
-      </HtmlTooltip>
-      &nbsp;&nbsp;  :
-      <div
-        style={{ color: value === 100 ? 'black' : 'rgb(190,190,190)', fontFamily: "Arial, sans-serif" }}
-      >
-        {props.symbol2}
-      </div>
-    </StyledSliderContainer>
-  );
-}
-
-
-
-const StyledSelectedValues = styled.div`
-  text-align:center;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  font-size: 20px;
-  padding: 4px;
-  font-family: Arial, sans-serif;
 `;
