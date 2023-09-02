@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import styled from "styled-components";
 import Tooltip from '@mui/material/Tooltip';
-import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import HtmlTooltip from './HtmlTooltip.js';
 import { relationLabels } from "../constants/relationLabels.js";
 import { typeLabels } from "../constants/typeLabels.js";
 import { CenterSelectIcon, ModeSelectIcon, ResetIcon, LabelIcon, HelpIcon, CubeIcon, OctagonIcon } from '../assets/Icons.js';
@@ -26,21 +24,19 @@ const ControlPane = (props) => {
                                 || (props.shape === "RING" && <OctagonIcon />)
                             }
                         </div>
-                        <DeformButton onClick={props.onDeform} />
+                        <StyledButton onClick={props.onDeform}>
+                            Deform
+                        </StyledButton>
                     </div>
                 </Tooltip>
 
                 <Tooltip placement="right"
-                    title={
-                        '中央のタイプを選択'
-                    }
-                    arrow
-                >
+                    title={'中央のタイプを選択'}
+                    arrow>
                     <div className='controlItemWrapper' >
                         <div className='controlIconWrapper'>
                             <CenterSelectIcon className="controlPanelIcon"></CenterSelectIcon>
                         </div>
-                        &nbsp;
                         <CenterSelect
                             center={props.center}
                             defaultValue=""
@@ -50,33 +46,25 @@ const ControlPane = (props) => {
                 </Tooltip>
 
                 <Tooltip placement="right"
-                    title={
-                        '関係の種類を選択'
-                    }
-                    arrow
-                >
+                    title={'関係の種類を選択'}
+                    arrow>
                     <div className='controlItemWrapper' >
                         <div className='controlIconWrapper' >
                             <ModeSelectIcon></ModeSelectIcon>
                         </div>
-                        {/* &nbsp; */}
                         <ModeSelect
-                            center={props.center}
                             onChange={props.handleModeChange}
+                            center={props.center}
+                            relationCenter={props.relationCenter}
                         />
                     </div>
                 </Tooltip>
-                <Tooltip placement="right"
-                    title={
-                        'ボールのラベルを選択'
-                    }
-                    arrow
-                >
+
+                <Tooltip placement="right" title={'ボールのラベルを選択'} arrow>
                     <div className='controlItemWrapper' >
                         <div className='controlIconWrapper' >
                             <LabelIcon></LabelIcon>
                         </div>
-                        {/* &nbsp; */}
                         <LabelSelect
                             label={props.label}
                             onChange={props.handleLabelChange}
@@ -84,212 +72,182 @@ const ControlPane = (props) => {
                     </div>
                 </Tooltip>
 
-                <Tooltip placement="right"
-                    title={'リセット'}
-                    arrow>
+                <Tooltip placement="right" title={'リセット'} arrow>
                     <div className='controlItemWrapper'>
                         <div className='controlIconWrapper'>
                             <ResetIcon />
                         </div>
-                        <ResetButton onClick={props.openModal} />
+                        <StyledButton onClick={props.openModal}>
+                            Reset
+                        </StyledButton>
                     </div>
                 </Tooltip>
 
-                <HtmlTooltip placement="right-start" style={{padding:'0px'}}
-                    backgroundColor={'#FFFFFF'}
-                    title={
-                        <div>
-                        <Fragment>
-                            <div classname='helpLinks'  style={{fontSize:'16px',textAlign:'left'}}>
-                                <Link to="/16types/pages/typology"  target="_blank" rel="noopener noreferrer">タイプ論とは？</Link><br/>
-                                <Link to="/16types/pages/function"  target="_blank" rel="noopener noreferrer">心理機能について</Link><br/>
-                                <Link to="/16types/pages/type-label"  target="_blank" rel="noopener noreferrer">タイプ名の表記</Link><br/>
-                            </div>
-                        </Fragment>
-                         </div>
-                    }
-                    arrow>
-                    <div className='controlItemWrapper'>
-                        <div className='controlIconWrapper'>
-                            <HelpIcon />
-                        </div>
-                        <HelpButton onClick={props.openModal} />
-                    </div>
-                </HtmlTooltip>
+                <Help />
+
             </StyledControlPane>
         ))
 }
 export { ControlPane };
 
-const StyledControlPane = styled.div`
-
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 30px;
-  left: 30px;
-  background-color: white;
-  border-radius: 12px;
-  opacity: 0.8;
-  
-  .controlItemWrapper{
-    top: 8px;
-    display: flex;
-    flex-direction: row;
-    text-align: left;
-  }
-  .controlIconWrapper{
-    margin-top: 4px;
-    margin-left:4px;
-  }
-
-`;
-
-function DeformButton(props) {
+const Help = (props) => {
+    const [hovered, setHovered] = useState(false)
+    const handleHover = (hovered, event) => {
+        setHovered(hovered)
+    }
     return (
-        <StyledDeformButton onClick={props.onClick}>
-            Deform
-        </StyledDeformButton>
-    );
+        <div className='controlItemWrapper helpButtonWrapper'
+            onMouseEnter={(event) => handleHover(true, event)}
+            onMouseLeave={(event) => handleHover(false, event)}
+        >
+            <div className='controlIconWrapper'
+            >
+                <HelpIcon />
+            </div>
+            <StyledButton>Help</StyledButton>
+            {hovered && <HelpBubble {...props} />}
+        </div>
+    )
 }
-
-const StyledDeformButton = styled.button`
-  width:170px;
-  height:28px;
-  background-color: transparent;
-  text-align: center;
-  color: #0175FF;
-  font-size:16px;
-  border: none;
-  text-align:left;
-  margin-top: 4px;
-  margin-left:-30px;
-  padding-left: 37px;
-  font-weight:bold;
-  cursor: pointer;
-`;
 
 function CenterSelect(props) {
     const types = Object.keys(typeLabels); //選択肢用のtypes配列
     return (
-        <StyledCenterSelect value={props.center} onChange={props.onChange}>
+        <StyledSelect value={props.center} onChange={props.onChange}>
 
             {types.map((type) => (
                 <option key={type} value={type}> {type} </option>
             ))}
-        </StyledCenterSelect>
+        </StyledSelect>
     );
 }
-
-const StyledCenterSelect = styled.select`
-  width:140px;
-  height:28px;
-  color: #0175FF;
-  background-color: transparent;
-  border:none;
-  font-size:16px;
-  font-weight:bold;
-  text-align:left;
-  margin-top:2px;
-  cursor: pointer;
-`;
 
 function ModeSelect(props) {
     const [mode, setMode] = useState(props.mode)
 
     const handleModeChange = (event) => {
-        const value = event.target.value === 'CENTER' ? 'RELATION' : event.target.value;
+        // const value = event.target.value === 'CENTER' ? 'RELATIONCENTER' : event.target.value;
+        const value = event.target.value;
         setMode(value)
         props.onChange(event, value);
     };
 
     const relationModes = Object.keys(relationLabels).filter(mode => mode !== 'IDENTITY'); //選択肢用のmodes配列
     return (
-        <StyledModeSelect onChange={handleModeChange} value={mode}>
-            <option value='RELATION'>--------------</option>
+        <StyledSelect onChange={handleModeChange} value={mode}>
+            {props.center !== props.relationCenter && 
+                <option value='RELATIONCENTER' selected>{props.relationCenter}との関係</option>
+            }
             <option value='CENTER'>{props.center}との関係</option>
             {relationModes.map((mode) => (
                 <option key={mode} value={mode}> {relationLabels[mode]['label']}の関係 </option>
             ))}
 
-        </StyledModeSelect>
+        </StyledSelect>
     );
 }
 
-const StyledModeSelect = styled.select`
-  width:140px;
-  height:28px;
-  text-align: center;
-  color: #0175FF;
-  font-size:16px;
-  border: none;
-  background-color: transparent;
-  text-align:left;
-  font-weight:bold;
-  margin-left: 4px;
-  margin-top:2px;
-  cursor: pointer;
-`;
-
 function LabelSelect(props) {
-    const [label, setLabel] = useState(props.label)
+    const [, setLabel] = useState(props.label)
     const handleLabelChange = (event) => {
         setLabel(event.target.value)
         props.onChange(event, event.target.value);
     };
     return (
-        <StyledLabelSelect onChange={handleLabelChange} label={'MBTI_4'}>
-            <option value='MBTI_4'>4文字(MBTI)</option>
-            <option value='SOCI_3'>3文字(Socionics)</option>
+        <div className='smallText'>
+        <StyledSelect onChange={handleLabelChange} label={'MBTI_4'}>
+                    
+            <option value='MBTI_4'>４文字(MBTI)</option>
+            <option value='SOCI_3' className='smallText'>３文字(socionics) </option>
             <option value='FUNC'>第1 / 第2機能</option>
-        </StyledLabelSelect>
+            
+        </StyledSelect>
+        </div>
     );
 }
 
-const StyledLabelSelect = styled.select`
-  width:140px;
-  height:28px;
-  text-align: center;
-  color: #0175FF;
-  font-size:16px;
-  font-size:16px;
-  border: none;
-  background-color: transparent;
-  text-align:left;
-  font-weight:bold;
-  margin-left: 4px;
-  margin-top:2px;
-  cursor: pointer;
+const HelpBubble = () => {
+    return (
+        <StyledHelpBubble>
+                <Link to="/16types/pages/typology" target="_blank" rel="noopener noreferrer">タイプ論とは？</Link><br />
+                <Link to="/16types/pages/function" target="_blank" rel="noopener noreferrer">心理機能について</Link><br />
+                <Link to="/16types/pages/type-label" target="_blank" rel="noopener noreferrer">タイプ名の表記</Link><br />
+        </StyledHelpBubble>)
+}
+
+const StyledControlPane = styled.div`
+
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: white;
+    border-radius: 12px;
+    opacity: 0.7;
+    z-index: 300;
+
+    .controlItemWrapper{
+        display: flex;
+        flex-direction: row;
+        text-align: left;
+    }
+    .helpButtonWrapper{
+        position:relative;
+    }
+    .controlIconWrapper{
+        margin-top:4px;
+        margin-left:4px;
+    }
 `;
 
-function ResetButton(props) {
-    return (
-        <StyledResetButton onClick={props.onClick}>
-            Reset
-        </StyledResetButton>
-    );
-}
+const StyledSelect = styled.select`
+    width:140px;
+    height:28px;
+    color: #0175FF;
+    background-color: transparent;
+    text-align:left;
+    font-weight:bold;
+    font-size:14px;
+    border: none;
+    margin-left: 4px;
+    margin-top:2px;
 
-const StyledResetButton = styled.button`
-  width:170px;
-  height:28px;
-  background-color: transparent;
-  text-align: center;
-  color: #0175FF;
-  font-size:16px;
-  border: none;
-  text-align:left;
-  margin-top: 4px;
-  margin-left:-30px;
-  padding-left: 37px;
-  font-weight:bold;
-  cursor: pointer;
+    cursor: pointer;
 `;
 
-function HelpButton(props) {
-    return (
-        <StyledResetButton>
-            Help
-        </StyledResetButton>
-    );
-}
+const StyledButton = styled.button`
+    width:170px;
+    height:28px;
+    background-color: transparent;
+    color: #0175FF;
+    text-align:left;
+    font-size:14px;
+    font-weight:bold;
+    
+    border: none;
+    margin-top: 4px;
+    margin-left:-30px;
+    padding-left: 37px;
+
+    cursor: pointer;
+`;
+
+const StyledHelpBubble = styled.div`
+    position:absolute;
+    top:20px;
+    left:80px;
+    width: 120px;
+    text-align:left;
+
+    background: white;
+    color: #0175FF;
+    font-size: 12px;
+    line-height:14px;
+
+    border: solid 1px #0175FF;
+    border-radius: 0px 16px 16px 16px;
+    padding: 4px 4px 8px 8px;
+    z-index:350;
+
+`;

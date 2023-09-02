@@ -11,12 +11,12 @@ import { Tetra } from '../components/Tetra.js';
 import { ControlPane } from "../components/ControlPane.js"
 
 
-//解説ページにWikiへのリンク。
+// HOMEリンクはアイコンに。
+// このアプリについて。
 // 相性の考え方
-// フォント
-
+// MBTIの表記の考え方を解説。
 // modal外をクリックしたらmodalが閉じる処理
-//ヘルプへのリンクは？マークにする
+// messageを表示
 // relationModal ２D表示と色を合わせたい。 ズーム機能の制御 3Dの背景はグレイ
 // ズーム機能の制限。並行移動の無効化。
 // sourcemap対応
@@ -26,6 +26,10 @@ import { ControlPane } from "../components/ControlPane.js"
 // Relationの移動を連続アニメーション。球の直径の変更もアニメーション。
 // typeModal typeの詳細。▼ではなくアイコンを使う
 // タイプのラベル　3文字表記もタイプによって透過を。
+
+// 判定結果をTwitter等で共有できるようにする。
+// 16種類の判定結果を別々のurlで準備する。
+// 別のサイトでタイプ判定して、このサイトで相性を確認するという使い方もアリ。 （編集済み） 
 
 
 function Home() {
@@ -88,8 +92,10 @@ function Home() {
 
   const handleModeChange = (event) => {
     setMode(event.target.value);
-    if (event.target.value === 'RELATION') {
-      setRelationCenter(center)
+    if (event.target.value === 'RELATIONCENTER') {
+      setRelationCenter(relationCenter)
+      setMode('RELATION')
+
     }
     if (event.target.value === 'CENTER') {
       setRelationCenter(center)
@@ -158,14 +164,14 @@ function Home() {
   // }, [closeModal])
 
   return (
-    <>
+    <>    
       {isInitialModalOpen &&
         <InitialModal
           onClick={(event) => { closeModal(event) }}
           onSelect={handleInitialModalSelect}
           center={center}
           relationCenter={relationCenter}
-          handleCenterChange={handleModalCenterChange}
+          onCenterChange={handleModalCenterChange}
           isClicked={isInitialModalClicked}
         />
       }
@@ -215,6 +221,7 @@ function Home() {
       <ControlPane
         shape={shape}
         center={center}
+        relationCenter={relationCenter}
         onDeform={handleDeform}
         handleCenterSelectChange={handleCenterSelectChange}
         mode={mode}
@@ -223,9 +230,8 @@ function Home() {
         handleLabelChange={handleLabelChange}
         openModal={openModal}
         isInitialModalOpen={isInitialModalOpen}
-      />
+      />    
     </>
-
   );
 }
 

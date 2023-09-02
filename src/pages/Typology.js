@@ -1,17 +1,46 @@
 import { Link } from 'react-router-dom';
 import styled from "styled-components";
 import { RightDownIcon, LeftDownIcon } from '../assets/Icons';
+import StyledHelpPage from './StyledHelpPage';
 
 
 const Typology = () => {
     return (
-        <StyledTypology>
+        <StyledHelpPage>
             <div className='pageTitle'>ユングのタイプ論</div>
-            <div className='preface'>
-                ユングのタイプ論とは、人を多様なタイプに分類したものです。<br />
+
+
+            <div className='subTitle'>ユングのタイプ論</div>
+            <div className='sentence'>
+                ユングのタイプ論（または類型論）は、<Link to="/16types/pages/function">心理機能</Link>から人を多様なタイプに分類したものです。<br />
+            </div>            
+                <Link to="/16types/pages/type-label">参考：１６タイプ一覧</Link><br />
+            
+            <div className='subTitle'>タイプ論の発展理論</div>
+            <div className='sentence'>
                 ユングのタイプ論に基づいて、「MBTI」や「ソシオニクス(社会人格学)」という理論が作られました。
             </div>
-            <div className='diagram'>
+            <TheoryDiagram/>
+
+            <div className='sentence'>
+                MBTIとソシオニクスは別の理論であり、心理機能の扱いにおいても違いが見られます。<br />
+                どちらもユングのタイプ論から生まれた姉妹のような関係です。
+            </div>
+
+            <div className="toHome">
+                <Link to="/16types" >HOME</Link>
+            </div>
+        </StyledHelpPage>
+    )
+}
+
+export default Typology;
+
+
+const TheoryDiagram = () => {
+    return (
+        <StyledTheoryDiagram>
+                        <div className='theoryDiagram'>
                 <div className='parentTheory'>
                     <div className='theoryBox'>
                         <div className='theoryHeader'>
@@ -27,7 +56,7 @@ const Typology = () => {
                 <div className='arrowsContainer'>
                     <div className='arrows'>
                         <LeftDownIcon />
-                        <div></div>
+                        
                         <RightDownIcon />
                     </div>
                 </div>
@@ -51,6 +80,7 @@ const Typology = () => {
                             </div>
                         </div>
                     </div>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
                     <div className='theoryBox'>
                         <div className='theoryHeader'>
                             ソシオニクス(社会人格学)
@@ -65,49 +95,21 @@ const Typology = () => {
                                     target='_blank'
                                     rel="noopener noreferrer"
                                     style={{ color: 'gray' }}>
-                                    [参考] Wikipedia<span style={{fontSize:'10px'}}>(ソシオニクス)</span>
+                                    [参考] Wikipedia<span style={{ fontSize: '10px' }}>(ソシオニクス)</span>
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
-            <div className='conclusion'>
-                MBTIとソシオニクスは別の理論であり、心理機能の扱いにおいても違いが見られます。<br />
-                どちらもユングのタイプ論から生まれた姉妹のような関係です。
-            </div>
-
-            <div className="toHome">
-                <Link to="/16types" >HOME</Link>
-            </div>
-        </StyledTypology>
+        </StyledTheoryDiagram>
     )
 }
 
-export default Typology;
-
-const StyledTypology = styled.div`
-
-    .pageTitle{
-        margin-top: 36px;
-        font-size:32px;
-    }
-    text-align: center;
-    .preface {
-        text-align:center;
-        width: 800px;
-        margin:40px auto;
-    }
-    .diagram{
-        width: 700px;
-        background-color:white;
-
-        margin:20px auto 40px auto;
-        padding:20px;
-        border-radius:16px;
-    }
-
+const StyledTheoryDiagram= styled.div`
+.theoryDiagram{
     .arrowsContainer {
         display: flex;
         justify-content: center;
@@ -116,7 +118,7 @@ const StyledTypology = styled.div`
       .arrows {
         display: flex;
         justify-content: space-between;
-        width: 40%;
+        width: 35%;
         margin: 0 auto;
       }
       
@@ -127,37 +129,30 @@ const StyledTypology = styled.div`
       }    
 
     .theoryHeader{
-      font-size:16px;
+      font-size:18px;
       font-weight:bold;
       color: #777
     }
     .childTheory{
         display: flex;
-        width:650px;
-        margin: 0px auto 0 auto;
+        justify-content: space-between;
+        width:500px;
+        margin: 0px auto;
+        
         
     }
     .theoryBox{
-        width:280px;
-        
+        width:250px;
         margin: 0 auto;
-
     }
     .theoryBody{
-        width:240px;
-        border: solid 5px #777;
+        width:220px;
+        font-size:14px;
+        border: solid 1px gray;
         border-radius:8px;
         text-align:left;
-        margin: 0 auto;
+        margin: 8px auto;
         padding:10px;
     }
-
-    .conclusion{
-       margin: 20px auto;
-     }
-
-     .toHome{
-        margin:10px;
-        padding:10px;
-     }
+}
 `;

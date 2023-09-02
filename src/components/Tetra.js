@@ -2,14 +2,12 @@ import * as THREE from 'three';
 import { useFrame } from "@react-three/fiber"
 import { useRef, useState } from 'react';
 import { animated } from "@react-spring/three"
-import { Html } from '@react-three/drei';
-import styled from "styled-components";
 
 import { relations } from '../constants/relations.js';
 import { typeLabels } from "../constants/typeLabels.js";
 import Node from './Node.js';
 import { Relation } from './Relation.js'
-import { getFuncTextColor } from '../colorFunctions.js';
+import FuncText from './FuncText.js'
 
 
 function Tetra(props) {
@@ -159,9 +157,7 @@ function Tetra(props) {
     <animated.mesh {...props} ref={ref}>
 
       {types.map((type, i) => {
-
         let slot = compare(type, props.center);
-        console.log(type)
         return (
           (slot !== "XXXX" || props.shape === 'RING')
             ? <Node {...props}
@@ -263,24 +259,3 @@ function compare(str1, str2) {
   }
   return diff
 }
-
-const FuncText = (props) => {
-  return (
-
-    <Html zIndexRange={[1, 10]}
-      position={[5 * Math.sin(props.angle), 5 * Math.cos(props.angle), 0]}
-    >
-      <StyledFuncText
-        style={{color: getFuncTextColor(props.func + 'e') }}>
-        {props.func}
-      </StyledFuncText>
-    </Html>
-
-  )
-}
-
-const StyledFuncText = styled.div`
-  opacity: 0.2;
-  font-weight: bold;
-  font-size: 48px;
-`;
