@@ -4,6 +4,8 @@ import { getFuncTextColor } from '../colorFunctions';
 import { getFuncBackgroundColor } from '../colorFunctions';
 import { symbols } from '../constants/symbols';
 import StyledHelpPage from './StyledHelpPage';
+import { HomeIcon } from '../assets/Icons';
+import { cognitiveFunctionLabels } from '../constants/cognitiveFunctionLabels';
 
 
 const CognitiveFunction = () => {
@@ -117,7 +119,7 @@ const CognitiveFunction = () => {
                 <Link to="/16types/pages/type-label">参考：１６タイプ一覧</Link>
 
                 <div className="toHome">
-                    <Link to="/16types" >HOME</Link>
+                    <Link to="/16types" ><HomeIcon /></Link>
                 </div>
             </StyledCognitiveFunction>
         </StyledHelpPage>
@@ -164,7 +166,6 @@ const StyledCognitiveFunction = styled.div`
     }
         
 `;
-
 
 const FuncBox = (props) => {
     const symbolIndex = props.symbol === 'N' ? 2 : 1
@@ -226,17 +227,35 @@ const FuncSymbol = (props) => {
     return (
         <StyledFuncSymbol className='funcSymbol' style={{ backgroundColor: getFuncBackgroundColor(props.symbol), color: getFuncTextColor(props.symbol) }}>
             {props.symbol}
+            <div className="funcLabel">
+                {cognitiveFunctionLabels[props.symbol]['label']}
+            </div>
+            <div className="funcPhrase">
+                {cognitiveFunctionLabels[props.symbol]['phrase']}
+            </div>
         </StyledFuncSymbol>
     )
 }
 
 const StyledFuncSymbol = styled.div`
-    width:80px;
-    height: 50px;
+    width:120px;
+    height: 90px;
     font-size:24px;
     border-radius:16px;
+    padding:4px;
     margin:4px;
-    display: flex;
     align-items: center;
     justify-content: center;
+    
+    .funcLabel{
+        font-size:16px;
+        color:#333333;
+        margin-top:0px;
+        margin-bottom:8px;
+    }
+    .funcPhrase{
+        font-size:12px;
+        color:#333333;
+        margin-top:4px;
+    }
 `;

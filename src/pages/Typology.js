@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import styled from "styled-components";
 import { RightDownIcon, LeftDownIcon } from '../assets/Icons';
 import StyledHelpPage from './StyledHelpPage';
+import { HomeIcon } from '../assets/Icons';
 
 
 const Typology = () => {
@@ -13,22 +14,35 @@ const Typology = () => {
             <div className='subTitle'>ユングのタイプ論</div>
             <div className='sentence'>
                 ユングのタイプ論（または類型論）は、<Link to="/16types/pages/function">心理機能</Link>から人を多様なタイプに分類したものです。<br />
-            </div>            
-                <Link to="/16types/pages/type-label">参考：１６タイプ一覧</Link><br />
-            
+            </div>
+            <Link to="/16types/pages/type-label">参考：１６タイプ一覧</Link><br />
+
             <div className='subTitle'>タイプ論の発展理論</div>
             <div className='sentence'>
                 ユングのタイプ論に基づいて、「MBTI」や「ソシオニクス(社会人格学)」という理論が作られました。
             </div>
-            <TheoryDiagram/>
+            <TheoryDiagram />
 
             <div className='sentence'>
                 MBTIとソシオニクスは別の理論であり、心理機能の扱いにおいても違いが見られます。<br />
-                どちらもユングのタイプ論から生まれた姉妹のような関係です。
+                どちらもユングのタイプ論から生まれた姉妹のような関係です。<br />
+                当サイトの内容はMBTIとソシオニクスに基づいています。
             </div>
 
+            <div className='subTitle'>タイプ判定</div>
+            <div className='sentence'>
+                自分のタイプをもっとじっくり判定してみたい方にはこちらがおすすめです。▶︎&nbsp;
+                <a href='https://www.16personalities.com/'
+                    target='_blank'
+                    rel="noopener noreferrer"
+                    style={{ color: 'gray' }}>
+                    16 personalities.com([外部サイト])
+                </a>
+            </div>
+
+
             <div className="toHome">
-                <Link to="/16types" >HOME</Link>
+                <Link to="/16types" ><HomeIcon /></Link>
             </div>
         </StyledHelpPage>
     )
@@ -40,7 +54,7 @@ export default Typology;
 const TheoryDiagram = () => {
     return (
         <StyledTheoryDiagram>
-                        <div className='theoryDiagram'>
+            <div className='theoryDiagram'>
                 <div className='parentTheory'>
                     <div className='theoryBox'>
                         <div className='theoryHeader'>
@@ -56,7 +70,7 @@ const TheoryDiagram = () => {
                 <div className='arrowsContainer'>
                     <div className='arrows'>
                         <LeftDownIcon />
-                        
+
                         <RightDownIcon />
                     </div>
                 </div>
@@ -108,25 +122,42 @@ const TheoryDiagram = () => {
     )
 }
 
-const StyledTheoryDiagram= styled.div`
+const StyledTheoryDiagram = styled.div`
+width:500px;
+margin: 0 auto;
+
 .theoryDiagram{
+    position:relative;
+    height:330px;
+    
+    .parentTheory{
+        position: absolute;
+        left :130px;
+
+    }
     .arrowsContainer {
+        position:absolute;
+        top:80px;
+        left:160px;
+        
+        width:500px
+
         display: flex;
         justify-content: center;
-      }
+    }
       
-      .arrows {
+    .arrows {
         display: flex;
         justify-content: space-between;
-        width: 35%;
+        width: 100%;
         margin: 0 auto;
-      }
+    }
       
-      .arrows > div {
+    .arrows > div {
         flex-basis: 50%;
         display: flex;
         justify-content: center;
-      }    
+    }    
 
     .theoryHeader{
       font-size:18px;
@@ -134,12 +165,12 @@ const StyledTheoryDiagram= styled.div`
       color: #777
     }
     .childTheory{
+        position:absolute;
+        top:180px;
         display: flex;
         justify-content: space-between;
         width:500px;
         margin: 0px auto;
-        
-        
     }
     .theoryBox{
         width:250px;

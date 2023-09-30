@@ -10,8 +10,6 @@ import { RelationModal } from '../components/RelationModal.js';
 import { Tetra } from '../components/Tetra.js';
 import { ControlPane } from "../components/ControlPane.js"
 
-
-// HOMEリンクはアイコンに。
 // このアプリについて。
 // 相性の考え方
 // MBTIの表記の考え方を解説。
@@ -141,13 +139,14 @@ function Home() {
     setShape("SPHERE")
     setMode("RELATION");
     setIsInitialModalClicked(false);
+    setLabel('MBTI_4')
   }, [setisInitialModalOpen, setMode]);
 
   const handleNodeDoubleCLick = (type) => {
     setShape("SPHERE")
     setCenter(type)
     setRelationCenter(type)
-    // setMode("CENTER")
+    setMode("RELATION")
 
   }
   const handleSeeRelation = (mode) => {

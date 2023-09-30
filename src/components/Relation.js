@@ -1,4 +1,3 @@
-// import '../App.css';
 import * as THREE from 'three';
 import { useState } from 'react';
 import { animated } from "@react-spring/three"
