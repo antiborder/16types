@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import styled from "styled-components";
 import { typeLabels } from '../constants/typeLabels';
 import StyledHelpPage from './StyledHelpPage';
+import { HomeIcon } from '../assets/Icons';
 
 
 const TypeLabel = () => {
@@ -93,7 +94,9 @@ const TypeLabel = () => {
                 となります。
             </p>
             <div className="toHome">
-                <Link to="/16types" >HOME</Link>
+                <Link to="/16types" >
+                    <HomeIcon/>
+                </Link>
             </div>
             </StyledTypeLabel>
         </StyledHelpPage>

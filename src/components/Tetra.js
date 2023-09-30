@@ -234,14 +234,12 @@ export { Tetra };
 
 
 function Link(props) {
-  // const ref = useRef();
   const lineGeometry = new THREE.BufferGeometry().setFromPoints([props.pos1, props.pos2]);
   const lineMaterial = new THREE.LineBasicMaterial({ color: "#999" });
 
   return (
     <animated.mesh {...props} geometry={lineGeometry} material={lineMaterial}>
       <line
-        // ref={ref}
         geometry={lineGeometry}>
         <meshBasicMaterial attach="material" color="#999" />
       </line>
