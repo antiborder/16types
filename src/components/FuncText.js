@@ -52,13 +52,13 @@ const FuncText = (props) => {
       position:absolute;
       top:30px;
       left:20px;
-      width: 90px;
+      width: 110px;
       text-align:center;
   
       background: white;
       opacity:0.7;
-      font-size: 12px;
-      line-height:16px;
+      font-size: 16px;
+      line-height:20px;
   
       border: solid 1px;
       border-radius: 0px 16px 16px 16px;
