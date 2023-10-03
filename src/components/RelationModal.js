@@ -105,7 +105,7 @@ border: 1px solid #ccc;
 border-radius: 10px;
 font-size:12px;
 box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-z-index: 9999;
+z-index: 900;
 max-width: 320px;
 width: 100%;
 padding:0px 8px 0px 8px;
