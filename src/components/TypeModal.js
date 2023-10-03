@@ -137,7 +137,7 @@ const StyledTypeModal = styled.div`
   border-radius: 10px;
   font-size:12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 200;
+  z-index: 800;
   max-width: 320px;
   width: 100%;
   padding:0px;
@@ -303,7 +303,7 @@ const HtmlTooltip = styled(({ className, ...props }) => (
     color: 'rgba(255, 255, 255, 0.87)',
     top: '-10px',
     textAlign: 'center', // テキストを中央に配置する
-    zIndex: '800'
+    zIndex: '300'
   },
 }));
 
