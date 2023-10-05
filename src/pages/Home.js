@@ -70,7 +70,7 @@ function Home() {
     }
     else if (shape === "RING") {
       setShape("SPHERE");
-      if (mode === "NONE"){
+      if (mode === "NONE") {
         setMode("RELATION")
         setRelationCenter(center)
       }
@@ -163,7 +163,7 @@ function Home() {
   // }, [closeModal])
 
   return (
-    <>    
+    <>
       {isInitialModalOpen &&
         <InitialModal
           onClick={(event) => { closeModal(event) }}
@@ -214,9 +214,11 @@ function Home() {
         </Canvas>
       </StyledCanvasContainer>
 
-      <div className='logo'>
-        {/* 16 types */}
-      </div>
+      <TopMessage>
+        <div className='logo'>
+          {/* 16 types */}
+        </div>
+      </TopMessage>
       <ControlPane
         shape={shape}
         center={center}
@@ -229,7 +231,7 @@ function Home() {
         handleLabelChange={handleLabelChange}
         openModal={openModal}
         isInitialModalOpen={isInitialModalOpen}
-      />    
+      />
     </>
   );
 }
@@ -255,4 +257,38 @@ const reverse = (type) => {
 const StyledCanvasContainer = styled.div`
   height: 100%;
   width: 100%;
+`;
+
+const TopMessage = () => {
+  return (
+    <StyledTopMessage>
+      <div className='submessage'>
+        心理学に基づく相性判定
+      </div>
+      <div className='message'>
+        16type 3D
+      </div>
+
+    </StyledTopMessage>
+  )
+}
+
+const StyledTopMessage = styled.div`
+  position: absolute;
+  text-align: center;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  opacity: 0.5;
+  font-family: "azuki","Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro", Arial, sans-serif;
+  z-index: 0;
+  letter-spacing: 1px;
+  .submessage{
+    font-size: 24px;
+  }
+  .message{
+    font-size: 40px;
+  }
+
 `;
