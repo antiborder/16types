@@ -303,7 +303,7 @@ const HtmlTooltip = styled(({ className, ...props }) => (
     color: 'rgba(255, 255, 255, 0.87)',
     top: '-10px',
     textAlign: 'center', // テキストを中央に配置する
-    zIndex: '300'
+    zIndex: '800'
   },
 }));
 
