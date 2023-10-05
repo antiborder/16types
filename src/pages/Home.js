@@ -10,11 +10,11 @@ import { RelationModal } from '../components/RelationModal.js';
 import { Tetra } from '../components/Tetra.js';
 import { ControlPane } from "../components/ControlPane.js"
 
+// messageを表示
 // このアプリについて。
 // 相性の考え方
 // MBTIの表記の考え方を解説。
 // modal外をクリックしたらmodalが閉じる処理
-// messageを表示
 // relationModal ２D表示と色を合わせたい。 ズーム機能の制御 3Dの背景はグレイ
 // ズーム機能の制限。並行移動の無効化。
 // sourcemap対応
