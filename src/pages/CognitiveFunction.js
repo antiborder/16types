@@ -6,6 +6,7 @@ import { symbols } from '../constants/symbols';
 import StyledHelpPage from './StyledHelpPage';
 import { HomeIcon } from '../assets/Icons';
 import { cognitiveFunctionLabels } from '../constants/cognitiveFunctionLabels';
+import { FunctionTable } from '../components/FunctionTable';
 
 
 const CognitiveFunction = () => {
@@ -117,6 +118,38 @@ const CognitiveFunction = () => {
                     </table>
                 </div>
                 <Link to="/16types/pages/type-label">参考：１６タイプ一覧</Link>
+
+                <div className='subTitle'>心理機能の見方</div>
+                <div className='sentence'>
+                    例として、ESFP型の心理機能を見てみましょう。
+                    当サイトでは、意識的な機能を左、無意識的な機能を右に配置しています。また、得意な機能を上、苦手な機能を下にしています。
+                </div>
+
+                <div className='diagram'>
+                    <div className='diagramContents'>
+                        <FunctionTable type={'ESFP'} />
+                    </div>
+                </div>
+
+                <div className='sentence'>
+                    上の図で左上にあるSeがESFP型の第１機能です。これは、FSFP型の人が最も得意に感じている心理機能です。
+                </div>
+                <div className='sentence'>
+                    意識的に最も苦手に感じるのは左下にある第４機能で、この機能を強制されることにはストレスを感じます。
+                    ESFP型の場合では、第４機能はTiなのでESFP型の人はTiを第１機能に持つ人を苦手に感じるといわれています。
+                </div>
+                <div className='sentence'>
+                    一方、無意識的に最も苦手に感じるのが右下にある第５機能で、この機能に自身を持つ者からの支援を必要とします。
+                    ESFP型の第５機能はNiなので、Niを第一機能に持つタイプとは相性が良いと言われています。
+                </div>
+
+                <a href='https://ja.wikipedia.org/wiki/MBTI'
+                    target='_blank'
+                    rel="noopener noreferrer"
+                    style={{ color: 'gray' }}>
+                    [参考] Wikipedia(MBTI)
+                </a>
+
 
                 <div className="toHome">
                     <Link to="/16types" ><HomeIcon /></Link>
