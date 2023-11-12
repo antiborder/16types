@@ -265,7 +265,7 @@ const TopMessage = () => {
         心理学に基づく相性判定
       </div>
       <div className='message'>
-        16type 3D
+        16types 3D
       </div>
 
     </StyledTopMessage>

@@ -121,7 +121,7 @@ const CognitiveFunction = () => {
 
                 <div className='subTitle'>心理機能の見方</div>
                 <div className='sentence'>
-                    例として、ESFP型の心理機能を見てみましょう。
+                    例として、ESFP型の心理機能を見てみましょう。他のタイプについても見方は同じです。
                     当サイトでは、意識的な機能を左、無意識的な機能を右に配置しています。また、得意な機能を上、苦手な機能を下にしています。
                 </div>
 
