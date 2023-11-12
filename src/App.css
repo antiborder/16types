@@ -28,18 +28,6 @@ body {
   );
 }
 
-#root2 {
-  @media (max-width: 350px) {
-    width: fit-content;
-  }
-  background : lightgray;
-  background: linear-gradient(
-    117deg,
-    rgba(220, 220, 220, 1) 5%,
-    rgba(255, 255, 255, 1) 100%
-  )
-}
-
 .logo {
   position: absolute;
   top: 10%;
