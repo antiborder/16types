@@ -10,10 +10,9 @@ import { RelationModal } from '../components/RelationModal.js';
 import { Tetra } from '../components/Tetra.js';
 import { ControlPane } from "../components/ControlPane.js"
 
-// messageを表示
-// このアプリについて。
-// 相性の考え方
 // MBTIの表記の考え方を解説。
+// 各タイプについての解説
+// このアプリについて。
 // modal外をクリックしたらmodalが閉じる処理
 // relationModal ２D表示と色を合わせたい。 ズーム機能の制御 3Dの背景はグレイ
 // ズーム機能の制限。並行移動の無効化。
@@ -70,7 +69,7 @@ function Home() {
     }
     else if (shape === "RING") {
       setShape("SPHERE");
-      if (mode === "NONE"){
+      if (mode === "NONE") {
         setMode("RELATION")
         setRelationCenter(center)
       }
@@ -163,7 +162,7 @@ function Home() {
   // }, [closeModal])
 
   return (
-    <>    
+    <>
       {isInitialModalOpen &&
         <InitialModal
           onClick={(event) => { closeModal(event) }}
@@ -214,9 +213,11 @@ function Home() {
         </Canvas>
       </StyledCanvasContainer>
 
-      <div className='logo'>
-        {/* 16 types */}
-      </div>
+      <TopMessage>
+        <div className='logo'>
+          {/* 16 types */}
+        </div>
+      </TopMessage>
       <ControlPane
         shape={shape}
         center={center}
@@ -229,7 +230,7 @@ function Home() {
         handleLabelChange={handleLabelChange}
         openModal={openModal}
         isInitialModalOpen={isInitialModalOpen}
-      />    
+      />
     </>
   );
 }
@@ -255,4 +256,38 @@ const reverse = (type) => {
 const StyledCanvasContainer = styled.div`
   height: 100%;
   width: 100%;
+`;
+
+const TopMessage = () => {
+  return (
+    <StyledTopMessage>
+      <div className='submessage'>
+        心理学に基づく相性判定
+      </div>
+      <div className='message'>
+        16types 3D
+      </div>
+
+    </StyledTopMessage>
+  )
+}
+
+const StyledTopMessage = styled.div`
+  position: absolute;
+  text-align: center;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  opacity: 0.5;
+  font-family: "azuki","Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro", Arial, sans-serif;
+  z-index: 0;
+  letter-spacing: 1px;
+  .submessage{
+    font-size: 24px;
+  }
+  .message{
+    font-size: 40px;
+  }
+
 `;
