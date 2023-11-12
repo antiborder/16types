@@ -142,15 +142,12 @@ const CognitiveFunction = () => {
                     一方、無意識的に最も苦手に感じるのが右下にある第５機能で、この機能に自身を持つ者からの支援を必要とします。
                     ESFP型の第５機能はNiなので、Niを第一機能に持つタイプとは相性が良いと言われています。
                 </div>
-
-                <a href='https://ja.wikipedia.org/wiki/MBTI'
+                <a href='https://ja.wikipedia.org/wiki/%E3%82%BD%E3%82%B7%E3%82%AA%E3%83%8B%E3%82%AF%E3%82%B9'
                     target='_blank'
                     rel="noopener noreferrer"
                     style={{ color: 'gray' }}>
-                    [参考] Wikipedia(MBTI)
+                    [参考] Wikipedia<span style={{ fontSize: '10px' }}>(ソシオニクス)</span>
                 </a>
-
-
                 <div className="toHome">
                     <Link to="/16types" ><HomeIcon /></Link>
                 </div>
