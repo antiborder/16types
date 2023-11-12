@@ -213,7 +213,8 @@ function Home() {
         </Canvas>
       </StyledCanvasContainer>
 
-      <TopMessage>
+      <TopMessage
+        isInitialModalOpen = {isInitialModalOpen}>
         <div className='logo'>
           {/* 16 types */}
         </div>
@@ -258,9 +259,9 @@ const StyledCanvasContainer = styled.div`
   width: 100%;
 `;
 
-const TopMessage = () => {
+const TopMessage = (props) => {
   return (
-    <StyledTopMessage>
+    props.isInitialModalOpen&&<StyledTopMessage>
       <div className='submessage'>
         心理学に基づく相性判定
       </div>
